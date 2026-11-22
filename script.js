@@ -41,7 +41,7 @@ const defaultInvoiceState = {
   exchangeRate: 4100,
   showDualCurrency: true,
 
-  // Invoice Items (RATHA Stationery Items)
+  // Invoice Items (Starts with 3 items per user request)
   items: [
     {
       id: 1,
@@ -67,15 +67,6 @@ const defaultInvoiceState = {
       details: 'ទឹកប៊ិចពណ៌ខៀវ & ខ្មៅ ២៤ដើម/ប្រអប់',
       quantity: 4,
       price: 6.5,
-      discountPercent: 0,
-      currency: 'USD'
-    },
-    {
-      id: 4,
-      description: 'ម៉ាស៊ីនគិតលេខ Casio FX-580VNX',
-      details: 'ការធានា ១ ឆ្នាំពីក្រុមហ៊ុនផ្លូវការ',
-      quantity: 2,
-      price: 28,
       discountPercent: 0,
       currency: 'USD'
     }
@@ -1308,7 +1299,23 @@ function autoScaleInvoiceOnMobile() {
   }
 }
 
-const CURRENT_DATA_VERSION = 'v2026_ratha_stationery_v3';
+const CURRENT_DATA_VERSION = 'v2026_ratha_stationery_v5_direct_table';
+
+// Guarantee table starts with at least 3 rows
+function ensureMinimumItems(minCount = 3) {
+  if (!state.items) state.items = [];
+  while (state.items.length < minCount) {
+    state.items.push({
+      id: nextItemId++,
+      description: '',
+      details: '',
+      quantity: 1,
+      price: 0,
+      discountPercent: 0,
+      currency: state.currency || 'USD'
+    });
+  }
+}
 
 // Load state from localStorage if exists (with auto-migration to requested defaults)
 function loadSavedState() {
@@ -1351,6 +1358,7 @@ function loadSavedState() {
       if (state.items && state.items.length > 0) {
         nextItemId = Math.max(...state.items.map(i => i.id || 0)) + 1;
       }
+      ensureMinimumItems(3);
       // Migrate old badge/full images to pure square QR codes and initialize abaMode
       if (state.payment) {
         if (state.payment.bankKey === 'aba' && !state.payment.abaMode) {
@@ -1633,73 +1641,342 @@ function setCheck(id, val) {
   if (el) el.checked = Boolean(val);
 }
 
-// Render dynamic item list in editor tab
-function renderItemEditorCards() {
+// Update Page Fit Indicator & Print Constraints (Rule: <=10 items = 1 Page, >10 items = Margin Multi-Page)
+function updatePageFitIndicator() {
+  const count = state.items ? state.items.length : 0;
+  const isSingleFit = count <= 10;
+
+  const sheet = document.getElementById('printable-invoice-sheet');
+  if (sheet) {
+    if (isSingleFit) {
+      sheet.classList.add('fit-single-page');
+      sheet.classList.remove('multi-page-mode');
+    } else {
+      sheet.classList.remove('fit-single-page');
+      sheet.classList.add('multi-page-mode');
+    }
+  }
+
+  if (isSingleFit) {
+    document.body.classList.add('single-page-fit');
+    document.body.classList.remove('multi-page-print');
+  } else {
+    document.body.classList.remove('single-page-fit');
+    document.body.classList.add('multi-page-print');
+  }
+
+  // Update badge in Tab 4
+  const tabFitEl = document.getElementById('items-page-fit-indicator');
+  const tabFitText = document.getElementById('items-page-fit-text');
+  if (tabFitEl && tabFitText) {
+    if (isSingleFit) {
+      tabFitEl.className = 'page-fit-indicator fit-single';
+      tabFitText.textContent = `សមល្មមត្រឹម ១ ទំព័រ A4 (${count}/10 មុខ)`;
+      tabFitEl.title = 'ទំនិញត្រឹម ១០ មុខ ត្រូវបានតម្រឹមសមល្មមត្រឹម ១ ទំព័រ A4 គត់';
+    } else {
+      tabFitEl.className = 'page-fit-indicator fit-multi';
+      tabFitText.textContent = `លើសពី ១០ មុខ (${count} មុខ) • គិតតាម Margin ទំព័របន្តបន្ទាប់`;
+      tabFitEl.title = 'ទំនិញលើសពី ១០ មុខ គិតតាម Margin ជាក់ស្តែងសម្រាប់ទំព័របន្តបន្ទាប់';
+    }
+  }
+
+  // Update badge in preview toolbar
+  const prevFitEl = document.getElementById('preview-page-indicator');
+  const prevFitText = document.getElementById('preview-page-indicator-text');
+  if (prevFitEl && prevFitText) {
+    if (isSingleFit) {
+      prevFitEl.className = 'page-fit-indicator fit-single';
+      prevFitText.textContent = `១ ទំព័រ A4 (${count}/10)`;
+    } else {
+      prevFitEl.className = 'page-fit-indicator fit-multi';
+      prevFitText.textContent = `${count} មុខ (Multi-page)`;
+    }
+  }
+}
+
+// Render Direct Spreadsheet-like Table Editor in Tab 4 (ការវាយចូលតារាងដោយផ្ទាល់)
+function renderItemEditorTable() {
   const container = document.getElementById('items-editor-container');
   if (!container) return;
+
+  ensureMinimumItems(3);
 
   const countBadge = document.getElementById('items-counter-badge');
   if (countBadge) {
     countBadge.textContent = `${state.items.length} មុខ`;
   }
 
-  container.innerHTML = '';
+  updatePageFitIndicator();
 
-  if (state.items.length === 0) {
-    container.innerHTML = `
-      <div style="text-align: center; padding: 2.2rem 1rem; color: var(--text-muted); background: var(--card-sub-bg); border-radius: 10px; border: 1.5px dashed var(--border-color); margin-top: 0.5rem;">
-        <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">📦</div>
-        <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 0.25rem; color: var(--text-main);">ពុំទាន់មានមុខទំនិញនៅឡើយទេ</div>
-        <div style="font-size: 0.8rem; margin-bottom: 1rem;">សូមចុចប៊ូតុង «បន្ថែមទំនិញថ្មី» ដើម្បីបញ្ចូលមុខទំនិញ</div>
-        <button type="button" class="btn-add-item-modern" onclick="addItem()">
-          <svg style="width: 14px; height: 14px; fill: currentColor;" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-          <span>បន្ថែមទំនិញដំបូង</span>
-        </button>
-      </div>
+  const rate = Number(state.exchangeRate) || 4100;
+
+  let rowsHtml = '';
+  state.items.forEach((item, index) => {
+    const qty = Number(item.quantity) !== undefined ? item.quantity : 1;
+    const price = Number(item.price) !== undefined ? item.price : 0;
+    const disc = Number(item.discountPercent) || 0;
+    const itemCur = item.currency || state.currency;
+    const lineRawTotal = (qty * price) * (1 - disc / 100);
+    const lineConvertedTotal = convertCurrency(lineRawTotal, itemCur, state.currency, rate);
+
+    rowsHtml += `
+      <tr class="editor-row" id="editor-row-${item.id}">
+        <td class="text-center row-num">${index + 1}</td>
+        <td class="cell-desc">
+          <input type="text" 
+                 class="table-cell-input input-desc font-km" 
+                 id="input-desc-${item.id}"
+                 placeholder="ឈ្មោះមុខទំនិញ ឬសេវាកម្ម..." 
+                 value="${escapeHtml(item.description)}" 
+                 oninput="handleCellInput(${item.id}, 'description', this.value)"
+                 onkeydown="handleTableKey(event, ${index}, 'desc')">
+          <input type="text" 
+                 class="table-cell-input input-details text-xs font-km" 
+                 id="input-details-${item.id}"
+                 placeholder="+ បរិយាយបន្ថែម (បើមាន)..." 
+                 value="${escapeHtml(item.details || '')}" 
+                 oninput="handleCellInput(${item.id}, 'details', this.value)"
+                 onkeydown="handleTableKey(event, ${index}, 'details')">
+        </td>
+        <td class="cell-qty">
+          <input type="number" 
+                 step="any" 
+                 min="0" 
+                 class="table-cell-input text-center font-num input-qty" 
+                 id="input-qty-${item.id}"
+                 placeholder="1"
+                 value="${qty}" 
+                 oninput="handleCellInput(${item.id}, 'quantity', this.value)"
+                 onkeydown="handleTableKey(event, ${index}, 'qty')">
+        </td>
+        <td class="cell-price">
+          <div class="cell-price-inner">
+            <span class="cell-cur-symbol">${itemCur === 'KHR' ? '៛' : '$'}</span>
+            <input type="number" 
+                   step="any" 
+                   min="0" 
+                   class="table-cell-input text-right font-num input-price" 
+                   id="input-price-${item.id}"
+                   placeholder="0"
+                   value="${price}" 
+                   oninput="handleCellInput(${item.id}, 'price', this.value)"
+                   onkeydown="handleTableKey(event, ${index}, 'price')">
+          </div>
+        </td>
+        <td class="cell-disc">
+          <input type="number" 
+                 step="any" 
+                 min="0" 
+                 max="100" 
+                 class="table-cell-input text-center font-num input-disc" 
+                 id="input-disc-${item.id}"
+                 placeholder="0"
+                 value="${disc > 0 ? disc : ''}" 
+                 oninput="handleCellInput(${item.id}, 'discountPercent', this.value)"
+                 onkeydown="handleTableKey(event, ${index}, 'disc')">
+        </td>
+        <td class="text-right font-num cell-total" id="cell-total-${item.id}">
+          ${(price > 0 || lineConvertedTotal > 0) ? formatMoney(lineConvertedTotal, state.currency) : '-'}
+        </td>
+        <td class="text-center cell-act">
+          <button type="button" class="btn-row-del" onclick="removeItem(${item.id})" title="លុបជួរដេក">
+            <svg style="width: 14px; height: 14px; fill: currentColor;" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+          </button>
+        </td>
+      </tr>
     `;
+  });
+
+  container.innerHTML = `
+    <div class="items-table-scroll-wrap">
+      <table class="items-editor-table" id="items-editor-table">
+        <thead>
+          <tr>
+            <th style="width: 38px;" class="text-center">ល.រ</th>
+            <th>បរិយាយមុខទំនិញ ឬសេវាកម្ម</th>
+            <th style="width: 68px;" class="text-center">ចំនួន</th>
+            <th style="width: 105px;" class="text-right">តម្លៃឯកតា</th>
+            <th style="width: 60px;" class="text-center">ចុះ %</th>
+            <th style="width: 95px;" class="text-right">សរុប</th>
+            <th style="width: 38px;" class="text-center">លុប</th>
+          </tr>
+        </thead>
+        <tbody id="items-editor-tbody">
+          ${rowsHtml}
+        </tbody>
+      </table>
+    </div>
+    <div class="items-table-bottom-bar">
+      <button type="button" class="btn-add-row-quick" onclick="addItem()">
+        <svg style="width: 15px; height: 15px; fill: currentColor;" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        <span>+ បន្ថែមជួរដេកថ្មី (Add Row)</span>
+      </button>
+      <div class="table-shortcut-tip">
+        <span>💡 វាយចូលតារាងដោយផ្ទាល់</span>
+        <span>•</span>
+        <span>ចុច <kbd>Enter</kbd> ឬ <kbd>Tab</kbd> លើជួរដេកចុងក្រោយដើម្បីបង្កើតជួរថ្មីដោយស្វ័យប្រវត្តិ</span>
+      </div>
+    </div>
+  `;
+}
+
+function renderItemEditorCards() {
+  renderItemEditorTable();
+}
+
+// Handle typing in editor table cells
+function handleCellInput(id, field, value) {
+  const item = state.items.find(i => i.id === id);
+  if (!item) return;
+
+  if (field === 'quantity' || field === 'price' || field === 'discountPercent') {
+    item[field] = Number(value) || 0;
+  } else {
+    item[field] = value;
+  }
+
+  // Update line total for this row in editor table
+  const rate = Number(state.exchangeRate) || 4100;
+  const itemCur = item.currency || state.currency;
+  const qty = Number(item.quantity) || 0;
+  const price = Number(item.price) || 0;
+  const disc = Number(item.discountPercent) || 0;
+  const lineRaw = (qty * price) * (1 - disc / 100);
+  const lineTotal = convertCurrency(lineRaw, itemCur, state.currency, rate);
+
+  const totalCell = document.getElementById(`cell-total-${id}`);
+  if (totalCell) {
+    totalCell.textContent = (price > 0 || lineTotal > 0) ? formatMoney(lineTotal, state.currency) : '-';
+  }
+
+  // Live update sheet preview cell
+  updateSheetItemCellLive(id, field, item, lineTotal, lineRaw, itemCur);
+
+  // Live update invoice totals
+  updateTotalsDisplayOnly();
+
+  autoSaveCurrentState();
+}
+
+// Update specific cell on sheet preview without full redraw
+function updateSheetItemCellLive(id, field, item, lineTotal, lineRaw, itemCur) {
+  const sheetRow = document.querySelector(`.item-row[data-item-id="${id}"]`);
+  if (!sheetRow) {
+    renderInvoicePreview();
     return;
   }
 
-  state.items.forEach((item, index) => {
-    const card = document.createElement('div');
-    card.className = 'item-editor-card';
-    const itemCur = item.currency || state.currency;
-    card.innerHTML = `
-      <div class="item-card-header">
-        <span>មុខទំនិញ #${index + 1}</span>
-        <button type="button" class="btn btn-sm btn-outline text-red-600" onclick="removeItem(${item.id})" title="លុបចោល">
-          <svg style="width: 14px; height: 14px; fill: currentColor;" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-        </button>
-      </div>
-      <div class="form-group mb-2">
-        <input type="text" class="form-control" placeholder="ឈ្មោះទំនិញ ឬសេវាកម្ម" value="${escapeHtml(item.description)}" oninput="updateItem(${item.id}, 'description', this.value)">
-      </div>
-      <div class="form-group mb-2">
-        <input type="text" class="form-control text-xs" placeholder="បរិយាយលម្អិតបន្ថែម (បើមាន)" value="${escapeHtml(item.details || '')}" oninput="updateItem(${item.id}, 'details', this.value)">
-      </div>
-      <div class="form-row-3">
-        <div>
-          <label class="text-xs">ចំនួន</label>
-          <input type="number" step="any" min="0" class="form-control" value="${item.quantity}" oninput="updateItem(${item.id}, 'quantity', this.value)">
-        </div>
-        <div>
-          <label class="text-xs">តម្លៃ</label>
-          <div style="display: flex; gap: 4px;">
-            <select class="form-control font-bold item-currency-badge-select" style="width: 75px; padding: 4px 6px; flex-shrink: 0;" onchange="updateItemCurrency(${item.id}, this.value)">
-              <option value="USD" ${itemCur === 'USD' ? 'selected' : ''}>$ USD</option>
-              <option value="KHR" ${itemCur === 'KHR' ? 'selected' : ''}>៛ KHR</option>
-            </select>
-            <input type="number" step="any" min="0" class="form-control" value="${item.price}" oninput="updateItem(${item.id}, 'price', this.value)">
-          </div>
-        </div>
-        <div>
-          <label class="text-xs">ចុះតម្លៃ %</label>
-          <input type="number" step="any" min="0" max="100" class="form-control" value="${item.discountPercent || 0}" oninput="updateItem(${item.id}, 'discountPercent', this.value)">
-        </div>
-      </div>
-    `;
-    container.appendChild(card);
-  });
+  if (field === 'description') {
+    const titleEl = sheetRow.querySelector('.item-title-text');
+    if (titleEl && titleEl !== document.activeElement) {
+      titleEl.textContent = item.description;
+    }
+  } else if (field === 'details') {
+    const subEl = sheetRow.querySelector('.item-desc-sub');
+    if (subEl) {
+      if (subEl !== document.activeElement) subEl.textContent = item.details;
+      subEl.style.display = item.details ? 'block' : 'none';
+    }
+  } else if (field === 'quantity') {
+    const qtyEl = sheetRow.querySelector('.item-qty-cell span');
+    if (qtyEl && qtyEl !== document.activeElement) qtyEl.textContent = item.quantity || 0;
+  } else if (field === 'price') {
+    const priceEl = sheetRow.querySelector('.item-price-cell span');
+    if (priceEl && priceEl !== document.activeElement) priceEl.textContent = formatMoney(item.price || 0, itemCur);
+  } else if (field === 'discountPercent') {
+    const discEl = sheetRow.querySelector('.item-disc-cell span');
+    if (discEl && discEl !== document.activeElement) discEl.textContent = item.discountPercent > 0 ? `${item.discountPercent}%` : '-';
+  }
+
+  const sheetTotalEl = sheetRow.querySelector('.item-total-cell');
+  if (sheetTotalEl) {
+    if (item.price > 0 || lineTotal > 0) {
+      sheetTotalEl.innerHTML = `
+        ${formatMoney(lineTotal, state.currency)}
+        ${itemCur !== state.currency ? `<div style="font-size: 0.7rem; color: #64748b; font-weight: normal;">(${formatMoney(lineRaw, itemCur)})</div>` : ''}
+      `;
+    } else {
+      sheetTotalEl.innerHTML = '-';
+    }
+  }
+}
+
+// Update Invoice Totals display numbers without redrawing sheet table
+function updateTotalsDisplayOnly() {
+  const totals = calculateTotals();
+  const subtotalEl = document.getElementById('prev-subtotal');
+  if (subtotalEl) subtotalEl.textContent = formatMoney(totals.subtotal);
+
+  const discRow = document.getElementById('prev-disc-row');
+  if (discRow) {
+    if (totals.discountAmount > 0) {
+      discRow.style.display = 'table-row';
+      const discLabel = state.overallDiscountType === 'percent' 
+        ? `បញ្ចុះតម្លៃ (${state.overallDiscountValue}%)` 
+        : 'បញ្ចុះតម្លៃពិសេស';
+      document.getElementById('prev-disc-lbl').textContent = discLabel;
+      document.getElementById('prev-discount').textContent = `-${formatMoney(totals.discountAmount)}`;
+    } else {
+      discRow.style.display = 'none';
+    }
+  }
+
+  const taxRow = document.getElementById('prev-tax-row');
+  if (taxRow) {
+    if (state.taxRate > 0) {
+      taxRow.style.display = 'table-row';
+      document.getElementById('prev-tax-lbl').textContent = `អាករលើតម្លៃបន្ថែម VAT (${state.taxRate}%)`;
+      document.getElementById('prev-tax').textContent = formatMoney(totals.taxAmount);
+    } else {
+      taxRow.style.display = 'none';
+    }
+  }
+
+  const shipRow = document.getElementById('prev-shipping-row');
+  if (shipRow) {
+    if (totals.shippingFee > 0) {
+      shipRow.style.display = 'table-row';
+      document.getElementById('prev-shipping').textContent = formatMoney(totals.shippingFee);
+    } else {
+      shipRow.style.display = 'none';
+    }
+  }
+
+  const grandEl = document.getElementById('prev-grand-total');
+  if (grandEl) grandEl.textContent = formatMoney(totals.grandTotal);
+
+  const dualRow = document.getElementById('prev-dual-currency-row');
+  if (dualRow) {
+    if (state.showDualCurrency) {
+      dualRow.style.display = 'table-row';
+      const rate = Number(state.exchangeRate) || 4100;
+      const otherCur = state.currency === 'USD' ? 'KHR' : 'USD';
+      const converted = convertCurrency(totals.grandTotal, state.currency, otherCur, rate);
+      document.getElementById('prev-dual-currency').textContent = formatMoney(converted, otherCur);
+      document.getElementById('prev-dual-lbl').textContent = otherCur === 'KHR' ? 'សរុបជាប្រាក់រៀល (KHR)' : 'សរុបជាដុល្លារ (USD)';
+    } else {
+      dualRow.style.display = 'none';
+    }
+  }
+}
+
+// Handle keyboard Enter and Tab in editor table
+function handleTableKey(e, index, field) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    if (index === state.items.length - 1) {
+      addItem();
+    } else {
+      const nextId = state.items[index + 1]?.id;
+      if (nextId) {
+        const nextInput = document.getElementById(`input-${field}-${nextId}`);
+        if (nextInput) nextInput.focus();
+      }
+    }
+  } else if (e.key === 'Tab' && !e.shiftKey && field === 'disc' && index === state.items.length - 1) {
+    e.preventDefault();
+    addItem();
+  }
 }
 
 function escapeHtml(str) {
@@ -1707,59 +1984,73 @@ function escapeHtml(str) {
   return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-// Add New Item
+// Add New Item Row
 function addItem() {
   playUiSound('pop');
   const newItem = {
     id: nextItemId++,
-    description: 'ទំនិញ / សេវាកម្មថ្មី',
+    description: '',
     details: '',
     quantity: 1,
-    price: state.currency === 'USD' ? 10 : 40000,
+    price: 0,
     discountPercent: 0,
     currency: state.currency
   };
   state.items.push(newItem);
-  renderItemEditorCards();
+  renderItemEditorTable();
   renderInvoicePreview();
   autoSaveCurrentState();
+
+  setTimeout(() => {
+    const newDescInput = document.getElementById(`input-desc-${newItem.id}`);
+    if (newDescInput) newDescInput.focus();
+  }, 50);
 }
 
-// Remove Item
+// Remove Item Row (Preserve minimum of 3 rows)
 function removeItem(id) {
   playUiSound('delete');
-  state.items = state.items.filter(i => i.id !== id);
-  renderItemEditorCards();
+  if (state.items.length <= 3) {
+    const item = state.items.find(i => i.id === id);
+    if (item) {
+      item.description = '';
+      item.details = '';
+      item.quantity = 1;
+      item.price = 0;
+      item.discountPercent = 0;
+    }
+    showToast('តារាងត្រូវរក្សាទុកយ៉ាងហោចណាស់ ៣ ជួរដេក (បានកំណត់ជួរនេះឡើងវិញ)', 'info');
+  } else {
+    state.items = state.items.filter(i => i.id !== id);
+  }
+  renderItemEditorTable();
   renderInvoicePreview();
   autoSaveCurrentState();
 }
 
-// Clear All Items (លុបមុខទំនិញទាំងអស់)
+// Clear All Items (Reset to 3 clean blank rows)
 async function clearAllItems() {
-  if (!state.items || state.items.length === 0) {
-    playUiSound('click');
-    showToast('ពុំមានមុខទំនិញក្នុងបញ្ជីឡើយ!', 'info');
-    return;
-  }
-
-  const count = state.items.length;
+  const count = state.items ? state.items.length : 0;
   const confirmed = await showCustomConfirm({
     icon: '🗑️',
-    badgeType: 'danger',
-    isDanger: true,
-    title: 'លុបមុខទំនិញទាំងអស់?',
-    message: `តើលោកអ្នកពិតជាចង់លុបមុខទំនិញទាំងអស់ (${count} មុខ) ចេញពីវិក្កយបត្រនេះមែនទេ?\nសកម្មភាពនេះមិនអាចត្រឡប់វិញបានឡើយ។`,
-    confirmText: 'លុបទាំងអស់',
+    badgeType: 'warning',
+    title: 'ជម្រះតារាងទំនិញ',
+    message: `តើលោកអ្នកចង់ជម្រះមុខទំនិញទាំងអស់ (${count} មុខ) ហើយចាប់ផ្តើមតារាង ៣ ជួរដេកទទេឡើងវិញមែនទេ?`,
+    confirmText: 'ជម្រះទាំងអស់',
     cancelText: 'បោះបង់'
   });
 
   if (confirmed) {
     playUiSound('delete');
-    state.items = [];
-    renderItemEditorCards();
+    state.items = [
+      { id: nextItemId++, description: '', details: '', quantity: 1, price: 0, discountPercent: 0, currency: state.currency },
+      { id: nextItemId++, description: '', details: '', quantity: 1, price: 0, discountPercent: 0, currency: state.currency },
+      { id: nextItemId++, description: '', details: '', quantity: 1, price: 0, discountPercent: 0, currency: state.currency }
+    ];
+    renderItemEditorTable();
     renderInvoicePreview();
     autoSaveCurrentState();
-    showToast(`បានលុបមុខទំនិញទាំងអស់ (${count} មុខ) រួចរាល់!`, 'success');
+    showToast('បានជម្រះ និងកំណត់តារាង ៣ ជួរដេកឡើងវិញរួចរាល់', 'success');
   }
 }
 
@@ -1940,43 +2231,106 @@ function renderInvoicePreview() {
   const tableBody = document.getElementById('prev-items-tbody');
   tableBody.innerHTML = '';
 
-  if (state.items.length === 0) {
+  ensureMinimumItems(3);
+  updatePageFitIndicator();
+
+  const isEditable = !isCustomerViewLink;
+  const rate = Number(state.exchangeRate) || 4100;
+
+  state.items.forEach((item, index) => {
+    const qty = Number(item.quantity) !== undefined ? item.quantity : 1;
+    const price = Number(item.price) !== undefined ? item.price : 0;
+    const disc = Number(item.discountPercent) || 0;
+    const itemCur = item.currency || state.currency;
+    const lineRawTotal = (qty * price) * (1 - disc / 100);
+    const lineConvertedTotal = convertCurrency(lineRawTotal, itemCur, state.currency, rate);
+
+    const hasContent = item.description || price > 0 || lineConvertedTotal > 0;
+
     const tr = document.createElement('tr');
     tr.className = 'item-row';
+    tr.dataset.itemId = item.id;
     tr.innerHTML = `
-      <td colspan="6" style="text-align: center; padding: 1.8rem 1rem; color: #94a3b8; font-style: italic; font-size: 0.85rem;">
-        (ពុំទាន់មានមុខទំនិញក្នុងវិក្កយបត្រនៅឡើយទេ)
+      <td class="item-num">${index + 1}</td>
+      <td class="item-desc-cell">
+        <div class="item-title-text ${isEditable ? 'sheet-editable' : ''}" 
+             ${isEditable ? `contenteditable="true" data-id="${item.id}" data-field="description" placeholder="ឈ្មោះមុខទំនិញ..."` : ''}>${escapeHtml(item.description)}</div>
+        <div class="item-desc-sub ${isEditable ? 'sheet-editable' : ''}" 
+             ${isEditable ? `contenteditable="true" data-id="${item.id}" data-field="details" placeholder="+ បរិយាយបន្ថែម..."` : ''} 
+             style="${(item.details || isEditable) ? '' : 'display: none;'}">${escapeHtml(item.details || '')}</div>
+      </td>
+      <td class="item-qty-cell">
+        <span class="${isEditable ? 'sheet-editable font-num' : 'font-num'}" 
+              ${isEditable ? `contenteditable="true" data-id="${item.id}" data-field="quantity"` : ''}>${hasContent ? qty : (isEditable ? '1' : '')}</span>
+      </td>
+      <td class="item-price-cell">
+        <span class="${isEditable ? 'sheet-editable font-num' : 'font-num'}" 
+              ${isEditable ? `contenteditable="true" data-id="${item.id}" data-field="price"` : ''}>${price > 0 ? formatMoney(price, itemCur) : (hasContent ? formatMoney(0, itemCur) : (isEditable ? '-' : ''))}</span>
+      </td>
+      <td class="item-disc-cell">
+        <span class="${isEditable ? 'sheet-editable font-num' : 'font-num'}" 
+              ${isEditable ? `contenteditable="true" data-id="${item.id}" data-field="discountPercent"` : ''}>${disc > 0 ? `${disc}%` : (hasContent ? '-' : (isEditable ? '-' : ''))}</span>
+      </td>
+      <td class="item-total-cell font-num">
+        ${(price > 0 || lineConvertedTotal > 0) ? formatMoney(lineConvertedTotal, state.currency) : (hasContent ? formatMoney(0, state.currency) : '-')}
+        ${(lineConvertedTotal > 0 && itemCur !== state.currency) ? `<div style="font-size: 0.7rem; color: #64748b; font-weight: normal;">(${formatMoney(lineRawTotal, itemCur)})</div>` : ''}
       </td>
     `;
     tableBody.appendChild(tr);
-  } else {
-    const rate = Number(state.exchangeRate) || 4100;
-    state.items.forEach((item, index) => {
+  });
+
+  // Direct sheet editing event handler
+  if (isEditable) {
+    tableBody.oninput = function(e) {
+      const target = e.target;
+      const id = Number(target.dataset.id);
+      const field = target.dataset.field;
+      if (!id || !field) return;
+
+      const val = target.innerText.trim();
+      const item = state.items.find(i => i.id === id);
+      if (!item) return;
+
+      if (field === 'quantity' || field === 'price' || field === 'discountPercent') {
+        const cleanNum = Number(val.replace(/[^0-9.-]+/g, '')) || 0;
+        item[field] = cleanNum;
+      } else {
+        item[field] = val;
+      }
+
+      // Live update row total
+      const rate = Number(state.exchangeRate) || 4100;
+      const itemCur = item.currency || state.currency;
       const qty = Number(item.quantity) || 0;
       const price = Number(item.price) || 0;
       const disc = Number(item.discountPercent) || 0;
-      const itemCur = item.currency || state.currency;
-      const lineRawTotal = (qty * price) * (1 - disc / 100);
-      const lineConvertedTotal = convertCurrency(lineRawTotal, itemCur, state.currency, rate);
+      const lineRaw = (qty * price) * (1 - disc / 100);
+      const lineTotal = convertCurrency(lineRaw, itemCur, state.currency, rate);
 
-      const tr = document.createElement('tr');
-      tr.className = 'item-row';
-      tr.innerHTML = `
-        <td class="item-num">${index + 1}</td>
-        <td class="item-desc-cell">
-          <div class="item-title-text">${escapeHtml(item.description)}</div>
-          ${item.details ? `<div class="item-desc-sub">${escapeHtml(item.details)}</div>` : ''}
-        </td>
-        <td class="item-qty-cell">${qty}</td>
-        <td class="item-price-cell">${formatMoney(price, itemCur)}</td>
-        <td class="item-disc-cell">${disc > 0 ? `${disc}%` : '-'}</td>
-        <td class="item-total-cell">
-          ${formatMoney(lineConvertedTotal, state.currency)}
-          ${itemCur !== state.currency ? `<div style="font-size: 0.7rem; color: #64748b; font-weight: normal;">(${formatMoney(lineRawTotal, itemCur)})</div>` : ''}
-        </td>
-      `;
-      tableBody.appendChild(tr);
-    });
+      const sheetRow = target.closest('tr');
+      if (sheetRow) {
+        const totalCell = sheetRow.querySelector('.item-total-cell');
+        if (totalCell) {
+          totalCell.innerHTML = (price > 0 || lineTotal > 0) ? formatMoney(lineTotal, state.currency) : '-';
+        }
+      }
+
+      // Update invoice totals display
+      updateTotalsDisplayOnly();
+
+      // Sync editor table input
+      const inputField = field === 'description' ? 'desc' : (field === 'details' ? 'details' : (field === 'quantity' ? 'qty' : (field === 'price' ? 'price' : 'disc')));
+      const editorInput = document.getElementById(`input-${inputField}-${id}`);
+      if (editorInput && editorInput !== document.activeElement) {
+        editorInput.value = item[field];
+      }
+      const editorTotal = document.getElementById(`cell-total-${id}`);
+      if (editorTotal) {
+        editorTotal.textContent = (price > 0 || lineTotal > 0) ? formatMoney(lineTotal, state.currency) : '-';
+      }
+
+      autoSaveCurrentState();
+    };
   }
 
   // Totals Section
@@ -2572,9 +2926,11 @@ async function createNewInvoice() {
     const randomNum = Math.floor(100 + Math.random() * 900);
     state.invoiceNumber = `INV-${new Date().getFullYear()}-${randomNum}`;
     state.items = [
-      { id: 1, description: '', details: '', quantity: 1, price: 0, discountPercent: 0 }
+      { id: 1, description: '', details: '', quantity: 1, price: 0, discountPercent: 0, currency: state.currency },
+      { id: 2, description: '', details: '', quantity: 1, price: 0, discountPercent: 0, currency: state.currency },
+      { id: 3, description: '', details: '', quantity: 1, price: 0, discountPercent: 0, currency: state.currency }
     ];
-    nextItemId = 2;
+    nextItemId = 4;
     renderFormInputs();
     renderInvoicePreview();
     autoSaveCurrentState();

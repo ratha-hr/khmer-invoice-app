@@ -454,26 +454,33 @@
             </div>
           </div>
 
-          <!-- Sticky Add Item Action Bar (Always visible while scrolling item list) -->
+          <!-- Sticky Table Action & Page Fit Status Bar -->
           <div class="items-sticky-bar">
             <div class="items-sticky-info">
-              <span class="items-sticky-title">មុខទំនិញ</span>
-              <span class="items-sticky-counter" id="items-counter-badge">1 មុខ</span>
+              <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                <span class="items-sticky-title">តារាងទំនិញ</span>
+                <span class="items-sticky-counter" id="items-counter-badge">3 មុខ</span>
+                <span id="items-page-fit-indicator" class="page-fit-indicator fit-single" title="ស្ថានភាពទំព័រ">
+                  <svg style="width: 13px; height: 13px; fill: currentColor;" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                  <span id="items-page-fit-text">សមល្មមត្រឹម ១ ទំព័រ A4 (3/10 មុខ)</span>
+                </span>
+              </div>
             </div>
             <div class="items-sticky-actions">
-              <button type="button" class="btn-clear-all-items" onclick="clearAllItems()" title="លុបមុខទំនិញទាំងអស់">
+              <button type="button" class="btn-clear-all-items" onclick="clearAllItems()" title="ជម្រះទាំងអស់ ហើយកំណត់ ៣ ជួរដេកទទេឡើងវិញ">
                 <svg style="width: 14px; height: 14px; fill: currentColor;" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-                <span>លុបទាំងអស់</span>
+                <span>ជម្រះទាំងអស់</span>
               </button>
-              <button type="button" class="btn-add-item-modern" onclick="addItem()" title="បន្ថែមមុខទំនិញថ្មី">
+              <button type="button" class="btn-add-item-modern" onclick="addItem()" title="បន្ថែមជួរដេកទំនិញថ្មី">
                 <svg style="width: 15px; height: 15px; fill: currentColor;" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                <span>បន្ថែមទំនិញថ្មី</span>
+                <span>+ បន្ថែមជួរដេក</span>
               </button>
             </div>
           </div>
 
-          <div id="items-editor-container" class="items-cards-container">
-            <!-- Dynamic item cards will be inserted here -->
+          <!-- Direct Table Input (ការវាយចូលតារាងដោយផ្ទាល់) -->
+          <div id="items-editor-container" class="items-table-container">
+            <!-- Dynamic spreadsheet table inserted here -->
           </div>
         </div>
 
@@ -649,6 +656,13 @@
             <option value="a4" selected>📄 ស្តង់ដា A4 (210×297mm)</option>
             <option value="a5">📑 ស្តង់ដា A5 (148×210mm)</option>
           </select>
+        </div>
+
+        <div id="preview-page-indicator-wrap" class="no-print" style="display: flex; align-items: center;">
+          <span id="preview-page-indicator" class="page-fit-indicator fit-single" style="font-size: 0.72rem; padding: 0.2rem 0.55rem;">
+            <svg style="width: 12px; height: 12px; fill: currentColor;" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+            <span id="preview-page-indicator-text">១ ទំព័រ A4</span>
+          </span>
         </div>
 
         <div style="display: flex; gap: 0.4rem;">

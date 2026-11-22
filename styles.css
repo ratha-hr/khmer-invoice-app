@@ -2077,17 +2077,405 @@ body.paper-mode-a5 @page,
   max-height: 80px !important;
 }
 
+
+/* =========================================================
+   DIRECT TABLE INPUT (ការវាយចូលតារាងដោយផ្ទាល់)
+   ========================================================= */
+.items-table-container {
+  margin-top: 0.5rem;
+}
+
+.items-table-scroll-wrap {
+  width: 100%;
+  overflow-x: auto;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  margin-bottom: 0.75rem;
+}
+
+.items-editor-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  min-width: 560px;
+}
+
+.items-editor-table thead th {
+  background: var(--card-sub-bg);
+  color: var(--text-muted);
+  font-weight: 700;
+  font-size: 0.76rem;
+  padding: 0.55rem 0.5rem;
+  border-bottom: 1.5px solid var(--border-color);
+  white-space: nowrap;
+}
+
+.items-editor-table tbody tr.editor-row {
+  border-bottom: 1px solid var(--border-light);
+  transition: background-color 0.15s ease;
+}
+
+.items-editor-table tbody tr.editor-row:hover {
+  background-color: var(--primary-light);
+}
+
+.items-editor-table tbody td {
+  padding: 0.35rem 0.45rem;
+  vertical-align: top;
+}
+
+.items-editor-table .row-num {
+  font-weight: 700;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  padding-top: 0.65rem;
+}
+
+/* Direct Table Cell Inputs */
+.table-cell-input {
+  width: 100%;
+  background: var(--input-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-main);
+  padding: 0.4rem 0.5rem;
+  font-size: 0.82rem;
+  font-family: inherit;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+}
+
+.table-cell-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+  background: var(--card-bg);
+}
+
+.table-cell-input.input-desc {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.table-cell-input.input-details {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+}
+
+.table-cell-input.input-details:focus {
+  color: var(--text-main);
+}
+
+/* Price Wrap with Currency Symbol */
+.cell-price-inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.cell-cur-symbol {
+  position: absolute;
+  left: 0.45rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.cell-price-inner .table-cell-input.input-price {
+  padding-left: 1.25rem;
+}
+
+.cell-total {
+  font-weight: 700;
+  color: var(--text-main);
+  padding-top: 0.65rem !important;
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+/* Row Action Delete Button */
+.btn-row-del {
+  background: none;
+  border: 1px solid transparent;
+  color: #ef4444;
+  padding: 0.35rem 0.4rem;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.25rem;
+  transition: all 0.15s ease;
+}
+
+.btn-row-del:hover {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: #dc2626;
+  transform: scale(1.05);
+}
+
+/* Table Bottom Bar */
+.items-table-bottom-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+}
+
+.btn-add-row-quick {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: var(--card-sub-bg);
+  border: 1.5px dashed var(--border-color);
+  color: var(--primary-color);
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-add-row-quick:hover {
+  background: var(--primary-light);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  transform: translateY(-1px);
+}
+
+.table-shortcut-tip {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.table-shortcut-tip kbd {
+  background: var(--card-sub-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 0.1rem 0.35rem;
+  font-size: 0.7rem;
+  font-family: inherit;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Page Fit Indicators */
+.page-fit-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.22rem 0.6rem;
+  border-radius: 20px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.page-fit-indicator.fit-single {
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.page-fit-indicator.fit-multi {
+  background: #eff6ff;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
+}
+
+/* Direct Editable Preview Table Cells (In-Place Invoice Sheet Editing) */
+.sheet-editable {
+  outline: none;
+  cursor: text;
+  border-radius: 3px;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+  min-height: 1.1em;
+  display: inline-block;
+  padding: 1px 2px;
+}
+
+.sheet-editable:hover {
+  background-color: rgba(59, 130, 246, 0.08);
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.25);
+}
+
+.sheet-editable:focus {
+  background-color: #ffffff;
+  box-shadow: 0 0 0 2px #3b82f6;
+  color: #0f172a;
+}
+
+/* Fit Single Page Mode (When items <= 10) */
+.invoice-sheet.fit-single-page {
+  padding: 0.95cm 1.15cm;
+}
+
+.invoice-sheet.fit-single-page .inv-header {
+  margin-bottom: 0.55rem;
+  padding-bottom: 0.4rem;
+}
+
+.invoice-sheet.fit-single-page .inv-logo-img {
+  max-height: 48px;
+  max-width: 60px;
+}
+
+.invoice-sheet.fit-single-page .shop-name {
+  font-size: 1.15rem;
+  margin-bottom: 0.15rem;
+}
+
+.invoice-sheet.fit-single-page .khmer-kbach-divider {
+  margin: 0.2rem 0 0.35rem 0;
+}
+
+.invoice-sheet.fit-single-page .inv-meta-grid {
+  margin-bottom: 0.45rem;
+  padding: 0.38rem 0.55rem;
+  gap: 0.55rem;
+}
+
+.invoice-sheet.fit-single-page .meta-card {
+  padding: 0.3rem 0.45rem;
+}
+
+.invoice-sheet.fit-single-page .inv-table-wrapper {
+  margin-bottom: 0.45rem;
+}
+
+.invoice-sheet.fit-single-page .inv-table {
+  font-size: 0.76rem;
+}
+
+.invoice-sheet.fit-single-page .inv-table thead th {
+  padding: 0.35rem 0.4rem;
+  font-size: 0.73rem;
+}
+
+.invoice-sheet.fit-single-page .inv-table td {
+  padding: 0.18rem 0.32rem;
+  font-size: 0.73rem;
+}
+
+.invoice-sheet.fit-single-page .item-desc-cell .item-title-text {
+  font-size: 0.75rem;
+  line-height: 1.22;
+}
+
+.invoice-sheet.fit-single-page .item-desc-cell .item-desc-sub {
+  font-size: 0.65rem;
+  margin-top: 1px;
+}
+
+.invoice-sheet.fit-single-page .inv-summary-section {
+  margin-bottom: 0.45rem;
+  gap: 0.65rem;
+}
+
+.invoice-sheet.fit-single-page .inv-payment-method-box {
+  padding: 0.4rem 0.55rem;
+  gap: 0.55rem;
+}
+
+.invoice-sheet.fit-single-page .qr-code-img,
+.invoice-sheet.fit-single-page .qr-code-canvas-wrap canvas {
+  max-width: 65px !important;
+  max-height: 65px !important;
+}
+
+.invoice-sheet.fit-single-page .totals-table td {
+  padding: 0.18rem 0.32rem;
+  font-size: 0.73rem;
+}
+
+.invoice-sheet.fit-single-page .inv-notes-box {
+  margin-bottom: 0.35rem;
+  padding: 0.3rem 0.45rem;
+  font-size: 0.67rem;
+}
+
+.invoice-sheet.fit-single-page .inv-signatures-row {
+  margin-top: 0.25rem;
+  padding-top: 0.2rem;
+}
+
+.invoice-sheet.fit-single-page .signature-line-space {
+  height: 35px;
+}
+
+/* Dark mode for table */
+body.dark-mode .items-table-scroll-wrap {
+  background: #0b1120;
+  border-color: #1e293b;
+}
+body.dark-mode .items-editor-table thead th {
+  background: #131b2e;
+  border-bottom-color: #1e293b;
+  color: #94a3b8;
+}
+body.dark-mode .items-editor-table tbody tr.editor-row {
+  border-bottom-color: #1e293b;
+}
+body.dark-mode .items-editor-table tbody tr.editor-row:hover {
+  background-color: rgba(59, 130, 246, 0.1);
+}
+body.dark-mode .table-cell-input {
+  background: #0b1120;
+  border-color: #334155;
+  color: #f8fafc;
+}
+body.dark-mode .table-cell-input:focus {
+  background: #131b2e;
+  border-color: #3b82f6;
+}
+body.dark-mode .btn-add-row-quick {
+  background: #0b1120;
+  border-color: #334155;
+  color: #60a5fa;
+}
+body.dark-mode .btn-add-row-quick:hover {
+  background: #131b2e;
+  border-color: #60a5fa;
+}
+body.dark-mode .page-fit-indicator.fit-single {
+  background: rgba(6, 95, 70, 0.25);
+  color: #6ee7b7;
+  border-color: rgba(110, 231, 183, 0.3);
+}
+body.dark-mode .page-fit-indicator.fit-multi {
+  background: rgba(30, 64, 175, 0.25);
+  color: #93c5fd;
+  border-color: rgba(147, 197, 253, 0.3);
+}
+
+/* =========================================================
+   PRINT ENGINE (10 ITEMS -> 1 PAGE FIT, >10 ITEMS -> NATURAL MARGIN)
+   ========================================================= */
 @media print {
   html, body {
     background: #ffffff !important;
     color: #000000 !important;
     width: 100% !important;
-    height: auto !important;
-    min-height: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
     font-size: 10pt !important;
-    overflow: visible !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   /* Force hide all non-print interface elements */
@@ -2107,7 +2495,16 @@ body.paper-mode-a5 @page,
     padding: 0 !important;
   }
 
-  /* OVERRIDE ANY MOBILE MODE: Preview panel MUST always be visible */
+  /* Reset editable styling in print */
+  .sheet-editable {
+    outline: none !important;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  /* Viewport & preview wrapper */
   body.mobile-mode-editor .preview-panel,
   body.mobile-mode-preview .preview-panel,
   .workspace-container,
@@ -2120,42 +2517,14 @@ body.paper-mode-a5 @page,
     max-width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
-    height: auto !important;
-    min-height: 0 !important;
     overflow: visible !important;
     position: static !important;
-  }
-
-  .invoice-sheet {
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: space-between !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    min-height: 0 !important;
-    height: auto !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    box-shadow: none !important;
-    border: none !important;
-    border-radius: 0 !important;
-    transform: none !important;
-    overflow: visible !important;
-    page-break-after: avoid !important;
-    break-after: avoid !important;
   }
 
   .invoice-top-accent {
     position: relative !important;
     height: 4px !important;
-    margin-bottom: 8px !important;
-  }
-
-  * {
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
+    margin-bottom: 6px !important;
   }
 
   .inv-table thead th {
@@ -2163,12 +2532,84 @@ body.paper-mode-a5 @page,
     color: #ffffff !important;
   }
 
-  tr, .item-row {
+  /* ---------------------------------------------------------
+     CASE 1: UP TO 10 ITEMS -> STRICT 1-PAGE FIT
+     --------------------------------------------------------- */
+  body.single-page-fit {
+    height: 100% !important;
+    max-height: 100vh !important;
+    overflow: hidden !important;
+  }
+
+  body.single-page-fit .invoice-sheet.fit-single-page {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: 272mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    transform: none !important;
+    overflow: hidden !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
 
-  .inv-summary-section, .inv-signatures-row {
+  /* ---------------------------------------------------------
+     CASE 2: OVER 10 ITEMS -> NATURAL MARGIN MULTI-PAGE FLOW
+     --------------------------------------------------------- */
+  body.multi-page-print {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  body.multi-page-print .invoice-sheet.multi-page-mode {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    transform: none !important;
+    overflow: visible !important;
+    page-break-after: auto !important;
+    break-after: auto !important;
+  }
+
+  body.multi-page-print .inv-table {
+    page-break-inside: auto !important;
+    break-inside: auto !important;
+    width: 100% !important;
+  }
+
+  body.multi-page-print .inv-table thead {
+    display: table-header-group !important;
+  }
+
+  body.multi-page-print .inv-table tr.item-row {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  body.multi-page-print .inv-summary-section,
+  body.multi-page-print .inv-signatures-row,
+  body.multi-page-print .inv-notes-box {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
