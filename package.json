@@ -1,0 +1,12 @@
+{
+  "name": "khmer-invoice-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "កម្មវិធីបង្កើតវិក្កយបត្រស្តង់ដា A4 / A5 - RATHA Stationery",
+  "scripts": {
+    "start": "node local-server.js"
+  },
+  "dependencies": {
+    "@vercel/blob": "^0.27.0"
+  }
+}
