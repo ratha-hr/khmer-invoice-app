@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>កម្មវិធីបង្កើតវិក្កយបត្រស្តង់ដា A4 / A5 - RATHA Stationery</title>
+  
+  <!-- Google Fonts (With offline fallback fonts built-in) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&family=Dangrek&family=Fasthand&family=Hanuman:wght@400;700&family=Inter:wght@400;500;600;700;800&family=Kantumruy+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Koh+Santepheap:wght@400;700;800&family=Moul&family=Nokora:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Preahvihear&family=Siemreap&display=swap" rel="stylesheet">
+  
+  <!-- App Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="theme-royal font-kantumruy mobile-mode-editor">
+
+  <!-- Customer-Only Action Bar (Only shown to customers viewing shared invoice) -->
+  <header id="customer-top-bar" class="customer-top-bar no-print" style="display: none;">
+    <div class="customer-bar-left">
+      <div class="brand-logo-icon">
+        <svg style="width: 18px; height: 18px; fill: currentColor;" viewBox="0 0 24 24">
+          <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+        </svg>
+      </div>
+      <div>
+        <div class="customer-bar-title" id="cust-bar-shop">RATHA Stationery</div>
+        <div class="customer-bar-sub">វិក្កយបត្រផ្លូវការ • ស្កេន KHQR ដើម្បីទូទាត់ប្រាក់</div>
+      </div>
+    </div>
+    <div class="customer-bar-right" style="display: flex; gap: 0.45rem; align-items: center;">
+      <!-- Paper Size selector for customer -->
+      <select id="cust-paper-size-select" class="form-control" style="width: auto; padding: 0.4rem 0.6rem; font-size: 0.78rem; font-weight: 700; border-radius: 8px;" onchange="setPaperSize(this.value)">
+        <option value="a4" selected>ក្រដាស A4</option>
+        <option value="a5">ក្រដាស A5</option>
+      </select>
+      <button type="button" class="btn btn-primary btn-customer-print" onclick="printInvoice()">
+        <svg style="width: 15px; height: 15px; fill: currentColor;" viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
+        <span id="cust-print-btn-text">បោះពុម្ព / សន្សំ PDF</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Top Navigation Bar (Shown only in Admin/Owner mode, hidden for customer) -->
+  <header class="navbar no-print">
+    <div class="brand-badge">
+      <div class="brand-logo-icon">
+        <svg style="width: 20px; height: 20px; fill: currentColor;" viewBox="0 0 24 24">
+          <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="brand-title">វិក្កយបត្រស្តង់ដា A4</h1>
+        <div class="brand-sub">KHQR • ហ៊ុន រដ្ឋា (HUN RATHA)</div>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <!-- Theme Mode Toggle: System / Light / Dark -->
+      <div class="theme-mode-toggle" title="ប្តូរផ្ទៃបង្ហាញ តាម System / ភ្លឺ / ងងឹត">
+        <button type="button" class="theme-toggle-btn active" data-mode="system" onclick="setThemeMode('system')">
+          <svg style="width: 13px; height: 13px; fill: currentColor;" viewBox="0 0 24 24"><path d="M20 18c1.1 0 1.99-.9 1.99-2L22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z"/></svg>
+          <span>System</span>
+        </button>
+        <button type="button" class="theme-toggle-btn" data-mode="light" onclick="setThemeMode('light')">
+          <svg style="width: 13px; height: 13px; fill: #d97706;" viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41s-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41s-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/></svg>
+          <span>ភ្លឺ</span>
+        </button>
+        <button type="button" class="theme-toggle-btn" data-mode="dark" onclick="setThemeMode('dark')">
+          <svg style="width: 13px; height: 13px; fill: #6366f1;" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg>
+          <span>ងងឹត</span>
+        </button>
+      </div>
+
+      <!-- Sound FX Toggle: 🔊 / 🔇 -->
+      <button type="button" class="theme-toggle-btn" id="btn-sound-toggle" onclick="toggleSoundEffects()" title="បើក/បិទ សម្លេងចុច (Sound Effects)" style="margin-right: 0.25rem;">
+        <span id="sound-toggle-icon" style="font-size: 13px;">🔊</span>
+        <span id="sound-toggle-label">សម្លេង</span>
+      </button>
+
+      <!-- Owner Actions (Visible only when Master PIN unlocked) -->
+      <div id="owner-navbar-actions" style="display: flex; gap: 0.45rem; align-items: center;">
+        <!-- New Invoice -->
+        <button type="button" class="btn btn-outline" onclick="createNewInvoice()" title="បង្កើតវិក្កយបត្រថ្មី">
+          <svg style="width: 14px; height: 14px; fill: currentColor;" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+          <span>ថ្មី</span>
+        </button>
+
+        <!-- Save Invoice -->
+        <button type="button" class="btn btn-outline" id="btn-nav-save" onclick="saveCurrentInvoiceToHistory()" title="រក្សាទុកក្នុងប្រវត្តិ">
+          <svg style="width: 14px; height: 14px; fill: #2563eb;" viewBox="0 0 24 24"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm2 16H5V5h11.17L19 7.83V19zm-7-7c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3zM6 6h9v4H6z"/></svg>
+          <span id="btn-save-text">រក្សាទុក</span>
+        </button>
+
+        <!-- Saved Invoices History -->
+        <button type="button" class="btn btn-outline" onclick="openModal('saved-modal'); renderSavedInvoicesModal(); syncSavedInvoicesWithCloud(false);" title="ពិនិត្យ និងកែតម្រូវវិក្កយបត្រចាស់">
+          <svg style="width: 14px; height: 14px; fill: currentColor;" viewBox="0 0 24 24"><path d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0 0 13 21a9 9 0 0 0 0-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
+          <span>ប្រវត្តិ</span>
+        </button>
+
+        <!-- Share Invoice Link -->
+        <button type="button" class="btn btn-outline" onclick="shareInvoice()" title="ចែករំលែកតំណទៅកាន់អតិថិជន">
+          <svg style="width: 14px; height: 14px; fill: #0284c7;" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg>
+          <span>ចែករំលែក</span>
+        </button>
+
+        <!-- Change PIN -->
+        <button type="button" class="btn btn-outline" onclick="openChangePinModal()" title="ប្តូរលេខកូដ PIN សម្ងាត់">
+          <svg style="width: 14px; height: 14px; fill: #d97706;" viewBox="0 0 24 24"><path d="M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
+          <span>PIN</span>
+        </button>
+
+        <!-- Change Admin Avatar (After login only) -->
+        <button type="button" class="btn btn-outline" onclick="triggerAdminAvatarUpload()" title="ប្តូររូបភាព Admin">
+          <img src="ratha_avatar.jpg" class="admin-avatar-img" style="width: 15px; height: 15px; border-radius: 50%; object-fit: cover; border: 1.5px solid var(--primary-color); vertical-align: middle;" alt="Admin">
+          <span>ប្តូររូប Admin</span>
+        </button>
+
+        <!-- Lock Access -->
+        <button type="button" class="btn btn-outline text-red-600" onclick="lockOwnerAccess()" title="ចាក់សោសុវត្ថិភាព">
+          <svg style="width: 14px; height: 14px; fill: currentColor;" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+          <span>ចាក់សោ</span>
+        </button>
+      </div>
+
+      <!-- Customer / Locked Actions (Visible when locked or viewing shared link) -->
+      <div id="customer-navbar-actions" style="display: none; gap: 0.45rem; align-items: center;">
+        <button type="button" class="btn btn-outline" onclick="openOwnerLoginModal()" title="ចូលគ្រប់គ្រង (Admin Login)">
+          <svg style="width: 14px; height: 14px; fill: #2563eb;" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+          <span>🔐 ចូលគ្រប់គ្រង</span>
+        </button>
+      </div>
+
+      <!-- Print / PDF Guide -->
+      <button type="button" class="btn btn-outline" onclick="openModal('print-help-modal')" title="ជំនួយបោះពុម្ព A4 & PDF">
+        <svg style="width: 14px; height: 14px; fill: #0d9488;" viewBox="0 0 24 24"><path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"/></svg>
+        <span>ជំនួយ</span>
+      </button>
+
+      <!-- Big Print / Save PDF Button -->
+      <button type="button" class="btn btn-primary" onclick="printInvoice()">
+        <svg style="width: 15px; height: 15px; fill: currentColor;" viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
+        <span>បោះពុម្ព / សន្សំ PDF (A4)</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Segmented View Switcher (Visible on Phones & Tablets) -->
+  <div class="mobile-view-tabs no-print">
+    <div class="segment-container">
+      <button type="button" class="segment-btn active" id="seg-btn-editor" onclick="setMobileView('editor')">
+        <svg style="width: 14px; height: 14px; fill: currentColor;" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+        <span>កែសម្រួលទិន្នន័យ (Editor)</span>
+      </button>
+      <button type="button" class="segment-btn" id="seg-btn-preview" onclick="setMobileView('preview')">
+        <svg style="width: 14px; height: 14px; fill: currentColor;" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+        <span>មើលវិក្កយបត្រ (Preview A4)</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Split-Screen Workspace -->
+  <main class="workspace-container">
+    
+    <!-- Left Side: Controls & Editor Form (Hidden in Print) -->
+    <aside class="editor-panel no-print">
+
+      <!-- Active Invoice Correction Banner (Shown when editing a saved invoice) -->
+      <div id="correction-mode-banner" class="correction-banner" style="display: none;">
+        <div class="correction-banner-info">
+          <span class="correction-badge">✏️ កំពុងកែតម្រូវ</span>
+          <span class="correction-title" id="correction-inv-title">INV-2026-001</span>
+        </div>
+        <div class="correction-banner-btns">
+          <button type="button" class="btn btn-sm btn-primary" onclick="updateCurrentEditingInvoice()" title="រក្សាទុកការកែតម្រូវលើវិក្កយបត្រនេះ">
+            💾 រក្សាទុកការកែប្រែ
+          </button>
+          <button type="button" class="btn btn-sm btn-outline text-red-600" onclick="cancelCorrectionMode()" title="បោះបង់ការកែប្រែ">
+            ✖
+          </button>
+        </div>
+      </div>
+
+      <!-- Editor Navigation Tabs -->
+      <div class="editor-tabs">
+        <button type="button" class="tab-btn active" data-tab="tab-meta" onclick="switchEditorTab('tab-meta')">
+          <span>ទូទៅ</span>
+        </button>
+        <button type="button" class="tab-btn" data-tab="tab-seller" onclick="switchEditorTab('tab-seller')">
+          <span>អ្នកលក់</span>
+        </button>
+        <button type="button" class="tab-btn" data-tab="tab-client" onclick="switchEditorTab('tab-client')">
+          <span>អតិថិជន</span>
+        </button>
+        <button type="button" class="tab-btn" data-tab="tab-items" onclick="switchEditorTab('tab-items')">
+          <span>ទំនិញ</span>
+        </button>
+        <button type="button" class="tab-btn" data-tab="tab-payment" onclick="switchEditorTab('tab-payment')">
+          <span>ទូទាត់ & ធនាគារ</span>
+        </button>
+        <button type="button" class="tab-btn" data-tab="tab-notes" onclick="switchEditorTab('tab-notes')">
+          <span>លក្ខខណ្ឌ</span>
+        </button>
+      </div>
+
+      <!-- Editor Content Panes -->
+      <div class="editor-content">
+
+        <!-- TAB 1: General & Metadata -->
+        <div class="editor-tab-pane active" id="tab-meta">
+          <div class="form-section-title">
+            <span>កំណត់ទូទៅ & លេខវិក្កយបត្រ</span>
+          </div>
+
+          <!-- Equal 2-Column Row 1: Invoice Type & Invoice Number -->
+          <div class="form-row">
+            <div class="form-group">
+              <label>ទម្រង់វិក្កយបត្រ</label>
+              <select class="form-control" id="input-invoice-type">
+                <option value="general">វិក្កយបត្រទូទៅ (Commercial Invoice)</option>
+                <option value="tax">វិក្កយបត្រពន្ធផ្លូវការ (Tax Invoice - អតប)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>លេខវិក្កយបត្រ <span class="required">*</span></label>
+              <input type="text" class="form-control font-bold" id="input-invoice-num" placeholder="INV-2026-001">
+            </div>
+          </div>
+
+          <!-- Equal 2-Column Row 2: PO Reference & Payment Status -->
+          <div class="form-row">
+            <div class="form-group">
+              <label>លេខយោង (P.O.)</label>
+              <input type="text" class="form-control" id="input-po-number" placeholder="PO-9921">
+            </div>
+            <div class="form-group">
+              <label>ស្ថានភាពទូទាត់</label>
+              <select class="form-control font-bold" id="input-invoice-status" onchange="setInvoiceStatus(this.value)">
+                <option value="unpaid">⏳ មិនទាន់ទូទាត់ (Pending / Due)</option>
+                <option value="paid">✅ បានទូទាត់រួច (Paid)</option>
+                <option value="partial">⚡ បានទូទាត់ខ្លះ (Partial)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Equal 2-Column Row 3: Issue Date Label & Date -->
+          <div class="form-row">
+            <div class="form-group">
+              <label>ចំណងជើងថ្ងៃទី១</label>
+              <input type="text" class="form-control" id="input-issue-date-label" value="កាលបរិច្ឆេទចេញ (Issue)">
+            </div>
+            <div class="form-group">
+              <label>កាលបរិច្ឆេទចេញ</label>
+              <div class="date-input-combo">
+                <input type="text" class="form-control font-bold" id="input-issue-date" placeholder="ឧ. 06/10/2026 ឬ ០៦ តុលា ២០២៦">
+                <input type="date" id="picker-issue-date" class="date-picker-native" onchange="applyPickerDate('picker-issue-date', 'input-issue-date')">
+                <button type="button" class="date-picker-trigger-btn" onclick="triggerPicker('picker-issue-date')" title="ជ្រើសរើសពីប្រតិទិន">📅</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Equal 2-Column Row 4: Due Date Label & Date -->
+          <div class="form-row">
+            <div class="form-group">
+              <label>ចំណងជើងថ្ងៃទី២</label>
+              <input type="text" class="form-control" id="input-due-date-label" value="កាលបរិច្ឆេទចូល (Due)">
+            </div>
+            <div class="form-group">
+              <label>ថ្ងៃផុតកំណត់</label>
+              <div class="date-input-combo">
+                <input type="text" class="form-control font-bold" id="input-due-date" placeholder="ឧ. 13/10/2026 ឬ ទុកទទេ">
+                <input type="date" id="picker-due-date" class="date-picker-native" onchange="applyPickerDate('picker-due-date', 'input-due-date')">
+                <button type="button" class="date-picker-trigger-btn" onclick="triggerPicker('picker-due-date')" title="ជ្រើសរើសពីប្រតិទិន">📅</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section-title mt-4">
+            <span>ពុម្ពអក្សរ និងពណ៌</span>
+          </div>
+
+          <!-- Equal 2-Column Row 5: Typography & Color Theme -->
+          <div class="form-row">
+            <div class="form-group">
+              <label>ពុម្ពអក្សរ</label>
+              <select class="form-control font-bold" id="input-font-family" onchange="setFontFamily(this.value)">
+                <option value="kantumruy">✨ Kantumruy Pro (ទាន់សម័យ & និយមបំផុត)</option>
+                <option value="battambang">📜 Battambang (បាត់ដំបង - ស្តង់ដា អក្សរមូល)</option>
+                <option value="koh_santepheap">💎 Koh Santepheap (កោះសន្តិភាព - ជ្រុង Modern)</option>
+                <option value="siemreap">🌿 Siemreap (សៀមរាប - ផ្លូវការ & ស្រាលស្រទន់)</option>
+                <option value="moul">👑 Moul Light (អក្សរមូលខ្មែរ - ថ្លៃថ្នូរប្រណីត)</option>
+                <option value="dangrek">⛰️ Dangrek (ដងរែក - រឹងមាំ & ទាក់ទាញ)</option>
+                <option value="preahvihear">⛩️ Preahvihear (ព្រះវិហារ - ប្លែក & ស្រស់ស្អាត)</option>
+                <option value="hanuman">📰 Hanuman (ហនុមាន - បែបសារព័ត៌មាន & ឯកសារ)</option>
+                <option value="nokora">🏙️ Nokora (នគរា - ទំនើប & ច្បាស់លាស់)</option>
+                <option value="fasthand">✍️ Fasthand (ដៃរហ័ស - បែបសិល្បៈ & ហត្ថលេខា)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>ពណ៌ចម្បង</label>
+              <select class="form-control font-bold" id="input-color-theme" onchange="setColorTheme(this.value)">
+                <option value="khmer-modern" selected>🔷 ពណ៌ខៀវដិតសុទ្ធ (Solid Classic Navy) - ស្តង់ដា</option>
+                <option value="royal">🔵 ពណ៌ខៀវ Royal Blue សុទ្ធ (Solid Royal Blue)</option>
+                <option value="slate-titanium">🖤 ពណ៌ខ្មៅសុទ្ធ (Solid Pure Black) - បែបផ្លូវការ</option>
+                <option value="emerald">🟢 ពណ៌បៃតងចាស់សុទ្ធ (Solid Forest Green)</option>
+                <option value="ruby">🔴 ពណ៌ក្រហមដិតសុទ្ធ (Solid Crimson Red)</option>
+                <option value="indigo">🟣 ពណ៌ស្វាយដិតសុទ្ធ (Solid Royal Indigo)</option>
+                <option value="gold">🟤 ពណ៌ត្នោតមាសសុទ្ធ (Solid Warm Bronze / Amber)</option>
+                <option value="sapphire-cyan">💎 ពណ៌ផ្ទៃមេឃដិតសុទ្ធ (Solid Sapphire Cyan)</option>
+                <option value="forest-pine">🌲 ពណ៌បៃតងព្រៃស្រស់សុទ្ធ (Solid Pine Green)</option>
+                <option value="rose-gold">🍷 ពណ៌ក្រហមឈាមជ្រូកសុទ្ធ (Solid Wine Maroon)</option>
+                <option value="amber-sunset">🟠 ពណ៌ទឹកក្រូចដិតសុទ្ធ (Solid Amber Orange)</option>
+                <option value="monochrome-minimal">🩶 ពណ៌ប្រផេះដិតសុទ្ធ (Solid Slate Charcoal)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: Seller Information -->
+        <div class="editor-tab-pane" id="tab-seller">
+          <div class="form-section-title">
+            <span>ព័ត៌មានហាង & អ្នកលក់</span>
+          </div>
+
+          <!-- Admin Avatar Card (Visible inside dashboard after login) -->
+          <div class="form-group" style="background: var(--card-sub-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.65rem 0.85rem; margin-bottom: 0.85rem;">
+            <label style="font-weight: 600; margin-bottom: 0.35rem;">រូបភាព Admin (Admin Avatar)៖</label>
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;">
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <img src="ratha_avatar.jpg" class="admin-avatar-img" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-color);" alt="Admin Avatar">
+                <span class="text-xs text-slate-400">រូបភាពម្ចាស់ហាង ហ៊ុន រដ្ឋា</span>
+              </div>
+              <div style="display: flex; gap: 0.4rem;">
+                <button type="button" class="btn btn-sm btn-outline" onclick="triggerAdminAvatarUpload()" title="ជ្រើសរើសរូបភាពថ្មី">
+                  📷 ប្តូររូប
+                </button>
+                <button type="button" class="btn btn-sm btn-outline text-red-600" id="btn-reset-avatar-seller" onclick="resetAdminAvatar()" title="កំណត់រូបដើមឡើងវិញ" style="display: none;">
+                  🔄 រូបដើម
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Logo Upload Box -->
+          <div class="form-group">
+            <label>ឡូហ្គោហាង (បើមាន)</label>
+            <div class="file-upload-box">
+              <input type="file" id="seller-logo-file" accept="image/*">
+              <img id="seller-logo-thumb" class="upload-thumb" style="display: none;" alt="Company Logo">
+              <div class="text-xs text-slate-500 mt-1">
+                ចុចទីនេះ ឬទម្លាក់រូបភាពដើម្បីប្តូរឡូហ្គោ
+              </div>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline text-red-600 mt-1" onclick="removeLogo()">
+              លុបឡូហ្គោចេញ
+            </button>
+          </div>
+
+          <!-- Shop Name (ឈ្មោះហាង) -->
+          <div class="form-group">
+            <label>ឈ្មោះហាង / អាជីវកម្ម <span class="required">*</span></label>
+            <input type="text" class="form-control font-bold" style="font-size: 1rem; color: var(--primary-color);" id="input-shop-name" value="RATHA Stationery" placeholder="ឧ. RATHA Stationery">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>ឈ្មោះអ្នកលក់ <span class="required">*</span></label>
+              <input type="text" class="form-control font-bold" id="input-seller-name-kh" value="ហ៊ុន រដ្ឋា">
+            </div>
+            <div class="form-group">
+              <label>ឈ្មោះជាអង់គ្លេស</label>
+              <input type="text" class="form-control" id="input-seller-name-en" value="HUN RATHA">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>លេខ VAT TIN (បើមាន)</label>
+            <input type="text" class="form-control" id="input-seller-vat" placeholder="K001-902345678">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>លេខទូរស័ព្ទហាង <span class="required">*</span></label>
+              <input type="text" class="form-control font-bold" id="input-seller-phone" value="089 20 998 / 093 486 987">
+            </div>
+            <div class="form-group">
+              <label>Email / Telegram</label>
+              <input type="text" class="form-control" id="input-seller-email" placeholder="Facebook / Telegram">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>អាសយដ្ឋានហាង</label>
+            <textarea class="form-control" id="input-seller-address">សាលាលេខប្រាំ អូរឫស្សី កំពង់ត្រឡាច កំពង់ឆ្នាំង</textarea>
+          </div>
+        </div>
+
+        <!-- TAB 3: Client / Customer Information -->
+        <div class="editor-tab-pane" id="tab-client">
+          <div class="form-section-title">
+            <span>ព័ត៌មានអតិថិជន</span>
+          </div>
+
+          <div class="form-group">
+            <label>ឈ្មោះអតិថិជន <span class="required">*</span></label>
+            <input type="text" class="form-control font-bold" id="input-client-name" value="លោក នី ម៉ៅ" placeholder="ឈ្មោះលោក / លោកស្រី">
+          </div>
+
+          <div class="form-group">
+            <label>ឈ្មោះក្រុមហ៊ុន (បើមាន)</label>
+            <input type="text" class="form-control font-bold" id="input-client-company" value="វិទ្យាល័យហ៊ុនសែនកំពង់ត្រឡាច" placeholder="ឈ្មោះក្រុមហ៊ុនអតិថិជន">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>លេខទូរស័ព្ទ</label>
+              <input type="text" class="form-control" id="input-client-phone" placeholder="092 ...">
+            </div>
+            <div class="form-group">
+              <label>អ៊ីមែល</label>
+              <input type="text" class="form-control" id="input-client-email" placeholder="client@example.com">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>អាសយដ្ឋានអតិថិជន</label>
+            <textarea class="form-control" id="input-client-address">សាលាលេខប្រាំ អូរឫស្សី កំពង់ត្រឡាច កំពង់ឆ្នាំង</textarea>
+          </div>
+        </div>
+
+        <!-- TAB 4: Items & Services -->
+        <div class="editor-tab-pane" id="tab-items">
+
+          <!-- Currency & Exchange Rate Bar in Items Tab (Moved from Tab 1 per user request) -->
+          <div class="items-currency-control-card">
+            <div class="form-row">
+              <div class="form-group mb-1">
+                <label class="text-xs font-bold">រូបិយប័ណ្ណ <span class="required">*</span></label>
+                <select class="form-control font-bold" id="input-currency" onchange="changeGlobalCurrency(this.value)">
+                  <option value="USD">💵 ដុល្លារអាមេរិក (USD $)</option>
+                  <option value="KHR">៛ រៀលខ្មែរ (KHR ៛)</option>
+                </select>
+              </div>
+              <div class="form-group mb-1">
+                <label class="text-xs font-bold">អត្រាប្តូរ ($1 = ? ៛)</label>
+                <input type="number" class="form-control font-bold" id="input-exchange-rate" value="4100" oninput="changeExchangeRate(this.value)">
+              </div>
+            </div>
+            <div class="mt-2">
+              <label style="cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--text-muted);">
+                <input type="checkbox" id="input-dual-currency" checked style="width: 16px; height: 16px;">
+                <span>បង្ហាញតម្លៃប្តូរ (Dual Currency)</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Sticky Add Item Action Bar (Always visible while scrolling item list) -->
+          <div class="items-sticky-bar">
+            <div class="items-sticky-info">
+              <span class="items-sticky-title">មុខទំនិញ</span>
+              <span class="items-sticky-counter" id="items-counter-badge">1 មុខ</span>
+            </div>
+            <div class="items-sticky-actions">
+              <button type="button" class="btn-clear-all-items" onclick="clearAllItems()" title="លុបមុខទំនិញទាំងអស់">
+                <svg style="width: 14px; height: 14px; fill: currentColor;" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                <span>លុបទាំងអស់</span>
+              </button>
+              <button type="button" class="btn-add-item-modern" onclick="addItem()" title="បន្ថែមមុខទំនិញថ្មី">
+                <svg style="width: 15px; height: 15px; fill: currentColor;" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                <span>បន្ថែមទំនិញថ្មី</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="items-editor-container" class="items-cards-container">
+            <!-- Dynamic item cards will be inserted here -->
+          </div>
+        </div>
+
+        <!-- TAB 5: Payment Details & Cambodian Banks -->
+        <div class="editor-tab-pane" id="tab-payment">
+          <div class="form-section-title">
+            <span>ការបញ្ចុះតម្លៃ & ពន្ធ</span>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>បញ្ចុះតម្លៃរួម</label>
+              <select class="form-control" id="input-overall-disc-type">
+                <option value="percent">គិតជាភាគរយ (%)</option>
+                <option value="fixed">ចំនួនថេរជាសាច់ប្រាក់ ($ ឬ ៛)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>ចំនួនបញ្ចុះ</label>
+              <input type="number" step="any" min="0" class="form-control" id="input-overall-disc-val" value="0">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>ពន្ធ VAT (%)</label>
+              <input type="number" step="any" min="0" class="form-control" id="input-tax-rate" placeholder="0 ឬ 10">
+            </div>
+            <div class="form-group">
+              <label>ថ្លៃដឹកជញ្ជូន</label>
+              <input type="number" step="any" min="0" class="form-control" id="input-shipping" value="0">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>ប្រាក់កក់ / បានបង់</label>
+            <input type="number" step="any" min="0" class="form-control" id="input-paid" value="0">
+          </div>
+
+          <div class="form-section-title mt-4">
+            <span>ធនាគារទូទាត់ (Bank)</span>
+          </div>
+
+          <!-- Two Banks: ACLEDA & ABA -->
+          <div class="bank-two-col-select">
+            <button type="button" class="bank-card-btn active" id="btn-bank-acleda" data-bank="acleda" onclick="selectBank('acleda')">
+              <div style="font-size: 1.3rem;">🏦</div>
+              <strong>ធនាគារ អេស៊ីលីដា</strong>
+              <span style="font-size: 0.72rem; color: var(--text-muted);">ACLEDA Bank • KHQR</span>
+            </button>
+            <button type="button" class="bank-card-btn" id="btn-bank-aba" data-bank="aba" onclick="selectBank('aba')">
+              <div style="font-size: 1.3rem;">🏦</div>
+              <strong>ធនាគារ អេប៊ីអេ</strong>
+              <span style="font-size: 0.72rem; color: var(--text-muted);">ABA Bank • ABA' PAY</span>
+            </button>
+          </div>
+
+          <!-- ABA Currency Control (USD, KHR, Dual) -->
+          <div id="aba-currency-control-box" class="aba-currency-control-box" style="display: none; margin-top: 0.85rem;">
+            <div class="aba-currency-control-title">
+              <span>⚡ ជ្រើសរើសរូបិយប័ណ្ណ ABA' PAY (ហ៊ុន រដ្ឋា)៖</span>
+            </div>
+            <div class="aba-currency-options-grid">
+              <button type="button" class="aba-sub-btn active" id="btn-aba-usd" onclick="setAbaCurrency('USD')">
+                <strong>💵 ដុល្លារ (USD $)</strong>
+                <span>QR Code ដុល្លារ</span>
+              </button>
+              <button type="button" class="aba-sub-btn" id="btn-aba-khr" onclick="setAbaCurrency('KHR')">
+                <strong>៛ ប្រាក់រៀល (KHR ៛)</strong>
+                <span>QR Code ប្រាក់រៀល</span>
+              </button>
+              <button type="button" class="aba-sub-btn" id="btn-aba-dual" onclick="setAbaCurrency('DUAL')">
+                <strong>⚡ បង្ហាញទាំងពីរ</strong>
+                <span>QR ដុល្លារ & រៀល</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Clean Single QR Code Box -->
+          <div class="form-group mt-3">
+            <label>រូបភាព QR Code (បើមាន)</label>
+            <div class="file-upload-box" style="padding: 0.6rem; text-align: center;">
+              <input type="file" id="payment-qr-file" accept="image/*">
+              <img id="payment-qr-thumb" class="upload-thumb" style="display: inline-block; max-height: 120px; border-radius: 8px; border: 1px solid var(--border-color); padding: 4px;" alt="Payment QR">
+              <div class="text-xs text-slate-500 mt-2">
+                ស្វ័យប្រវត្តិតាមធនាគារដែលបានជ្រើស (ឬចុចទីនេះដើម្បីប្តូររូបភាព QR Code ផ្ទាល់ខ្លួន)
+              </div>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline text-red-600 mt-1" onclick="removeQrCode()">
+              លុប QR Code ចេញ
+            </button>
+          </div>
+
+          <div class="form-group">
+            <label>ឈ្មោះធនាគារ</label>
+            <input type="text" class="form-control" id="input-bank-name" value="ធនាគារ អេស៊ីលីដា (ACLEDA BANK)">
+          </div>
+
+          <div class="form-group">
+            <label>ម្ចាស់គណនី</label>
+            <input type="text" class="form-control font-bold" id="input-account-name" value="ហ៊ុន រដ្ឋា (HUN RATHA)">
+          </div>
+
+          <div class="form-group">
+            <label>លេខគណនី / KHQR</label>
+            <input type="text" class="form-control font-bold" id="input-account-num" value="KHQR (Scan. Pay Done.)">
+          </div>
+        </div>
+
+        <!-- TAB 6: Notes & Signatures -->
+        <div class="editor-tab-pane" id="tab-notes">
+          <div class="form-section-title">
+            <span>កំណត់សម្គាល់ & លក្ខខណ្ឌ</span>
+          </div>
+
+          <div class="form-group">
+            <label>កំណត់សម្គាល់ & លក្ខខណ្ឌ</label>
+            <textarea class="form-control" id="input-notes" style="min-height: 110px;"></textarea>
+          </div>
+
+          <div class="form-section-title mt-4">
+            <span>ហត្ថលេខា & ត្រាហាង</span>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>អ្នកទិញ</label>
+              <input type="text" class="form-control" id="input-buyer-sign-title" value="អ្នកទិញ / Customer">
+            </div>
+            <div class="form-group">
+              <label>អ្នកលក់</label>
+              <input type="text" class="form-control" id="input-seller-sign-title" value="អ្នកលក់ / Seller">
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </aside>
+
+    <!-- Right Side: Live A4 Invoice Sheet Preview -->
+    <section class="preview-panel">
+      
+      <!-- Customer View Mode Notice Banner (Visible only in customer/locked view) -->
+      <div id="customer-mode-banner" class="customer-banner no-print" style="display: none;">
+        <div class="customer-banner-info">
+          <span class="customer-badge">📄 វិក្កយបត្រផ្លូវការ (សម្រាប់អតិថិជន)</span>
+          <span>លោកអ្នកអាចពិនិត្យផ្ទៀងផ្ទាត់ ស្កេន KHQR ដើម្បីទូទាត់ ឬទាញយក/បោះពុម្ពជា PDF</span>
+        </div>
+        <div class="customer-banner-actions">
+          <button type="button" class="btn btn-sm btn-primary" onclick="printInvoice()">
+            <svg style="width: 13px; height: 13px; fill: currentColor;" viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
+            <span>បោះពុម្ព / សន្សំ PDF</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Preview Toolbar (Hidden in Print) -->
+      <div class="preview-toolbar no-print">
+        <div class="zoom-controls">
+          <span>ទំហំមើល:</span>
+          <select id="preview-zoom-select" class="form-control" style="width: auto; padding: 0.2rem 0.5rem; font-size: 0.8rem;">
+            <option value="1">100%</option>
+            <option value="0.9">90%</option>
+            <option value="0.8">80%</option>
+            <option value="fit">សមល្មម (Fit)</option>
+          </select>
+        </div>
+
+        <div class="paper-size-controls" style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; font-weight: 600; color: var(--text-main);">
+          <span>ក្រដាស:</span>
+          <select id="preview-paper-size-select" class="form-control" style="width: auto; padding: 0.25rem 0.6rem; font-size: 0.8rem; font-weight: 700; border-radius: 6px;" onchange="setPaperSize(this.value)">
+            <option value="a4" selected>📄 ស្តង់ដា A4 (210×297mm)</option>
+            <option value="a5">📑 ស្តង់ដា A5 (148×210mm)</option>
+          </select>
+        </div>
+
+        <div style="display: flex; gap: 0.4rem;">
+          <button type="button" class="btn btn-sm btn-outline" onclick="shareInvoice()" title="Share / ផ្ញើតាមទូរស័ព្ទ">
+            <svg style="width: 13px; height: 13px; fill: currentColor;" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg>
+            <span>ចែករំលែក (Share)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Printable A4 Viewport Container -->
+      <div class="a4-viewport-wrapper">
+        <div class="invoice-sheet" id="printable-invoice-sheet">
+          <!-- Contemporary Khmer Watermark Silhouette (Angkor & Lotus) -->
+          <div class="khmer-watermark-wrap" aria-hidden="true">
+            <svg class="khmer-watermark-svg" viewBox="0 0 400 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+                <!-- Angkor Wat Silhouette -->
+                <path d="M200 45 L200 155 M200 45 L193 62 L207 62 Z M188 78 L212 78 M184 100 L216 100 M180 128 L220 128" />
+                <path d="M148 85 L148 155 M148 85 L142 98 L154 98 Z M139 110 L157 110 M135 130 L161 130" />
+                <path d="M252 85 L252 155 M252 85 L246 98 L258 98 Z M243 110 L261 110 M239 130 L265 130" />
+                <path d="M105 115 L105 155 M105 115 L101 126 L109 126 Z M98 136 L112 136" />
+                <path d="M295 115 L295 155 M295 115 L291 126 L299 126 Z M288 136 L302 136" />
+                <!-- Galleries Base -->
+                <path d="M85 155 L315 155 M75 167 L325 167 M65 178 L335 178" />
+                <!-- Modern Stylized Khmer Lotus Emblem -->
+                <path d="M200 192 C188 204 170 210 158 210 C170 220 188 226 200 227 C212 226 230 220 242 210 C230 210 212 204 200 192 Z" fill="currentColor" fill-opacity="0.2" />
+                <path d="M200 182 C192 196 178 206 168 208 C180 218 192 222 200 224 C208 222 220 218 232 208 C222 206 208 196 200 182 Z" />
+              </g>
+            </svg>
+          </div>
+
+          <div class="invoice-top-accent"></div>
+          
+          <!-- TOP SECTION: HEADER & ITEMS -->
+          <div>
+            <!-- INVOICE HEADER -->
+            <div class="inv-header">
+              <!-- Left: Shop Name & Contact -->
+              <div class="inv-company-logo-wrap">
+                <img id="prev-seller-logo" class="inv-logo-img" alt="Logo" style="display: none;">
+                <div class="inv-company-info">
+                  <h2 class="shop-name-kh" id="prev-shop-name">RATHA Stationery</h2>
+                  
+                  <div class="owner-name-row" id="prev-owner-wrap">
+                    <span class="owner-lbl">ម្ចាស់ហាង៖</span>
+                    <strong class="owner-name-kh" id="prev-seller-name-kh">ហ៊ុន រដ្ឋា</strong>
+                    <span class="owner-name-en" id="prev-seller-name-en">(HUN RATHA)</span>
+                  </div>
+
+                  <div class="company-tin" id="prev-seller-vat-wrap" style="display: none;">
+                    លេខអត្តសញ្ញាណកម្ម អតប (VATTIN): <span id="prev-seller-vat">K001-902345678</span>
+                  </div>
+                  <div class="company-contact">
+                    <div><span class="contact-icon">📍</span> ទីតាំង៖ <span id="prev-seller-address">សាលាលេខប្រាំ អូរឫស្សី កំពង់ត្រឡាច កំពង់ឆ្នាំង</span></div>
+                    <div><span class="contact-icon">📞</span> ទូរស័ព្ទ៖ <span id="prev-seller-phone">089 20 998 / 093 486 987</span> <span id="prev-seller-email"></span></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right: Invoice Title & Metadata -->
+              <div class="inv-title-box">
+                <div class="inv-doc-title-kh" id="prev-doc-title-kh">វិក្កយបត្រ</div>
+                <div class="inv-doc-title-en" id="prev-doc-title-en">INVOICE</div>
+                <div class="inv-meta-grid">
+                  <span class="meta-lbl">លេខវិក្កយបត្រ (No):</span>
+                  <span class="meta-val invoice-num-badge" id="prev-inv-num">INV-2026-001</span>
+
+                  <span class="meta-lbl" id="prev-issue-date-lbl">កាលបរិច្ឆេទចេញ៖</span>
+                  <span class="meta-val" id="prev-issue-date">06/10/2026</span>
+
+                  <span class="meta-lbl" id="prev-due-wrap-lbl">កាលបរិច្ឆេទចូល៖</span>
+                  <span class="meta-val" id="prev-due-wrap-val"><span id="prev-due-date">13/10/2026</span></span>
+
+                  <span id="prev-po-wrap" style="display: none;">
+                    <span class="meta-lbl">លេខបញ្ជាទិញ (P.O):</span>
+                    <span class="meta-val" id="prev-po-number">-</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Header Dashed Divider (បន្ទាត់ត្រេលើ Header) -->
+            <div class="inv-header-dashed-divider" aria-hidden="true"></div>
+
+            <!-- Contemporary Khmer Ornamental Divider -->
+            <div class="khmer-kbach-divider" aria-hidden="true">
+              <span class="kbach-line"></span>
+              <span class="kbach-gem">❖ ⚜ ❖</span>
+              <span class="kbach-line"></span>
+            </div>
+
+            <!-- BILL TO & RECIPIENT -->
+            <div class="inv-addresses-row">
+              <div class="inv-client-box">
+                <div class="box-title-bar">
+                  ចេញជូនចំពោះ / BILL TO:
+                </div>
+                <div class="client-name-kh" id="prev-client-name">លោក នី ម៉ៅ</div>
+                <div class="client-info-item font-semibold" id="prev-client-company">វិទ្យាល័យហ៊ុនសែនកំពង់ត្រឡាច</div>
+                <div class="client-info-item">ទូរស័ព្ទ៖ <span id="prev-client-phone">092 111 222</span></div>
+                <div class="client-info-item">អាសយដ្ឋាន៖ <span id="prev-client-address">សាលាលេខប្រាំ អូរឫស្សី កំពង់ត្រឡាច កំពង់ឆ្នាំង</span></div>
+              </div>
+
+              <div class="inv-pay-summary-box">
+                <div class="box-title-bar">
+                  សេចក្តីបញ្ជាក់ / PAYMENT NOTICE
+                </div>
+                <div style="font-size: 0.74rem; color: #475569; line-height: 1.5;">
+                  សូមពិនិត្យមើលមុខទំនិញ និងបរិមាណឱ្យបានត្រឹមត្រូវ។ រាល់ការទូទាត់ប្រាក់ សូមយោងតាមលេខវិក្កយបត្រខាងលើ ឬស្កេន KHQR ខាងក្រោម។
+                </div>
+              </div>
+            </div>
+
+            <!-- ITEMS TABLE -->
+            <div class="inv-table-wrapper">
+              <table class="inv-table">
+                <thead>
+                  <tr>
+                    <th class="text-center" style="width: 38px;">ល.រ<br><span style="font-size: 9px; font-weight: normal;">No.</span></th>
+                    <th>បរិយាយមុខទំនិញ ឬសេវាកម្ម<br><span style="font-size: 9px; font-weight: normal;">Item Description</span></th>
+                    <th class="text-center" style="width: 55px;">ចំនួន<br><span style="font-size: 9px; font-weight: normal;">Qty</span></th>
+                    <th class="text-right" style="width: 88px;">តម្លៃឯកតា<br><span style="font-size: 9px; font-weight: normal;">Unit Price</span></th>
+                    <th class="text-center" style="width: 65px;">បញ្ចុះតម្លៃ<br><span style="font-size: 9px; font-weight: normal;">Disc</span></th>
+                    <th class="text-right" style="width: 100px;">សរុប<br><span style="font-size: 9px; font-weight: normal;">Amount</span></th>
+                  </tr>
+                </thead>
+                <tbody id="prev-items-tbody">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- BOTTOM SECTION: Totals, Payment QR, Notes, Signatures -->
+          <div>
+            <!-- Summary Grid -->
+            <div class="inv-summary-section">
+              <!-- Left: Bank & KHQR Information -->
+              <div class="inv-payment-method-box bank-acleda">
+                <!-- Single QR Box (ACLEDA or ABA Single) -->
+                <div class="qr-container-box" id="prev-single-qr-box">
+                  <img id="prev-qr-code-img" class="qr-code-img" alt="Payment QR" style="display: none;">
+                  <div id="prev-qr-code-gen" class="qr-code-canvas-wrap"></div>
+                </div>
+
+                <!-- Dual QR Box (for ABA Dual: USD & KHR side-by-side) -->
+                <div class="dual-qr-container-box" id="prev-dual-qr-box" style="display: none;">
+                  <div class="mini-qr-card">
+                    <div class="mini-qr-img-frame">
+                      <img id="prev-dual-qr-usd" class="qr-code-img" src="aba_usd_square.png" alt="ABA USD QR">
+                    </div>
+                    <span class="mini-qr-tag usd">💵 USD ($)</span>
+                  </div>
+                  <div class="mini-qr-card">
+                    <div class="mini-qr-img-frame">
+                      <img id="prev-dual-qr-khr" class="qr-code-img" src="aba_khr_square.png" alt="ABA KHR QR">
+                    </div>
+                    <span class="mini-qr-tag khr">៛ KHR (៛)</span>
+                  </div>
+                </div>
+
+                <div class="bank-details">
+                  <div class="bank-badge-tag" id="prev-bank-tag">
+                    <span>🏦</span> <span id="prev-bank-tag-text">ACLEDA KHQR</span>
+                  </div>
+                  <div class="bank-name" id="prev-bank-name">ធនាគារ អេស៊ីលីដា (ACLEDA BANK)</div>
+                  <div>ឈ្មោះគណនី: <span class="account-name-highlight" id="prev-account-name">ហ៊ុន រដ្ឋា (HUN RATHA)</span></div>
+                  <div>ការទូទាត់: <span class="account-num-text" id="prev-account-num">KHQR (Scan. Pay Done.)</span></div>
+                  <div class="scan-pay-hint" id="prev-scan-hint">
+                    <span>📲</span> ស្កេនទូទាត់រហ័សតាម KHQR / Bakong / Mobile Banking
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right: Calculations Table -->
+              <div>
+                <table class="totals-table">
+                  <tr>
+                    <td class="lbl">សរុបរង (Subtotal):</td>
+                    <td class="val" id="prev-subtotal">$0.00</td>
+                  </tr>
+                  <tr id="prev-disc-row" style="display: none;">
+                    <td class="lbl" id="prev-disc-lbl">បញ្ចុះតម្លៃ (Discount):</td>
+                    <td class="val text-red-600" id="prev-discount">-$0.00</td>
+                  </tr>
+                  <tr id="prev-tax-row" style="display: none;">
+                    <td class="lbl" id="prev-tax-lbl">អាករលើតម្លៃបន្ថែម (VAT 10%):</td>
+                    <td class="val" id="prev-tax">$0.00</td>
+                  </tr>
+                  <tr id="prev-shipping-row" style="display: none;">
+                    <td class="lbl">សេវាដឹកជញ្ជូន (Shipping):</td>
+                    <td class="val" id="prev-shipping">$0.00</td>
+                  </tr>
+                  <tr class="grand-total-row">
+                    <td class="lbl">សរុបរួម (Grand Total):</td>
+                    <td class="val">
+                      <span id="prev-grand-total">$0.00</span>
+                      <span class="dual-riel-text" id="prev-dual-total" style="display: none;">≈ 0 ៛</span>
+                    </td>
+                  </tr>
+                  <tr id="prev-paid-row" style="display: none;">
+                    <td class="lbl">បានបង់រួច (Paid):</td>
+                    <td class="val" id="prev-paid">$0.00</td>
+                  </tr>
+                  <tr class="balance-due-row" id="prev-due-row">
+                    <td class="lbl">ប្រាក់នៅខ្វះ (Balance Due):</td>
+                    <td class="val">
+                      <span id="prev-due">$0.00</span>
+                      <span class="dual-riel-text text-red-700" id="prev-dual-due" style="display: none;">≈ 0 ៛</span>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+
+            <!-- Notes & Terms -->
+            <div class="inv-notes-box" id="prev-notes-box">
+              <strong>កំណត់សម្គាល់ និងលក្ខខណ្ឌ៖</strong>
+              <div id="prev-notes-content" style="white-space: pre-line; margin-top: 2px;"></div>
+            </div>
+
+            <!-- Footer Dashed Divider (បន្ទាត់ត្រេលើ Footer) -->
+            <div class="inv-footer-dashed-divider" aria-hidden="true"></div>
+
+            <!-- Signatures Row -->
+            <div class="inv-signatures-row">
+              <div class="signature-box">
+                <div class="signature-title" id="prev-buyer-title">អ្នកទិញ / Customer</div>
+                <div class="signature-sub">ហត្ថលេខា និងឈ្មោះ</div>
+                <div class="signature-line-space"></div>
+                <div class="signature-line">កាលបរិច្ឆេទ: ..... / ..... / 202...</div>
+              </div>
+
+              <div class="signature-box seller-sign-box">
+                <div class="signature-title" id="prev-seller-title">អ្នកលក់ / Seller</div>
+                <div class="signature-sub">ហត្ថលេខា និងត្រា</div>
+                <div class="signature-line-space"></div>
+                <div class="signature-line">កាលបរិច្ឆេទ: ..... / ..... / 202...</div>
+              </div>
+            </div>
+
+            <!-- Bottom Tagline -->
+            <div class="inv-bottom-tagline">
+              សូមអរគុណចំពោះការគាំទ្រ! Thank you for your business! • វិក្កយបត្រនេះត្រូវបានបង្កើតឡើងដោយស្វ័យប្រវត្តិតាមស្តង់ដា A4 / A5
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: Saved Invoices History -->
+  <div class="modal-overlay" id="saved-modal">
+    <div class="modal-window" style="max-width: 680px;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 1.2rem;">📂</span>
+          <h3 style="margin: 0;">ប្រវត្តិវិក្កយបត្រ (ពិនិត្យ & កែតម្រូវ)</h3>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline" onclick="closeModal('saved-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- Cloud Auto-Save Status Bar (PC <-> Phone Realtime Auto-Sync) -->
+        <div class="cloud-sync-card" id="cloud-sync-card">
+          <div class="cloud-sync-info">
+            <span class="cloud-sync-icon" id="cloud-sync-icon" style="font-size: 1.35rem;">☁️</span>
+            <div>
+              <div class="cloud-sync-title" id="cloud-sync-status-title">រក្សាទុកស្វ័យប្រវត្តិពីគ្រប់ឧបករណ៍ (PC ↔ ទូរស័ព្ទដៃ)</div>
+              <div class="cloud-sync-desc" id="cloud-sync-status-desc">ទិន្នន័យត្រូវបានរក្សាទុក និងភ្ជាប់គ្នាស្វ័យប្រវត្តិតាមរយៈ Cloud</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.4rem;">
+            <button type="button" class="btn btn-sm btn-outline cloud-sync-btn" onclick="syncSavedInvoicesWithCloud(true)" title="ទាញយកទិន្នន័យថ្មីពី Cloud">
+              🔄 ភ្ជាប់ទិន្នន័យ
+            </button>
+          </div>
+        </div>
+
+        <!-- Search filter input -->
+        <div style="margin-bottom: 0.85rem;">
+          <input type="text" id="search-saved-invoices" class="form-control" placeholder="🔍 ស្វែងរកតាមលេខវិក្កយបត្រ ឈ្មោះអតិថិជន ឬកាលបរិច្ឆេទ..." oninput="filterSavedInvoices(this.value)">
+        </div>
+        <div id="saved-invoices-list">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="closeModal('saved-modal')">បិទ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Invoice Quick Review & Breakdown (ពិនិត្យមើលវិក្កយបត្រចាស់) -->
+  <div class="modal-overlay" id="review-modal">
+    <div class="modal-window" style="max-width: 680px;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 1.2rem;">📋</span>
+          <h3 id="review-modal-title" style="margin: 0;">ពិនិត្យផ្ទៀងផ្ទាត់វិក្កយបត្រ</h3>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline" onclick="closeModal('review-modal')">&times;</button>
+      </div>
+      <div class="modal-body" id="review-modal-body">
+        <!-- Rendered dynamically with breakdown of items and calculations -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" id="btn-review-share" onclick="shareCurrentReviewedInvoice()" title="ចែករំលែកតំណភ្ជាប់ទៅអតិថិជន">
+          🔗 ចែករំលែកតំណ
+        </button>
+        <button type="button" class="btn btn-primary" id="btn-review-edit" onclick="proceedToEditFromReview()">
+          ✏️ កែតម្រូវវិក្កយបត្រនេះ
+        </button>
+        <button type="button" class="btn btn-outline" onclick="closeModal('review-modal')">បិទ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Print & PDF Guide -->
+  <div class="modal-overlay" id="print-help-modal">
+    <div class="modal-window">
+      <div class="modal-header">
+        <h3>ការណែនាំអំពីការបោះពុម្ព និងរក្សាទុកជា PDF (A4)</h3>
+        <button type="button" class="btn btn-sm btn-outline" onclick="closeModal('print-help-modal')">&times;</button>
+      </div>
+      <div class="modal-body text-sm text-slate-700 leading-relaxed">
+        <p class="mb-3">ដើម្បីទទួលបានវិក្កយបត្រទំហំ <strong>A4 ស្អាតឥតខ្ចោះ (Pixel-Perfect)</strong> សូមអនុវត្តតាមការកំណត់ខាងក្រោមនៅពេលផ្ទាំង Print បង្ហាញឡើង៖</p>
+        
+        <div style="background: var(--card-sub-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.85rem; margin-bottom: 0.85rem;">
+          <ul style="padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.4rem;">
+            <li><strong>គោលដៅ (Destination):</strong> ជ្រើសរើស <em>Save as PDF</em> (ឬជ្រើសម៉ាស៊ីនព្រីនរបស់អ្នក)</li>
+            <li><strong>ទំហំក្រដាស (Paper size):</strong> ជ្រើសរើស <strong>A4</strong></li>
+            <li><strong>ទិសដៅក្រដាស (Layout):</strong> ជ្រើសរើស <strong>Portrait</strong> (បញ្ឈរ)</li>
+            <li><strong>កម្រឹមក្រដាស (Margins):</strong> ជ្រើសរើស <strong>Default</strong> ឬ <strong>None</strong></li>
+            <li><strong>ជម្រើសពណ៌ (Options):</strong> គូសធីកលើ <strong>"Background graphics"</strong> (ដើម្បីឱ្យចេញពណ៌ក្បាលតារាង និងពណ៌ស្អាត)</li>
+            <li><strong>ក្បាល និងបាតទំព័រ (Headers and footers):</strong> <em>ដោះធីកចេញ (Uncheck)</em> ដើម្បីកុំឱ្យជាប់តំណភ្ជាប់ URL និងកាលបរិច្ឆេទលើក្បាលទំព័រ</li>
+          </ul>
+        </div>
+
+        <div style="font-size: 0.8rem; color: #64748b;">
+          💡 <strong>គន្លឹះ៖</strong> អ្នកក៏អាចចុចបញ្ជាផ្ទាល់តាមរយៈប៊ូតុងកាត់ <code>Ctrl + P</code> នៅលើក្តារចុចបានគ្រប់ពេលវេលា។
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="closeModal('print-help-modal'); printInvoice();">
+          បោះពុម្ពភ្លាមៗ
+        </button>
+        <button type="button" class="btn btn-outline" onclick="closeModal('print-help-modal')">បិទ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Share Invoice Link (ចែករំលែកវិក្កយបត្រសម្រាប់អតិថិជន) -->
+  <div class="modal-overlay" id="share-modal">
+    <div class="modal-window" style="max-width: 540px;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 1.25rem;">🔗</span>
+          <h3 style="margin: 0;">ចែករំលែកតំណភ្ជាប់វិក្កយបត្រ (Share Link)</h3>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline" onclick="closeModal('share-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="background: var(--card-sub-bg); border-left: 3px solid #0284c7; padding: 0.75rem 0.85rem; border-radius: 6px; margin-bottom: 1rem; font-size: 0.84rem; line-height: 1.5; color: var(--text-main);">
+          តំណភ្ជាប់នេះបង្កើតឡើងសម្រាប់តែអតិថិជន <strong><span id="share-modal-client-name" style="color: var(--primary-color);">អតិថិជន</span></strong> ចូលមើលវិក្កយបត្រនេះប៉ុណ្ណោះ។ <strong>អតិថិជនមើលឃើញតែវិក្កយបត្រនេះមួយគត់ និងមិនអាចកែប្រែទិន្នន័យបានឡើយ (Read-Only)</strong>។
+        </div>
+
+        <div class="form-group mb-3">
+          <label style="font-weight: 700;">តំណភ្ជាប់ផ្ទាល់ (Direct Invoice Link):</label>
+          <div style="display: flex; gap: 0.45rem;">
+            <input type="text" id="share-link-input" class="form-control" readonly style="font-size: 0.82rem; font-family: monospace; background: var(--input-bg);">
+            <button type="button" class="btn btn-primary" onclick="copyShareLink()" id="btn-copy-share" style="white-space: nowrap;">
+              📋 ចម្លង (Copy)
+            </button>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem;">
+          <button type="button" class="btn btn-outline" style="flex: 1; border-color: #0088cc; color: #0088cc; font-weight: 600;" onclick="shareViaTelegram()">
+            ✈️ ផ្ញើតាម Telegram
+          </button>
+          <button type="button" class="btn btn-outline" style="flex: 1; border-color: #25d366; color: #25d366; font-weight: 600;" onclick="shareViaWhatsApp()">
+            💬 ផ្ញើតាម WhatsApp
+          </button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="closeModal('share-modal')">បិទ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Owner Admin Login (ផ្ទាំង Login ទំនើប & ស្អាត សម្រាប់តែ Admin ហ៊ុន រដ្ឋា) -->
+  <div class="modal-overlay" id="owner-login-modal">
+    <div class="admin-login-card">
+      <!-- Ambient Top Glow Light -->
+      <div class="admin-card-ambient-glow" aria-hidden="true"></div>
+
+      <!-- Card Top Banner -->
+      <div class="admin-card-top-banner">
+        <div class="admin-badge-pill">
+          <span class="admin-badge-dot"></span>
+          <span>ផ្ទៀងផ្ទាត់គណនីម្ចាស់ហាង • RATHA Stationery</span>
+        </div>
+        <div class="admin-khmer-title">ចូលគ្រប់គ្រង (Admin Access)</div>
+      </div>
+
+      <!-- Avatar Photo Wrap (Clean Display - No change button on login screen) -->
+      <div class="admin-avatar-wrap">
+        <div class="admin-avatar-ring">
+          <img src="ratha_avatar.jpg" alt="Admin RATHA" id="owner-avatar-img" class="admin-avatar-img">
+        </div>
+      </div>
+      <!-- Hidden file input for uploading custom admin avatar (accessible inside app) -->
+      <input type="file" id="admin-avatar-file-input" accept="image/*" style="display: none;" onchange="handleAdminAvatarUpload(event)">
+
+      <!-- Card Bottom Body -->
+      <div class="admin-card-bottom-body">
+        <div class="admin-auth-header-sub">សូមបញ្ចូលអ៊ីមែល Gmail និងលេខកូដ PIN ម្ចាស់ហាងដើម្បីបន្ត</div>
+
+        <div style="margin-top: 1.15rem;">
+          <!-- Admin Gmail Input -->
+          <div class="form-group mb-3 text-left">
+            <label class="admin-pin-label">
+              <span class="admin-label-icon">✉️</span> អ៊ីមែល Gmail គ្រប់គ្រង (Admin Gmail)៖
+            </label>
+            <div class="admin-input-wrapper">
+              <input type="email" id="owner-email-input" class="form-control admin-email-input" placeholder="បញ្ចូល Gmail គ្រប់គ្រង..." autocomplete="email" onkeydown="if(event.key==='Enter') document.getElementById('owner-pin-input').focus()">
+            </div>
+          </div>
+
+          <!-- Security PIN Input -->
+          <div class="form-group mb-3 text-left">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.45rem;">
+              <label class="admin-pin-label" style="margin-bottom: 0;">
+                <span class="admin-label-icon">🔑</span> លេខកូដ PIN សម្ងាត់ (Security PIN)៖
+              </label>
+              <button type="button" class="btn-toggle-pin-visibility" onclick="togglePinVisibility()" title="បង្ហាញ / លាក់លេខកូដ">
+                <span id="pin-visibility-icon">👁️</span>
+              </button>
+            </div>
+            <div class="admin-input-wrapper">
+              <input type="password" id="owner-pin-input" class="form-control admin-pin-input" placeholder="••••" maxlength="12" autocomplete="current-password" onkeydown="if(event.key==='Enter') submitOwnerLogin()">
+            </div>
+            <div id="owner-login-error" class="admin-login-error" style="display: none;">
+              ❌ អ៊ីមែល ឬលេខកូដ PIN មិនត្រឹមត្រូវទេ!
+            </div>
+          </div>
+
+          <div style="margin-top: 1.35rem;">
+            <button type="button" class="btn btn-primary btn-admin-submit" onclick="submitOwnerLogin()">
+              <span class="admin-btn-icon">🔓</span>
+              <span>ចូលគ្រប់គ្រង (Admin Login)</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Change PIN (ប្តូរលេខកូដ PIN សម្ងាត់) -->
+  <div class="modal-overlay" id="change-pin-modal">
+    <div class="modal-window" style="max-width: 440px;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 1.25rem;">🔑</span>
+          <h3 style="margin: 0;">ប្តូរលេខកូដ PIN សម្ងាត់</h3>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline" onclick="closeModal('change-pin-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group mb-3">
+          <label style="font-weight: 600;">លេខកូដ PIN ចាស់៖</label>
+          <input type="password" id="pin-old-input" class="form-control" placeholder="••••" maxlength="12" style="text-align: center; font-size: 1.1rem; letter-spacing: 0.15em;">
+        </div>
+        <div class="form-group mb-3">
+          <label style="font-weight: 600;">លេខកូដ PIN ថ្មី (យ៉ាងតិច ៤ ខ្ទង់)៖</label>
+          <input type="password" id="pin-new-input" class="form-control" placeholder="••••" maxlength="12" style="text-align: center; font-size: 1.1rem; letter-spacing: 0.15em;">
+        </div>
+        <div class="form-group mb-2">
+          <label style="font-weight: 600;">បញ្ជាក់លេខកូដ PIN ថ្មីម្តងទៀត៖</label>
+          <input type="password" id="pin-confirm-input" class="form-control" placeholder="••••" maxlength="12" style="text-align: center; font-size: 1.1rem; letter-spacing: 0.15em;">
+        </div>
+        <div id="change-pin-error" style="color: #dc2626; font-size: 0.82rem; margin-top: 0.4rem; display: none; font-weight: 600;"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="submitChangePin()">
+          💾 រក្សាទុក PIN ថ្មី
+        </button>
+        <button type="button" class="btn btn-outline" onclick="closeModal('change-pin-modal')">បោះបង់</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Custom Centered Confirmation & Prompt Dialog (ផ្ទាំងបញ្ជាក់ & កំណត់ចំណាំចំកណ្តាលអេក្រង់) -->
+  <div class="modal-overlay" id="custom-dialog-modal">
+    <div class="modal-window custom-dialog-window">
+      <div class="custom-dialog-header">
+        <div class="custom-dialog-icon-badge" id="dialog-icon-wrap">
+          <span id="dialog-icon">⚠️</span>
+        </div>
+        <h3 id="dialog-title">ការបញ្ជាក់</h3>
+      </div>
+      <div class="custom-dialog-body">
+        <p id="dialog-message">តើលោកអ្នកពិតជាចង់បន្តសកម្មភាពនេះមែនទេ?</p>
+        <div id="dialog-input-group" style="display: none; margin-top: 1rem;">
+          <input type="text" id="dialog-input" class="form-control font-bold" style="text-align: center; font-size: 0.95rem;" placeholder="បញ្ចូលឈ្មោះសម្គាល់នៅទីនេះ...">
+        </div>
+      </div>
+      <div class="custom-dialog-footer">
+        <button type="button" class="btn btn-outline dialog-btn" id="dialog-btn-cancel">បោះបង់</button>
+        <button type="button" class="btn btn-primary dialog-btn" id="dialog-btn-confirm">យល់ព្រម</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- QRCode Library for offline client-side QR generation -->
+  <script src="qrcode.min.js"></script>
+
+  <!-- App Script -->
+  <script src="script.js"></script>
+</body>
+</html>
