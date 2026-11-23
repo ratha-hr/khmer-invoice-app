@@ -1671,8 +1671,8 @@ function updatePageFitIndicator() {
   const isA5 = (state.paperSize === 'a5');
   const paperLabel = isA5 ? 'A5' : 'A4';
 
-  // High Capacity single-page limits: up to 18 on A4, up to 12 on A5!
-  const maxSingle = isA5 ? 12 : 18;
+  // High Capacity single-page limits: up to 18 on A4, up to 10 on A5 (guaranteed 1 page)
+  const maxSingle = isA5 ? 10 : 18;
   const isSingleFit = count <= maxSingle;
 
   const sheet = document.getElementById('printable-invoice-sheet') || document.getElementById('invoice-preview-sheet');
@@ -1682,9 +1682,9 @@ function updatePageFitIndicator() {
       sheet.classList.add('fit-single-page');
       sheet.classList.remove('multi-page-mode');
 
-      // Apply dynamic density tiers based on count & paper size
-      const compactThreshold = isA5 ? 5 : 8;
-      const maxThreshold = isA5 ? 9 : 13;
+      // Apply dynamic density tiers based on count & paper size (active in print)
+      const compactThreshold = isA5 ? 4 : 8;
+      const maxThreshold = isA5 ? 7 : 13;
       if (count >= maxThreshold) {
         sheet.classList.add('density-max');
       } else if (count >= compactThreshold) {
@@ -2138,7 +2138,7 @@ function setInvoiceStatus(status) {
   autoSaveCurrentState();
 }
 
-// Set Paper Size (A4 / A5) with 1.5cm margins
+// Set Paper Size (A4 / A5) for Printing - Decoupled from On-screen Canvas
 function setPaperSize(size) {
   playUiSound('switch');
   const targetSize = (size === 'a5') ? 'a5' : 'a4';
@@ -2150,6 +2150,10 @@ function setPaperSize(size) {
   if (prevSelect) prevSelect.value = targetSize;
 
   const sheet = document.getElementById('printable-invoice-sheet') || document.getElementById('invoice-preview-sheet');
+  // Ensure on-screen canvas never gets shrunk by legacy sheet-a5/a4 classes
+  if (sheet) {
+    sheet.classList.remove('sheet-a5', 'sheet-a4');
+  }
 
   let dynamicStyle = document.getElementById('dynamic-paper-style');
   if (!dynamicStyle) {
@@ -2160,18 +2164,10 @@ function setPaperSize(size) {
 
   if (targetSize === 'a5') {
     document.body.classList.add('paper-mode-a5');
-    if (sheet) {
-      sheet.classList.add('sheet-a5');
-      sheet.classList.remove('sheet-a4');
-    }
-    dynamicStyle.textContent = `@page { size: A5 portrait !important; margin: 0.5cm 0.65cm !important; }`;
+    dynamicStyle.textContent = `@page { size: A5 portrait !important; margin: 0.4cm 0.5cm !important; }`;
   } else {
     document.body.classList.remove('paper-mode-a5');
-    if (sheet) {
-      sheet.classList.remove('sheet-a5');
-      sheet.classList.add('sheet-a4');
-    }
-    dynamicStyle.textContent = `@page { size: A4 portrait !important; margin: 0.7cm 0.9cm !important; }`;
+    dynamicStyle.textContent = `@page { size: A4 portrait !important; margin: 0.6cm 0.8cm !important; }`;
   }
 
   updatePageFitIndicator();
