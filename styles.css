@@ -959,6 +959,16 @@ body.dark-mode .date-picker-trigger-btn {
   border-top-right-radius: 8px;
 }
 
+.invoice-top-section {
+  display: block;
+  width: 100%;
+}
+
+.invoice-bottom-section {
+  display: block;
+  width: 100%;
+}
+
 
 /* Contemporary Khmer Watermark (Angkor Silhouette & Lotus) */
 .khmer-watermark-wrap {
@@ -2029,17 +2039,17 @@ body.dark-mode .cloud-sync-btn {
 }
 
 /* =========================================================
-   A4 / A5 PRINT SPECIFICATIONS - 1.27CM (0.5 INCH) MARGINS
+   A4 / A5 PRINT SPECIFICATIONS
    ========================================================= */
 @page {
   size: A4 portrait;
-  margin: 1.27cm !important;
+  margin: 0.7cm 0.9cm !important;
 }
 
 body.paper-mode-a5 @page,
 @page a5-page {
   size: A5 portrait;
-  margin: 1.27cm !important;
+  margin: 0.5cm 0.65cm !important;
 }
 
 /* Dashed Line Dividers on Header and Footer */
@@ -2634,8 +2644,12 @@ body.dark-mode .page-fit-indicator.fit-multi {
     background: #ffffff !important;
     color: #000000 !important;
     width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
     margin: 0 !important;
     padding: 0 !important;
+    overflow: visible !important;
     font-size: 10pt !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
@@ -2649,7 +2663,9 @@ body.dark-mode .page-fit-indicator.fit-multi {
   .editor-panel,
   .preview-toolbar,
   .modal-overlay,
-  .toast-container {
+  .toast-container,
+  .sheet-shortcut-hint,
+  .sheet-bank-switcher {
     display: none !important;
     visibility: hidden !important;
     height: 0 !important;
@@ -2684,52 +2700,53 @@ body.dark-mode .page-fit-indicator.fit-multi {
     position: static !important;
   }
 
+  /* Top Accent Line: strictly static in normal document flow, 0 top margin, 6px bottom */
   .invoice-top-accent {
-    position: relative !important;
+    position: static !important;
+    display: block !important;
+    width: 100% !important;
     height: 4px !important;
-    margin-bottom: 6px !important;
-  }
-
-  .inv-table thead th {
     background-color: var(--primary-color) !important;
-    color: #ffffff !important;
+    margin: 0 0 6px 0 !important;
+    padding: 0 !important;
   }
 
-  /* ---------------------------------------------------------
-     CASE 1: UP TO 10 ITEMS -> STRICT 1-PAGE FIT
-     --------------------------------------------------------- */
-  body.single-page-fit {
-    height: 100% !important;
-    max-height: 100vh !important;
-    overflow: hidden !important;
-  }
-
-  body.single-page-fit .invoice-sheet.fit-single-page {
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: space-between !important;
+  /* The printable invoice sheet in print: natural block flow, ZERO artificial min-height stretching */
+  .invoice-sheet,
+  body.single-page-fit .invoice-sheet.fit-single-page,
+  body.multi-page-print .invoice-sheet.multi-page-mode {
+    display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
     width: 100% !important;
     max-width: 100% !important;
+    min-height: 0 !important;
     height: auto !important;
-    max-height: 272mm !important;
+    max-height: none !important;
     margin: 0 !important;
     padding: 0 !important;
     box-shadow: none !important;
     border: none !important;
     border-radius: 0 !important;
     transform: none !important;
-    overflow: hidden !important;
-    page-break-after: avoid !important;
-    break-after: avoid !important;
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
+    overflow: visible !important;
   }
 
-  /* ---------------------------------------------------------
-     CASE 2: OVER 10 ITEMS -> NATURAL MARGIN MULTI-PAGE FLOW
-     --------------------------------------------------------- */
+  /* Single-page mode: prevent page break */
+  body.single-page-fit {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  body.single-page-fit .invoice-sheet.fit-single-page {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+
+  /* Multi-page mode */
   body.multi-page-print {
     height: auto !important;
     max-height: none !important;
@@ -2737,42 +2754,53 @@ body.dark-mode .page-fit-indicator.fit-multi {
   }
 
   body.multi-page-print .invoice-sheet.multi-page-mode {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    height: auto !important;
-    max-height: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    box-shadow: none !important;
-    border: none !important;
-    border-radius: 0 !important;
-    transform: none !important;
-    overflow: visible !important;
     page-break-after: auto !important;
     break-after: auto !important;
   }
 
-  body.multi-page-print .inv-table {
-    page-break-inside: auto !important;
-    break-inside: auto !important;
+  /* Invoice sections in print */
+  .invoice-top-section {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .inv-header {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+
+  .inv-table {
     width: 100% !important;
   }
 
-  body.multi-page-print .inv-table thead {
+  .inv-table thead {
     display: table-header-group !important;
   }
 
-  body.multi-page-print .inv-table tr.item-row {
+  .inv-table thead th {
+    background-color: var(--primary-color) !important;
+    color: #ffffff !important;
+  }
+
+  .inv-table tr.item-row {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
 
-  body.multi-page-print .inv-summary-section,
-  body.multi-page-print .inv-signatures-row,
-  body.multi-page-print .inv-notes-box {
+  .invoice-bottom-section {
+    display: block !important;
+    width: 100% !important;
+    margin-top: 0.55rem !important;
+    padding: 0 !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .inv-summary-section,
+  .inv-signatures-row,
+  .inv-notes-box {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }

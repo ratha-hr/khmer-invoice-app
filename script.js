@@ -3242,6 +3242,35 @@ function printInvoice() {
   }
 }
 
+// Global print event listeners to guarantee 100% clean 1-page fit even when triggered via Ctrl+P
+window.addEventListener('beforeprint', () => {
+  const sheet = document.getElementById('printable-invoice-sheet');
+  if (sheet) {
+    sheet.dataset.prevTransform = sheet.style.transform || '';
+    sheet.dataset.prevMarginBottom = sheet.style.marginBottom || '';
+    sheet.dataset.prevMarginRight = sheet.style.marginRight || '';
+    sheet.style.transform = 'none';
+    sheet.style.marginBottom = '0';
+    sheet.style.marginRight = '0';
+  }
+  updatePageFitIndicator();
+});
+
+window.addEventListener('afterprint', () => {
+  const sheet = document.getElementById('printable-invoice-sheet');
+  if (sheet && sheet.dataset.prevTransform !== undefined) {
+    sheet.style.transform = sheet.dataset.prevTransform;
+    sheet.style.marginBottom = sheet.dataset.prevMarginBottom;
+    sheet.style.marginRight = sheet.dataset.prevMarginRight;
+    delete sheet.dataset.prevTransform;
+    delete sheet.dataset.prevMarginBottom;
+    delete sheet.dataset.prevMarginRight;
+  }
+  if (typeof autoScaleInvoiceOnMobile === 'function') {
+    autoScaleInvoiceOnMobile();
+  }
+});
+
 
 // Modal handling
 function openModal(id) {
