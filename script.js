@@ -3295,7 +3295,10 @@ window.addEventListener('afterprint', () => {
 // Modal handling
 function openModal(id) {
   const modal = document.getElementById(id);
-  if (modal) modal.classList.add('active');
+  if (modal) {
+    modal.style.display = 'flex';
+    modal.classList.add('active');
+  }
 }
 
 function closeModal(id) {
@@ -3304,7 +3307,49 @@ function closeModal(id) {
     return;
   }
   const modal = document.getElementById(id);
-  if (modal) modal.classList.remove('active');
+  if (modal) {
+    modal.classList.remove('active');
+    modal.style.display = 'none';
+  }
+}
+
+// Click to enlarge QR Code Modal
+function openQrEnlargeModal() {
+  playUiSound('pop');
+  const qrImg = document.getElementById('prev-qr-code-img');
+  const modalImg = document.getElementById('qr-enlarge-img');
+  if (qrImg && modalImg) {
+    modalImg.src = qrImg.src || 'acleda_qr_square.png';
+  }
+  const modalShop = document.getElementById('qr-modal-shop');
+  if (modalShop) modalShop.textContent = state.seller.shopName || 'RATHA Stationery';
+  
+  const modalAccount = document.getElementById('qr-modal-account');
+  if (modalAccount) {
+    modalAccount.textContent = `${state.payment.bankName} • ${state.payment.accountName}`;
+  }
+
+  const modalAmount = document.getElementById('qr-modal-amount');
+  if (modalAmount) {
+    const totals = calculateTotals();
+    modalAmount.textContent = formatMoney(totals.balanceDue, state.currency);
+  }
+
+  openModal('qr-enlarge-modal');
+}
+
+function copyPaymentDetailsToClipboard() {
+  const totals = calculateTotals();
+  const text = `ទូទាត់ប្រាក់វិក្កយបត្រ៖ ${state.invoiceNumber}\nហាង៖ ${state.seller.shopName}\nធនាគារ៖ ${state.payment.bankName}\nឈ្មោះ៖ ${state.payment.accountName}\nលេខគណនី/KHQR៖ ${state.payment.accountNumber}\nចំនួនទឹកប្រាក់៖ ${formatMoney(totals.balanceDue, state.currency)}`;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('បានចម្លងព័ត៌មានទូទាត់ប្រាក់!', 'success');
+    }).catch(() => {
+      showToast('បានចម្លងព័ត៌មាន!', 'info');
+    });
+  } else {
+    showToast('បានចម្លងព័ត៌មាន!', 'info');
+  }
 }
 
 // // Saved Invoices Management (LocalStorage + Cloud Sync)

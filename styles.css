@@ -1449,34 +1449,49 @@ body.dark-mode .date-picker-trigger-btn {
 
 /* Square QR Container - Perfectly fits square QR code edge to edge */
 .qr-container-box {
-  width: 106px;
-  height: 106px;
-  min-width: 106px;
-  min-height: 106px;
+  width: 104px;
+  height: 104px;
+  min-width: 104px;
+  min-height: 104px;
   background: #ffffff;
-  padding: 2px;
-  border-radius: 10px;
-  border: 2px solid #cbd5e1;
-  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
+  padding: 4px;
+  border-radius: 8px;
+  border: 1.5px solid #cbd5e1;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.qr-container-box:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
 }
 
 .qr-code-img, .qr-code-canvas-wrap {
   width: 100% !important;
   height: 100% !important;
-  border-radius: 7px;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  border-radius: 0 !important; /* CRITICAL: Never round QR code corners! */
   display: block;
-  object-fit: cover !important;
+  object-fit: contain !important; /* CRITICAL: Maintain exact 1:1 square ratio */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
 }
 
 .qr-code-canvas-wrap canvas {
   width: 100% !important;
   height: 100% !important;
-  border-radius: 7px;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  border-radius: 0 !important;
+  display: block;
 }
 
 /* Dual QR Container Box for ABA Dual (USD & KHR Side-by-Side) */
@@ -2643,12 +2658,6 @@ body.dark-mode .cloud-sync-btn {
   gap: 0.55rem;
 }
 
-.invoice-sheet.fit-single-page .qr-code-img,
-.invoice-sheet.fit-single-page .qr-code-canvas-wrap canvas {
-  max-width: 65px !important;
-  max-height: 65px !important;
-}
-
 .invoice-sheet.fit-single-page .totals-table td {
   padding: 0.18rem 0.32rem;
   font-size: 0.73rem;
@@ -2998,10 +3007,21 @@ body.dark-mode .page-fit-indicator.fit-multi {
     gap: 0.3rem !important;
     border-radius: 4px !important;
   }
+  body.paper-mode-a5 .qr-container-box {
+    width: 25mm !important;
+    height: 25mm !important;
+    min-width: 25mm !important;
+    min-height: 25mm !important;
+    padding: 1mm !important;
+    border-radius: 4px !important;
+  }
   body.paper-mode-a5 .qr-code-img,
   body.paper-mode-a5 .qr-code-canvas-wrap canvas {
-    max-width: 40px !important;
-    max-height: 40px !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    border-radius: 0 !important;
   }
   body.paper-mode-a5 .bank-details {
     font-size: 0.60rem !important;
@@ -3065,10 +3085,20 @@ body.dark-mode .page-fit-indicator.fit-multi {
     margin-bottom: 0.25rem !important;
     gap: 0.35rem !important;
   }
+  .invoice-sheet.density-compact .qr-container-box {
+    width: 26mm !important;
+    height: 26mm !important;
+    min-width: 26mm !important;
+    min-height: 26mm !important;
+    padding: 1.5mm !important;
+  }
   .invoice-sheet.density-compact .qr-code-img,
   .invoice-sheet.density-compact .qr-code-canvas-wrap canvas {
-    max-width: 48px !important;
-    max-height: 48px !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    border-radius: 0 !important;
   }
   .invoice-sheet.density-compact .totals-table td {
     padding: 0.1rem 0.22rem !important;
@@ -3128,10 +3158,20 @@ body.dark-mode .page-fit-indicator.fit-multi {
     padding: 0.2rem 0.35rem !important;
     gap: 0.3rem !important;
   }
+  .invoice-sheet.density-max .qr-container-box {
+    width: 24mm !important;
+    height: 24mm !important;
+    min-width: 24mm !important;
+    min-height: 24mm !important;
+    padding: 1mm !important;
+  }
   .invoice-sheet.density-max .qr-code-img,
   .invoice-sheet.density-max .qr-code-canvas-wrap canvas {
-    max-width: 42px !important;
-    max-height: 42px !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    border-radius: 0 !important;
   }
   .invoice-sheet.density-max .bank-details {
     font-size: 0.64rem !important;
