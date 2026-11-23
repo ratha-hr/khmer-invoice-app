@@ -11,9 +11,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&family=Dangrek&family=Fasthand&family=Hanuman:wght@400;700&family=Inter:wght@400;500;600;700;800&family=Kantumruy+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Koh+Santepheap:wght@400;700;800&family=Moul&family=Nokora:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Preahvihear&family=Siemreap&display=swap" rel="stylesheet">
   
   <!-- App Stylesheet -->
-  <link rel="stylesheet" href="styles.css?v=2.1">
+  <link rel="stylesheet" href="styles.css?v=3.0">
 </head>
-<body class="theme-royal font-kantumruy mobile-mode-editor">
+<body class="theme-royal font-kantumruy mobile-mode-preview sheet-direct-mode">
 
   <!-- Customer-Only Action Bar (Only shown to customers viewing shared invoice) -->
   <header id="customer-top-bar" class="customer-top-bar no-print" style="display: none;">
@@ -638,37 +638,62 @@
         </div>
       </div>
 
-      <!-- Preview Toolbar (Hidden in Print) -->
+      <!-- Preview Master Toolbar (Direct Invoice Mode - Hidden in Print) -->
       <div class="preview-toolbar no-print">
-        <div class="zoom-controls">
-          <span>ទំហំមើល:</span>
-          <select id="preview-zoom-select" class="form-control" style="width: auto; padding: 0.2rem 0.5rem; font-size: 0.8rem;">
-            <option value="1">100%</option>
-            <option value="0.9">90%</option>
-            <option value="0.8">80%</option>
-            <option value="fit">សមល្មម (Fit)</option>
-          </select>
+        <!-- Currency & Exchange Rate Group -->
+        <div style="display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap;">
+          <div style="display: flex; align-items: center; gap: 0.3rem;">
+            <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-main);">💵 រូបិយប័ណ្ណ:</span>
+            <select id="preview-currency-select" class="form-control" style="width: auto; padding: 0.25rem 0.5rem; font-size: 0.8rem; font-weight: 700; border-radius: 6px;" onchange="changeGlobalCurrency(this.value)">
+              <option value="USD">💵 ដុល្លារ (USD $)</option>
+              <option value="KHR">៛ ប្រាក់រៀល (KHR ៛)</option>
+            </select>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.78rem; font-weight: 600; color: var(--text-muted);">
+            <span>1$ =</span>
+            <input type="number" id="preview-rate-input" class="form-control font-bold" style="width: 72px; padding: 0.25rem 0.4rem; font-size: 0.8rem; text-align: center;" value="4100" oninput="changeExchangeRate(this.value)">
+            <span>៛</span>
+          </div>
+          <label style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.78rem; cursor: pointer; color: var(--text-main); font-weight: 600;">
+            <input type="checkbox" id="preview-dual-check" checked onchange="toggleDualCurrencyDirect(this.checked)" style="width: 15px; height: 15px;">
+            <span>បង្ហាញពីរ ($ & ៛)</span>
+          </label>
         </div>
 
-        <div class="paper-size-controls" style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; font-weight: 600; color: var(--text-main);">
-          <span>ក្រដាស:</span>
-          <select id="preview-paper-size-select" class="form-control" style="width: auto; padding: 0.25rem 0.6rem; font-size: 0.8rem; font-weight: 700; border-radius: 6px;" onchange="setPaperSize(this.value)">
-            <option value="a4" selected>📄 ស្តង់ដា A4 (210×297mm)</option>
-            <option value="a5">📑 ស្តង់ដា A5 (148×210mm)</option>
-          </select>
-        </div>
+        <!-- Paper Size, Zoom & Actions -->
+        <div style="display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap;">
+          <div class="paper-size-controls" style="display: flex; align-items: center; gap: 0.3rem; font-size: 0.8rem; font-weight: 600; color: var(--text-main);">
+            <span>ក្រដាស:</span>
+            <select id="preview-paper-size-select" class="form-control" style="width: auto; padding: 0.25rem 0.6rem; font-size: 0.8rem; font-weight: 700; border-radius: 6px;" onchange="setPaperSize(this.value)">
+              <option value="a4" selected>📄 ស្តង់ដា A4</option>
+              <option value="a5">📑 ស្តង់ដា A5</option>
+            </select>
+          </div>
 
-        <div id="preview-page-indicator-wrap" class="no-print" style="display: flex; align-items: center;">
-          <span id="preview-page-indicator" class="page-fit-indicator fit-single" style="font-size: 0.72rem; padding: 0.2rem 0.55rem;">
-            <svg style="width: 12px; height: 12px; fill: currentColor;" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-            <span id="preview-page-indicator-text">១ ទំព័រ A4</span>
-          </span>
-        </div>
+          <div class="zoom-controls">
+            <span>មើល:</span>
+            <select id="preview-zoom-select" class="form-control" style="width: auto; padding: 0.2rem 0.45rem; font-size: 0.8rem;">
+              <option value="1">100%</option>
+              <option value="0.9">90%</option>
+              <option value="0.8">80%</option>
+              <option value="fit">សមល្មម</option>
+            </select>
+          </div>
 
-        <div style="display: flex; gap: 0.4rem;">
-          <button type="button" class="btn btn-sm btn-outline" onclick="shareInvoice()" title="Share / ផ្ញើតាមទូរស័ព្ទ">
+          <div id="preview-page-indicator-wrap" class="no-print" style="display: flex; align-items: center;">
+            <span id="preview-page-indicator" class="page-fit-indicator fit-single" style="font-size: 0.72rem; padding: 0.2rem 0.55rem;">
+              <svg style="width: 12px; height: 12px; fill: currentColor;" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+              <span id="preview-page-indicator-text">១ ទំព័រ A4</span>
+            </span>
+          </div>
+
+          <button type="button" class="btn btn-sm btn-outline" onclick="shareInvoice()" title="ចែករំលែកវិក្កយបត្រ">
             <svg style="width: 13px; height: 13px; fill: currentColor;" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg>
-            <span>ចែករំលែក (Share)</span>
+            <span>ចែករំលែក</span>
+          </button>
+
+          <button type="button" class="btn btn-sm btn-outline" onclick="toggleSidebarDrawer()" title="បើក/បិទ ផ្ទាំងទម្រង់កំណត់ (Settings)">
+            ⚙️ <span>ផ្ទាំង Form</span>
           </button>
         </div>
       </div>
@@ -777,23 +802,49 @@
               </div>
             </div>
 
-            <!-- ITEMS TABLE -->
+            <!-- ITEMS TABLE (Direct In-Sheet Spreadsheet) -->
             <div class="inv-table-wrapper">
               <table class="inv-table">
                 <thead>
                   <tr>
                     <th class="text-center" style="width: 38px;">ល.រ<br><span style="font-size: 9px; font-weight: normal;">No.</span></th>
                     <th>បរិយាយមុខទំនិញ ឬសេវាកម្ម<br><span style="font-size: 9px; font-weight: normal;">Item Description</span></th>
-                    <th class="text-center" style="width: 55px;">ចំនួន<br><span style="font-size: 9px; font-weight: normal;">Qty</span></th>
-                    <th class="text-right" style="width: 88px;">តម្លៃឯកតា<br><span style="font-size: 9px; font-weight: normal;">Unit Price</span></th>
-                    <th class="text-center" style="width: 65px;">បញ្ចុះតម្លៃ<br><span style="font-size: 9px; font-weight: normal;">Disc</span></th>
-                    <th class="text-right" style="width: 100px;">សរុប<br><span style="font-size: 9px; font-weight: normal;">Amount</span></th>
+                    <th class="text-center" style="width: 60px;">ចំនួន<br><span style="font-size: 9px; font-weight: normal;">Qty</span></th>
+                    <th class="text-right" style="width: 95px;">តម្លៃឯកតា<br><span style="font-size: 9px; font-weight: normal;">Unit Price</span></th>
+                    <th class="text-center" style="width: 68px;">បញ្ចុះតម្លៃ<br><span style="font-size: 9px; font-weight: normal;">Disc %</span></th>
+                    <th class="text-right" style="width: 105px;">សរុប<br><span style="font-size: 9px; font-weight: normal;">Amount</span></th>
+                    <th class="text-center no-print" style="width: 32px;">លុប</th>
                   </tr>
                 </thead>
                 <tbody id="prev-items-tbody">
-                  <!-- Rendered dynamically -->
+                  <!-- Rendered dynamically with direct editable cells -->
                 </tbody>
               </table>
+
+              <!-- In-Sheet Table Action Toolbar (Hidden in Print) -->
+              <div class="sheet-table-action-bar no-print">
+                <div style="display: flex; gap: 0.45rem; align-items: center; flex-wrap: wrap;">
+                  <button type="button" class="btn-sheet-action btn-sheet-add" onclick="addNewItemRowDirect()" title="បន្ថែមជួរដេកថ្មី">
+                    <svg style="width: 14px; height: 14px; fill: currentColor;" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                    <span>+ បន្ថែមទំនិញថ្មី</span>
+                  </button>
+                  <button type="button" class="btn-sheet-action" onclick="addThreeItemsDirect()" title="បន្ថែម ៣ ជួរដេក">
+                    <span>+ បន្ថែម ៣ ជួរ</span>
+                  </button>
+                  <button type="button" class="btn-sheet-action btn-sheet-clear" onclick="clearAllItemsDirect()" title="ជម្រះទំនិញទាំងអស់">
+                    <span>🗑️ ជម្រះទាំងអស់</span>
+                  </button>
+                </div>
+                <div id="sheet-items-fit-badge-wrap">
+                  <span id="sheet-page-fit-indicator" class="page-fit-indicator fit-single" style="font-size: 0.72rem; padding: 0.2rem 0.55rem;">
+                    <svg style="width: 12px; height: 12px; fill: currentColor;" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                    <span id="sheet-page-fit-text">សមល្មមត្រឹម ១ ទំព័រ A4 (3/10 មុខ)</span>
+                  </span>
+                </div>
+              </div>
+              <div class="sheet-shortcut-hint no-print">
+                💡 វាយចូលតារាងដោយផ្ទាល់ • ចុច <kbd>Enter</kbd> ឬ <kbd>Tab</kbd> លើជួរដេកចុងក្រោយដើម្បីបង្កើតជួរថ្មីដោយស្វ័យប្រវត្តិ
+              </div>
             </div>
           </div>
 
@@ -826,8 +877,14 @@
                 </div>
 
                 <div class="bank-details">
-                  <div class="bank-badge-tag" id="prev-bank-tag">
-                    <span>🏦</span> <span id="prev-bank-tag-text">ACLEDA KHQR</span>
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.25rem;">
+                    <div class="bank-badge-tag" id="prev-bank-tag">
+                      <span>🏦</span> <span id="prev-bank-tag-text">ACLEDA KHQR</span>
+                    </div>
+                    <div class="sheet-bank-switcher no-print">
+                      <button type="button" class="sheet-bank-pill" id="pill-bank-acleda" onclick="switchBankDirect('acleda')" title="ប្តូរមក ACLEDA KHQR">ACLEDA</button>
+                      <button type="button" class="sheet-bank-pill" id="pill-bank-aba" onclick="switchBankDirect('aba')" title="ប្តូរមក ABA Pay">ABA</button>
+                    </div>
                   </div>
                   <div class="bank-name" id="prev-bank-name">ធនាគារ អេស៊ីលីដា (ACLEDA BANK)</div>
                   <div>ឈ្មោះគណនី: <span class="account-name-highlight" id="prev-account-name">ហ៊ុន រដ្ឋា (HUN RATHA)</span></div>
@@ -876,6 +933,12 @@
                     </td>
                   </tr>
                 </table>
+                <div class="no-print" style="margin-top: 0.35rem; display: flex; gap: 0.45rem; flex-wrap: wrap; justify-content: flex-end;">
+                  <button type="button" class="sheet-totals-addon-link" onclick="toggleDiscountRowDirect()">+ បញ្ចុះតម្លៃ</button>
+                  <button type="button" class="sheet-totals-addon-link" onclick="toggleTaxRowDirect()">+ អាករ VAT</button>
+                  <button type="button" class="sheet-totals-addon-link" onclick="toggleShippingRowDirect()">+ ថ្លៃដឹក</button>
+                  <button type="button" class="sheet-totals-addon-link" onclick="togglePaidRowDirect()">+ បានបង់ប្រាក់</button>
+                </div>
               </div>
             </div>
 
@@ -1188,6 +1251,6 @@
   <script src="qrcode.min.js"></script>
 
   <!-- App Script -->
-  <script src="script.js?v=2.1"></script>
+  <script src="script.js?v=3.0"></script>
 </body>
 </html>

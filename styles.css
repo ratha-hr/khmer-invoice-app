@@ -451,29 +451,50 @@ body {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
-/* Main Workspace Layout */
+/* Main Workspace Layout - Direct Invoice Sheet (WYSIWYG) Mode */
 .workspace-container {
-  display: grid;
-  grid-template-columns: minmax(380px, 460px) 1fr;
-  gap: 1.25rem;
-  padding: 1.25rem;
-  max-width: 1650px;
-  margin: 0 auto;
-  min-height: calc(100vh - 70px);
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  padding: 1.25rem 0.75rem !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+  min-height: calc(100vh - 70px) !important;
 }
 
-/* Sidebar Editor Panel */
+/* Hide Sidebar Editor Panel by Default (User works directly on the invoice) */
 .editor-panel {
-  background: var(--card-bg);
-  border-radius: 12px;
-  border: 1px solid var(--border-color);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
-  display: flex;
-  flex-direction: column;
-  height: calc(100vh - 90px);
-  position: sticky;
-  top: 75px;
-  overflow: hidden;
+  display: none !important;
+}
+
+/* Optional Drawer Mode if user opens settings */
+body.show-editor-drawer .editor-panel {
+  display: flex !important;
+  position: fixed !important;
+  top: 60px !important;
+  left: 0 !important;
+  width: 440px !important;
+  max-width: 90vw !important;
+  height: calc(100vh - 60px) !important;
+  z-index: 1000 !important;
+  box-shadow: 4px 0 25px rgba(0, 0, 0, 0.25) !important;
+  background: var(--card-bg) !important;
+}
+
+/* Hide Mobile Segment Switcher by Default */
+.mobile-view-tabs {
+  display: none !important;
+}
+
+/* Centered Live Preview Panel */
+.preview-panel {
+  width: 100% !important;
+  max-width: 215mm !important;
+  margin: 0 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
 }
 
 .editor-tabs {
@@ -2302,22 +2323,168 @@ body.paper-mode-a5 @page,
 .sheet-editable {
   outline: none;
   cursor: text;
-  border-radius: 3px;
+  border-radius: 4px;
   transition: background-color 0.15s ease, box-shadow 0.15s ease;
-  min-height: 1.1em;
+  min-height: 1.15em;
   display: inline-block;
-  padding: 1px 2px;
+  padding: 1px 4px;
 }
 
 .sheet-editable:hover {
-  background-color: rgba(59, 130, 246, 0.08);
-  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.25);
+  background-color: rgba(37, 99, 235, 0.08);
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.35);
 }
 
 .sheet-editable:focus {
-  background-color: #ffffff;
-  box-shadow: 0 0 0 2px #3b82f6;
+  background-color: #ffffff !important;
+  box-shadow: 0 0 0 2px #2563eb !important;
+  color: #0f172a !important;
+  z-index: 5;
+  position: relative;
+}
+
+.sheet-editable[placeholder]:empty:before {
+  content: attr(placeholder);
+  color: #94a3b8;
+  font-style: italic;
+  cursor: text;
+}
+
+/* In-Sheet Table Action Toolbar */
+.sheet-table-action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 6px;
+  font-family: var(--khmer-font);
+}
+
+.btn-sheet-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: var(--khmer-font);
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #334155;
+  transition: all 0.15s ease;
+}
+
+.btn-sheet-action:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
   color: #0f172a;
+}
+
+.btn-sheet-action.btn-sheet-add {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #1d4ed8;
+}
+
+.btn-sheet-action.btn-sheet-add:hover {
+  background: #dbeafe;
+  border-color: #93c5fd;
+}
+
+.btn-sheet-action.btn-sheet-clear {
+  color: #dc2626;
+}
+
+.btn-sheet-action.btn-sheet-clear:hover {
+  background: #fef2f2;
+  border-color: #fca5a5;
+}
+
+.btn-sheet-row-del {
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: bold;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.btn-sheet-row-del:hover {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.sheet-shortcut-hint {
+  font-size: 0.72rem;
+  color: #64748b;
+  margin-top: 0.35rem;
+  text-align: center;
+  font-family: var(--khmer-font);
+}
+
+.sheet-shortcut-hint kbd {
+  background: #e2e8f0;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  padding: 1px 4px;
+  font-size: 0.7rem;
+  font-family: monospace;
+  font-weight: bold;
+}
+
+.sheet-bank-switcher {
+  display: inline-flex;
+  gap: 0.25rem;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+}
+
+.sheet-bank-pill {
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #475569;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.sheet-bank-pill:hover,
+.sheet-bank-pill.active {
+  background: var(--primary-color);
+  color: #ffffff;
+  border-color: var(--primary-color);
+}
+
+.sheet-totals-addon-link {
+  font-size: 0.72rem;
+  color: #2563eb;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-right: 0.35rem;
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-family: var(--khmer-font);
+}
+
+.sheet-totals-addon-link:hover {
+  color: #1d4ed8;
 }
 
 /* Fit Single Page Mode (When items <= 10) */

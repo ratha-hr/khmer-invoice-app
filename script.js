@@ -1692,6 +1692,21 @@ function updatePageFitIndicator() {
       prevFitText.textContent = `${count} មុខ (Multi-page)`;
     }
   }
+
+  // Update badge in sheet table action toolbar
+  const sheetFitEl = document.getElementById('sheet-page-fit-indicator');
+  const sheetFitText = document.getElementById('sheet-page-fit-text');
+  if (sheetFitEl && sheetFitText) {
+    if (isSingleFit) {
+      sheetFitEl.className = 'page-fit-indicator fit-single';
+      sheetFitText.textContent = `សមល្មមត្រឹម ១ ទំព័រ A4 (${count}/10 មុខ)`;
+      sheetFitEl.title = 'ទំនិញត្រឹម ១០ មុខ ត្រូវបានតម្រឹមសមល្មមត្រឹម ១ ទំព័រ A4 គត់';
+    } else {
+      sheetFitEl.className = 'page-fit-indicator fit-multi';
+      sheetFitText.textContent = `លើសពី ១០ មុខ (${count} មុខ) • គិតតាម Margin ទំព័របន្តបន្ទាប់`;
+      sheetFitEl.title = 'ទំនិញលើសពី ១០ មុខ គិតតាម Margin ជាក់ស្តែងសម្រាប់ទំព័របន្តបន្ទាប់';
+    }
+  }
 }
 
 // Render Direct Spreadsheet-like Table Editor in Tab 4 (ការវាយចូលតារាងដោយផ្ទាល់)
@@ -2142,195 +2157,421 @@ function setPaperSize(size) {
 }
 
 // Render the Live A4 Invoice Sheet
+// Helper functions for direct WYSIWYG sheet editing
+function setSheetFieldText(id, value, fallback = '') {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (document.activeElement === el) return;
+  el.textContent = (value !== undefined && value !== null && String(value).trim() !== '') ? value : fallback;
+}
+
+function makeSheetFieldEditable(id, field, placeholder = '') {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (!isCustomerViewLink) {
+    el.classList.add('sheet-editable');
+    el.setAttribute('contenteditable', 'true');
+    el.setAttribute('data-sheet-field', field);
+    if (placeholder) el.setAttribute('placeholder', placeholder);
+  } else {
+    el.classList.remove('sheet-editable');
+    el.removeAttribute('contenteditable');
+    el.removeAttribute('data-sheet-field');
+  }
+}
+
+function initSheetDelegatedInput() {
+  const sheet = document.getElementById('printable-invoice-sheet');
+  if (!sheet || sheet._sheetDelegatedInit) return;
+  sheet._sheetDelegatedInit = true;
+
+  sheet.addEventListener('input', function(e) {
+    const target = e.target;
+    const field = target.dataset.sheetField;
+    if (!field) return;
+
+    let val = target.innerText.trim();
+    if (field === 'seller.nameEn') {
+      val = val.replace(/^\(|\)$/g, '').trim();
+    }
+
+    const parts = field.split('.');
+    if (parts.length === 1) {
+      state[parts[0]] = val;
+    } else if (parts.length === 2) {
+      if (!state[parts[0]]) state[parts[0]] = {};
+      state[parts[0]][parts[1]] = val;
+    }
+
+    autoSaveCurrentState();
+  });
+}
+
+function addNewItemRowDirect() {
+  const newItem = {
+    id: Date.now(),
+    description: '',
+    details: '',
+    quantity: 1,
+    price: 0,
+    discountPercent: 0,
+    currency: state.currency
+  };
+  state.items.push(newItem);
+  renderInvoicePreview();
+  
+  setTimeout(() => {
+    const tableBody = document.getElementById('prev-items-tbody');
+    if (tableBody && tableBody.lastElementChild) {
+      const descEl = tableBody.lastElementChild.querySelector('[data-field="description"]');
+      if (descEl) descEl.focus();
+    }
+  }, 40);
+
+  autoSaveCurrentState();
+}
+
+function addThreeItemsDirect() {
+  for (let i = 0; i < 3; i++) {
+    state.items.push({
+      id: Date.now() + i,
+      description: '',
+      details: '',
+      quantity: 1,
+      price: 0,
+      discountPercent: 0,
+      currency: state.currency
+    });
+  }
+  renderInvoicePreview();
+  autoSaveCurrentState();
+}
+
+function clearAllItemsDirect() {
+  if (confirm('តើលោកអ្នកពិតជាចង់ជម្រះមុខទំនិញទាំងអស់មែនទេ?')) {
+    state.items = [
+      { id: Date.now(), description: '', details: '', quantity: 1, price: 0, discountPercent: 0, currency: state.currency },
+      { id: Date.now() + 1, description: '', details: '', quantity: 1, price: 0, discountPercent: 0, currency: state.currency },
+      { id: Date.now() + 2, description: '', details: '', quantity: 1, price: 0, discountPercent: 0, currency: state.currency }
+    ];
+    renderInvoicePreview();
+    autoSaveCurrentState();
+  }
+}
+
+function deleteItemDirect(id) {
+  if (state.items.length <= 1) {
+    state.items = [
+      { id: Date.now(), description: '', details: '', quantity: 1, price: 0, discountPercent: 0, currency: state.currency }
+    ];
+  } else {
+    state.items = state.items.filter(i => i.id !== id);
+  }
+  renderInvoicePreview();
+  autoSaveCurrentState();
+}
+
+function switchBankDirect(bankKey) {
+  state.payment.bankKey = bankKey;
+  if (bankKey === 'aba') {
+    state.payment.bankName = 'ធនាគារ វឌ្ឍនៈ អាស៊ី ចំកាត់ (ABA BANK)';
+    state.payment.abaMode = 'USD';
+  } else {
+    state.payment.bankName = 'ធនាគារ អេស៊ីលីដា (ACLEDA BANK)';
+  }
+  renderInvoicePreview();
+  autoSaveCurrentState();
+}
+
+function toggleDualCurrencyDirect(checked) {
+  state.showDualCurrency = checked;
+  const dualCheck = document.getElementById('preview-dual-check');
+  if (dualCheck) dualCheck.checked = checked;
+  updateTotalsDisplayOnly();
+  autoSaveCurrentState();
+}
+
+function toggleSidebarDrawer() {
+  document.body.classList.toggle('show-editor-drawer');
+}
+
+function toggleDiscountRowDirect() {
+  const current = Number(state.overallDiscountValue) || 0;
+  const val = prompt('បញ្ចូលចំនួនបញ្ចុះតម្លៃ (% ឬទឹកប្រាក់):', current > 0 ? current : '5');
+  if (val !== null) {
+    state.overallDiscountValue = Number(val) || 0;
+    renderInvoicePreview();
+    autoSaveCurrentState();
+  }
+}
+
+function toggleTaxRowDirect() {
+  const current = Number(state.taxRate) || 0;
+  const val = prompt('បញ្ចូលអត្រាអាករ VAT (%):', current > 0 ? current : '10');
+  if (val !== null) {
+    state.taxRate = Number(val) || 0;
+    renderInvoicePreview();
+    autoSaveCurrentState();
+  }
+}
+
+function toggleShippingRowDirect() {
+  const current = Number(state.shippingFee) || 0;
+  const val = prompt('បញ្ចូលថ្លៃសេវាដឹកជញ្ជូន:', current > 0 ? current : '1.50');
+  if (val !== null) {
+    state.shippingFee = Number(val) || 0;
+    renderInvoicePreview();
+    autoSaveCurrentState();
+  }
+}
+
+function togglePaidRowDirect() {
+  const totals = calculateTotals();
+  const current = Number(state.paidAmount) || 0;
+  const val = prompt('បញ្ចូលចំនួនប្រាក់ដែលបានបង់រួច:', current > 0 ? current : totals.grandTotal);
+  if (val !== null) {
+    state.paidAmount = Number(val) || 0;
+    renderInvoicePreview();
+    autoSaveCurrentState();
+  }
+}
+
+// Render the Live A4 Invoice Sheet with Full WYSIWYG Sheet Editing
 function renderInvoicePreview() {
   const totals = calculateTotals();
+  const isEditable = !isCustomerViewLink;
+  const rate = Number(state.exchangeRate) || 4100;
 
   // Invoice Titles based on type
   const isTax = state.invoiceType === 'tax';
   const titleKh = isTax ? 'វិក្កយបត្រពន្ធ' : 'វិក្កយបត្រ';
   const titleEn = isTax ? 'TAX INVOICE' : 'INVOICE';
 
-  document.getElementById('prev-doc-title-kh').textContent = titleKh;
-  document.getElementById('prev-doc-title-en').textContent = titleEn;
+  setSheetFieldText('prev-doc-title-kh', titleKh);
+  setSheetFieldText('prev-doc-title-en', titleEn);
 
-  // Seller Info & Shop Name
-  const prevShopName = document.getElementById('prev-shop-name');
-  if (prevShopName) {
-    prevShopName.textContent = state.seller.shopName || 'RATHA Stationery';
-  }
-  document.getElementById('prev-seller-name-kh').textContent = state.seller.nameKh || 'ហ៊ុន រដ្ឋា';
-  document.getElementById('prev-seller-name-en').textContent = state.seller.nameEn ? `(${state.seller.nameEn})` : '';
-  
+  // Seller Info & Shop Name (Directly editable on sheet)
+  makeSheetFieldEditable('prev-shop-name', 'seller.shopName', 'ឈ្មោះហាង / ក្រុមហ៊ុន...');
+  setSheetFieldText('prev-shop-name', state.seller.shopName, 'RATHA Stationery');
+
+  makeSheetFieldEditable('prev-seller-name-kh', 'seller.nameKh', 'ឈ្មោះម្ចាស់ (ខ្មែរ)...');
+  setSheetFieldText('prev-seller-name-kh', state.seller.nameKh, 'ហ៊ុន រដ្ឋា');
+
+  makeSheetFieldEditable('prev-seller-name-en', 'seller.nameEn', '(Name in English)...');
+  setSheetFieldText('prev-seller-name-en', state.seller.nameEn ? `(${state.seller.nameEn})` : '');
+
   const tinWrap = document.getElementById('prev-seller-vat-wrap');
-  if (state.seller.vatTin) {
-    tinWrap.style.display = 'block';
-    document.getElementById('prev-seller-vat').textContent = state.seller.vatTin;
-  } else {
-    tinWrap.style.display = 'none';
+  if (tinWrap) {
+    if (state.seller.vatTin || isTax) {
+      tinWrap.style.display = 'block';
+      makeSheetFieldEditable('prev-seller-vat', 'seller.vatTin', 'K001-XXXXXX');
+      setSheetFieldText('prev-seller-vat', state.seller.vatTin, 'K001-902345678');
+    } else {
+      tinWrap.style.display = 'none';
+    }
   }
 
-  document.getElementById('prev-seller-phone').textContent = state.seller.phone || '089 20 998 / 093 486 987';
-  document.getElementById('prev-seller-email').textContent = state.seller.email || '';
-  document.getElementById('prev-seller-address').textContent = state.seller.address || 'សាលាលេខប្រាំ អូរឫស្សី កំពង់ត្រឡាច កំពង់ឆ្នាំង';
+  makeSheetFieldEditable('prev-seller-phone', 'seller.phone', 'លេខទូរស័ព្ទ...');
+  setSheetFieldText('prev-seller-phone', state.seller.phone, '089 20 998 / 093 486 987');
+
+  makeSheetFieldEditable('prev-seller-email', 'seller.email', 'Email (បើមាន)...');
+  setSheetFieldText('prev-seller-email', state.seller.email, '');
+
+  makeSheetFieldEditable('prev-seller-address', 'seller.address', 'អាសយដ្ឋានអ្នកលក់...');
+  setSheetFieldText('prev-seller-address', state.seller.address, 'សាលាលេខប្រាំ អូរឫស្សី កំពង់ត្រឡាច កំពង់ឆ្នាំង');
 
   const logoImg = document.getElementById('prev-seller-logo');
-  if (state.seller.logo) {
-    logoImg.src = state.seller.logo;
-    logoImg.style.display = 'block';
-  } else {
-    logoImg.style.display = 'none';
+  if (logoImg) {
+    if (state.seller.logo) {
+      logoImg.src = state.seller.logo;
+      logoImg.style.display = 'block';
+    } else {
+      logoImg.style.display = 'none';
+    }
   }
 
-  // Invoice Meta & Customizable Dates (កាលបរិច្ឆេទចេញ-ចូល / ផុតកំណត់)
-  document.getElementById('prev-inv-num').textContent = state.invoiceNumber || 'INV-001';
+  // Invoice Meta & Dates
+  makeSheetFieldEditable('prev-inv-num', 'invoiceNumber', 'INV-001');
+  setSheetFieldText('prev-inv-num', state.invoiceNumber, 'INV-2026-001');
 
-  const issueLblEl = document.getElementById('prev-issue-date-lbl');
-  const issueValEl = document.getElementById('prev-issue-date');
-  if (issueLblEl) issueLblEl.textContent = state.issueDateLabel ? `${state.issueDateLabel}:` : 'កាលបរិច្ឆេទចេញ៖';
-  if (issueValEl) issueValEl.textContent = formatDate(state.issueDate);
+  makeSheetFieldEditable('prev-issue-date', 'issueDate', 'DD/MM/YYYY');
+  setSheetFieldText('prev-issue-date', formatDate(state.issueDate), formatDate(new Date().toISOString().split('T')[0]));
 
   const dueWrapLbl = document.getElementById('prev-due-wrap-lbl');
   const dueWrapVal = document.getElementById('prev-due-wrap-val');
-  const dueValEl = document.getElementById('prev-due-date');
   if (state.dueDate && String(state.dueDate).trim()) {
-    if (dueWrapLbl) {
-      dueWrapLbl.style.display = 'inline';
-      dueWrapLbl.textContent = state.dueDateLabel ? `${state.dueDateLabel}:` : 'កាលបរិច្ឆេទចូល៖';
-    }
+    if (dueWrapLbl) dueWrapLbl.style.display = 'inline';
     if (dueWrapVal) {
       dueWrapVal.style.display = 'inline';
-      if (dueValEl) dueValEl.textContent = formatDate(state.dueDate);
+      makeSheetFieldEditable('prev-due-date', 'dueDate', 'DD/MM/YYYY');
+      setSheetFieldText('prev-due-date', formatDate(state.dueDate));
     }
   } else {
     if (dueWrapLbl) dueWrapLbl.style.display = 'none';
     if (dueWrapVal) dueWrapVal.style.display = 'none';
   }
-  
+
   const poWrap = document.getElementById('prev-po-wrap');
-  if (state.poNumber) {
-    poWrap.style.display = 'contents';
-    document.getElementById('prev-po-number').textContent = state.poNumber;
-  } else {
-    poWrap.style.display = 'none';
+  if (poWrap) {
+    if (state.poNumber) {
+      poWrap.style.display = 'contents';
+      makeSheetFieldEditable('prev-po-number', 'poNumber', 'PO-XXXX');
+      setSheetFieldText('prev-po-number', state.poNumber);
+    } else {
+      poWrap.style.display = 'none';
+    }
   }
 
   // Customer Info
-  document.getElementById('prev-client-name').textContent = state.client.nameKh || 'លោក នី ម៉ៅ';
-  const clientCompanyEl = document.getElementById('prev-client-company');
-  const clientComp = state.client.company || 'វិទ្យាល័យហ៊ុនសែនកំពង់ត្រឡាច';
-  if (clientComp) {
-    clientCompanyEl.style.display = 'block';
-    clientCompanyEl.textContent = clientComp;
-  } else {
-    clientCompanyEl.style.display = 'none';
+  makeSheetFieldEditable('prev-client-name', 'client.nameKh', 'ឈ្មោះអតិថិជន...');
+  setSheetFieldText('prev-client-name', state.client.nameKh, 'លោក នី ម៉ៅ');
+
+  makeSheetFieldEditable('prev-client-company', 'client.company', 'ឈ្មោះក្រុមហ៊ុន / ស្ថាប័ន (បើមាន)...');
+  setSheetFieldText('prev-client-company', state.client.company, 'វិទ្យាល័យហ៊ុនសែនកំពង់ត្រឡាច');
+
+  makeSheetFieldEditable('prev-client-phone', 'client.phone', 'លេខទូរស័ព្ទ...');
+  setSheetFieldText('prev-client-phone', state.client.phone, '092 111 222');
+
+  makeSheetFieldEditable('prev-client-address', 'client.address', 'អាសយដ្ឋានអតិថិជន...');
+  setSheetFieldText('prev-client-address', state.client.address, 'សាលាលេខប្រាំ អូរឫស្សី កំពង់ត្រឡាច កំពង់ឆ្នាំង');
+
+  // Sync Master Toolbar values
+  const tbCur = document.getElementById('preview-currency-select');
+  if (tbCur && tbCur !== document.activeElement) tbCur.value = state.currency || 'USD';
+
+  const tbRate = document.getElementById('preview-rate-input');
+  if (tbRate && tbRate !== document.activeElement) tbRate.value = state.exchangeRate || 4100;
+
+  const tbDual = document.getElementById('preview-dual-check');
+  if (tbDual) tbDual.checked = !!state.showDualCurrency;
+
+  // Sync Bank Pills in payment box
+  const pillAcleda = document.getElementById('pill-bank-acleda');
+  const pillAba = document.getElementById('pill-bank-aba');
+  if (pillAcleda && pillAba) {
+    if (state.payment.bankKey === 'aba') {
+      pillAba.classList.add('active');
+      pillAcleda.classList.remove('active');
+    } else {
+      pillAcleda.classList.add('active');
+      pillAba.classList.remove('active');
+    }
   }
-  document.getElementById('prev-client-phone').textContent = state.client.phone || '092 111 222';
-  document.getElementById('prev-client-address').textContent = state.client.address || 'សាលាលេខប្រាំ អូរឫស្សី កំពង់ត្រឡាច កំពង់ឆ្នាំង';
 
-  // Table items
+  // Table items rendering
   const tableBody = document.getElementById('prev-items-tbody');
-  tableBody.innerHTML = '';
+  if (tableBody) {
+    tableBody.innerHTML = '';
+    ensureMinimumItems(3);
+    updatePageFitIndicator();
 
-  ensureMinimumItems(3);
-  updatePageFitIndicator();
-
-  const isEditable = !isCustomerViewLink;
-  const rate = Number(state.exchangeRate) || 4100;
-
-  state.items.forEach((item, index) => {
-    const qty = Number(item.quantity) !== undefined ? item.quantity : 1;
-    const price = Number(item.price) !== undefined ? item.price : 0;
-    const disc = Number(item.discountPercent) || 0;
-    const itemCur = item.currency || state.currency;
-    const lineRawTotal = (qty * price) * (1 - disc / 100);
-    const lineConvertedTotal = convertCurrency(lineRawTotal, itemCur, state.currency, rate);
-
-    const hasContent = item.description || price > 0 || lineConvertedTotal > 0;
-
-    const tr = document.createElement('tr');
-    tr.className = 'item-row';
-    tr.dataset.itemId = item.id;
-    tr.innerHTML = `
-      <td class="item-num">${index + 1}</td>
-      <td class="item-desc-cell">
-        <div class="item-title-text ${isEditable ? 'sheet-editable' : ''}" 
-             ${isEditable ? `contenteditable="true" data-id="${item.id}" data-field="description" placeholder="ឈ្មោះមុខទំនិញ..."` : ''}>${escapeHtml(item.description)}</div>
-        <div class="item-desc-sub ${isEditable ? 'sheet-editable' : ''}" 
-             ${isEditable ? `contenteditable="true" data-id="${item.id}" data-field="details" placeholder="+ បរិយាយបន្ថែម..."` : ''} 
-             style="${(item.details || isEditable) ? '' : 'display: none;'}">${escapeHtml(item.details || '')}</div>
-      </td>
-      <td class="item-qty-cell">
-        <span class="${isEditable ? 'sheet-editable font-num' : 'font-num'}" 
-              ${isEditable ? `contenteditable="true" data-id="${item.id}" data-field="quantity"` : ''}>${hasContent ? qty : (isEditable ? '1' : '')}</span>
-      </td>
-      <td class="item-price-cell">
-        <span class="${isEditable ? 'sheet-editable font-num' : 'font-num'}" 
-              ${isEditable ? `contenteditable="true" data-id="${item.id}" data-field="price"` : ''}>${price > 0 ? formatMoney(price, itemCur) : (hasContent ? formatMoney(0, itemCur) : (isEditable ? '-' : ''))}</span>
-      </td>
-      <td class="item-disc-cell">
-        <span class="${isEditable ? 'sheet-editable font-num' : 'font-num'}" 
-              ${isEditable ? `contenteditable="true" data-id="${item.id}" data-field="discountPercent"` : ''}>${disc > 0 ? `${disc}%` : (hasContent ? '-' : (isEditable ? '-' : ''))}</span>
-      </td>
-      <td class="item-total-cell font-num">
-        ${(price > 0 || lineConvertedTotal > 0) ? formatMoney(lineConvertedTotal, state.currency) : (hasContent ? formatMoney(0, state.currency) : '-')}
-        ${(lineConvertedTotal > 0 && itemCur !== state.currency) ? `<div style="font-size: 0.7rem; color: #64748b; font-weight: normal;">(${formatMoney(lineRawTotal, itemCur)})</div>` : ''}
-      </td>
-    `;
-    tableBody.appendChild(tr);
-  });
-
-  // Direct sheet editing event handler
-  if (isEditable) {
-    tableBody.oninput = function(e) {
-      const target = e.target;
-      const id = Number(target.dataset.id);
-      const field = target.dataset.field;
-      if (!id || !field) return;
-
-      const val = target.innerText.trim();
-      const item = state.items.find(i => i.id === id);
-      if (!item) return;
-
-      if (field === 'quantity' || field === 'price' || field === 'discountPercent') {
-        const cleanNum = Number(val.replace(/[^0-9.-]+/g, '')) || 0;
-        item[field] = cleanNum;
-      } else {
-        item[field] = val;
-      }
-
-      // Live update row total
-      const rate = Number(state.exchangeRate) || 4100;
-      const itemCur = item.currency || state.currency;
-      const qty = Number(item.quantity) || 0;
-      const price = Number(item.price) || 0;
+    state.items.forEach((item, index) => {
+      const qty = item.quantity !== undefined ? item.quantity : 1;
+      const price = item.price !== undefined ? item.price : 0;
       const disc = Number(item.discountPercent) || 0;
-      const lineRaw = (qty * price) * (1 - disc / 100);
-      const lineTotal = convertCurrency(lineRaw, itemCur, state.currency, rate);
+      const itemCur = item.currency || state.currency;
+      const lineRawTotal = (qty * price) * (1 - disc / 100);
+      const lineConvertedTotal = convertCurrency(lineRawTotal, itemCur, state.currency, rate);
+      const hasContent = item.description || price > 0 || lineConvertedTotal > 0;
 
-      const sheetRow = target.closest('tr');
-      if (sheetRow) {
-        const totalCell = sheetRow.querySelector('.item-total-cell');
-        if (totalCell) {
-          totalCell.innerHTML = (price > 0 || lineTotal > 0) ? formatMoney(lineTotal, state.currency) : '-';
+      const tr = document.createElement('tr');
+      tr.className = 'item-row';
+      tr.dataset.itemId = item.id;
+      tr.innerHTML = `
+        <td class="item-num text-center">${index + 1}</td>
+        <td class="item-desc-cell">
+          <div class="item-title-text ${isEditable ? 'sheet-editable' : ''}"
+               ${isEditable ? `contenteditable="true" data-id="${item.id}" data-field="description" placeholder="ឈ្មោះមុខទំនិញ ឬសេវាកម្ម..."` : ''}>${escapeHtml(item.description)}</div>
+          <div class="item-desc-sub ${isEditable ? 'sheet-editable' : ''}"
+               ${isEditable ? `contenteditable="true" data-id="${item.id}" data-field="details" placeholder="+ បរិយាយបន្ថែម (បើមាន)..."` : ''}
+               style="${(item.details || isEditable) ? '' : 'display: none;'}">${escapeHtml(item.details || '')}</div>
+        </td>
+        <td class="item-qty-cell text-center">
+          <span class="${isEditable ? 'sheet-editable font-num' : 'font-num'}"
+                ${isEditable ? `contenteditable="true" data-id="${item.id}" data-field="quantity"` : ''}>${qty}</span>
+        </td>
+        <td class="item-price-cell text-right">
+          <span class="${isEditable ? 'sheet-editable font-num' : 'font-num'}"
+                ${isEditable ? `contenteditable="true" data-id="${item.id}" data-field="price"` : ''}>${price > 0 ? price : (hasContent ? '0' : (isEditable ? '' : ''))}</span>
+        </td>
+        <td class="item-disc-cell text-center">
+          <span class="${isEditable ? 'sheet-editable font-num' : 'font-num'}"
+                ${isEditable ? `contenteditable="true" data-id="${item.id}" data-field="discountPercent"` : ''}>${disc > 0 ? disc : (isEditable ? '' : '')}</span>
+        </td>
+        <td class="item-total-cell font-num text-right">
+          ${(price > 0 || lineConvertedTotal > 0) ? formatMoney(lineConvertedTotal, state.currency) : (hasContent ? formatMoney(0, state.currency) : '-')}
+        </td>
+        <td class="item-action-cell text-center no-print">
+          <button type="button" class="btn-sheet-row-del" onclick="deleteItemDirect(${item.id})" title="លុបមុខទំនិញនេះ">✕</button>
+        </td>
+      `;
+      tableBody.appendChild(tr);
+    });
+
+    // Delegated input listener for table items
+    if (isEditable) {
+      tableBody.oninput = function(e) {
+        const target = e.target;
+        const id = Number(target.dataset.id);
+        const field = target.dataset.field;
+        if (!id || !field) return;
+
+        const val = target.innerText.trim();
+        const item = state.items.find(i => i.id === id);
+        if (!item) return;
+
+        if (field === 'quantity' || field === 'price' || field === 'discountPercent') {
+          const cleanNum = Number(val.replace(/[^0-9.-]+/g, '')) || 0;
+          item[field] = cleanNum;
+        } else {
+          item[field] = val;
         }
-      }
 
-      // Update invoice totals display
-      updateTotalsDisplayOnly();
+        // Live update row total
+        const itemCur = item.currency || state.currency;
+        const qty = Number(item.quantity) || 0;
+        const price = Number(item.price) || 0;
+        const disc = Number(item.discountPercent) || 0;
+        const lineRaw = (qty * price) * (1 - disc / 100);
+        const lineTotal = convertCurrency(lineRaw, itemCur, state.currency, rate);
 
-      // Sync editor table input
-      const inputField = field === 'description' ? 'desc' : (field === 'details' ? 'details' : (field === 'quantity' ? 'qty' : (field === 'price' ? 'price' : 'disc')));
-      const editorInput = document.getElementById(`input-${inputField}-${id}`);
-      if (editorInput && editorInput !== document.activeElement) {
-        editorInput.value = item[field];
-      }
-      const editorTotal = document.getElementById(`cell-total-${id}`);
-      if (editorTotal) {
-        editorTotal.textContent = (price > 0 || lineTotal > 0) ? formatMoney(lineTotal, state.currency) : '-';
-      }
+        const sheetRow = target.closest('tr');
+        if (sheetRow) {
+          const totalCell = sheetRow.querySelector('.item-total-cell');
+          if (totalCell) {
+            totalCell.innerHTML = (price > 0 || lineTotal > 0) ? formatMoney(lineTotal, state.currency) : '-';
+          }
+        }
 
-      autoSaveCurrentState();
-    };
+        updateTotalsDisplayOnly();
+        updatePageFitIndicator();
+        autoSaveCurrentState();
+      };
+
+      // Keyboard navigation: Enter on row appends new row; Tab on last cell appends row
+      tableBody.onkeydown = function(e) {
+        if (e.key === 'Enter') {
+          const target = e.target;
+          const tr = target.closest('tr');
+          if (!tr) return;
+          e.preventDefault();
+          const nextTr = tr.nextElementSibling;
+          if (nextTr) {
+            const nextTarget = nextTr.querySelector(`[data-field="${target.dataset.field}"]`) || nextTr.querySelector('[data-field="description"]');
+            if (nextTarget) nextTarget.focus();
+          } else {
+            addNewItemRowDirect();
+          }
+        } else if (e.key === 'Tab' && !e.shiftKey) {
+          const target = e.target;
+          const tr = target.closest('tr');
+          if (tr && !tr.nextElementSibling && (target.dataset.field === 'discountPercent' || target.dataset.field === 'price')) {
+            e.preventDefault();
+            addNewItemRowDirect();
+          }
+        }
+      };
+    }
   }
 
   // Totals Section
@@ -2340,8 +2581,8 @@ function renderInvoicePreview() {
   const discRow = document.getElementById('prev-disc-row');
   if (totals.discountAmount > 0) {
     discRow.style.display = 'table-row';
-    const discLabel = state.overallDiscountType === 'percent' 
-      ? `បញ្ចុះតម្លៃ (${state.overallDiscountValue}%)` 
+    const discLabel = state.overallDiscountType === 'percent'
+      ? `បញ្ចុះតម្លៃ (${state.overallDiscountValue}%)`
       : 'បញ្ចុះតម្លៃពិសេស';
     document.getElementById('prev-disc-lbl').textContent = discLabel;
     document.getElementById('prev-discount').textContent = `-${formatMoney(totals.discountAmount)}`;
@@ -2370,7 +2611,7 @@ function renderInvoicePreview() {
 
   // Grand Total
   document.getElementById('prev-grand-total').textContent = formatMoney(totals.grandTotal);
-  
+
   // Dual Currency Grand Total Display
   const dualTotalWrap = document.getElementById('prev-dual-total');
   if (state.showDualCurrency) {
@@ -2384,7 +2625,6 @@ function renderInvoicePreview() {
 
   // Paid and Balance Due Rows
   const paidRow = document.getElementById('prev-paid-row');
-  const dueRow = document.getElementById('prev-due-row');
   if (totals.paid > 0) {
     paidRow.style.display = 'table-row';
     document.getElementById('prev-paid').textContent = formatMoney(totals.paid);
@@ -2403,10 +2643,15 @@ function renderInvoicePreview() {
     dualDueWrap.style.display = 'none';
   }
 
-  // Payment Details
-  document.getElementById('prev-bank-name').textContent = state.payment.bankName || 'ធនាគារ អេស៊ីលីដា (ACLEDA BANK)';
-  document.getElementById('prev-account-name').textContent = state.payment.accountName || 'ហ៊ុន រដ្ឋា (HUN RATHA)';
-  document.getElementById('prev-account-num').textContent = state.payment.accountNumber || 'KHQR (Scan. Pay Done.)';
+  // Payment Details (Directly editable)
+  makeSheetFieldEditable('prev-bank-name', 'payment.bankName', 'ឈ្មោះធនាគារ...');
+  setSheetFieldText('prev-bank-name', state.payment.bankName, 'ធនាគារ អេស៊ីលីដា (ACLEDA BANK)');
+
+  makeSheetFieldEditable('prev-account-name', 'payment.accountName', 'ឈ្មោះគណនី...');
+  setSheetFieldText('prev-account-name', state.payment.accountName, 'ហ៊ុន រដ្ឋា (HUN RATHA)');
+
+  makeSheetFieldEditable('prev-account-num', 'payment.accountNumber', 'លេខគណនី ឬ KHQR...');
+  setSheetFieldText('prev-account-num', state.payment.accountNumber, 'KHQR (Scan. Pay Done.)');
 
   // Payment QR Code handling (Single vs Dual Mode)
   const singleQrBox = document.getElementById('prev-single-qr-box');
@@ -2490,21 +2735,24 @@ function renderInvoicePreview() {
     }
   }
 
-  // Notes
+  // Notes & Terms (Directly editable)
   const notesBox = document.getElementById('prev-notes-box');
-  if (state.notes && state.notes.trim()) {
+  if (notesBox) {
     notesBox.style.display = 'block';
-    document.getElementById('prev-notes-content').textContent = state.notes;
-  } else {
-    notesBox.style.display = 'none';
+    makeSheetFieldEditable('prev-notes-content', 'notes', 'ចុចទីនេះដើម្បីបញ្ចូលកំណត់សម្គាល់ ឬលក្ខខណ្ឌបន្ថែម...');
+    setSheetFieldText('prev-notes-content', state.notes, 'សូមអរគុណសម្រាប់ការគាំទ្រទំនិញ និងសេវាកម្មរបស់យើងខ្ញុំ!\n• សូមផ្ទៀងផ្ទាត់ប្រាក់តាមរយៈ KHQR (ហ៊ុន រដ្ឋា) ខាងលើ\n• សូមទូទាត់ប្រាក់ឱ្យបានរួចរាល់មុនកាលបរិច្ឆេទកំណត់\n• ទំនិញទិញរួចមិនអាចប្តូរយកប្រាក់វិញបានឡើយ');
   }
 
   // Signatures
-  document.getElementById('prev-buyer-title').textContent = state.signatures.buyerTitle;
-  document.getElementById('prev-seller-title').textContent = state.signatures.sellerTitle;
-}
+  makeSheetFieldEditable('prev-buyer-title', 'signatures.buyerTitle', 'អ្នកទិញ / Customer');
+  setSheetFieldText('prev-buyer-title', state.signatures.buyerTitle, 'អ្នកទិញ / Customer');
 
-// Flexible Date Formatter (Preserves custom Khmer text and freeform strings)
+  makeSheetFieldEditable('prev-seller-title', 'signatures.sellerTitle', 'អ្នកលក់ / Seller');
+  setSheetFieldText('prev-seller-title', state.signatures.sellerTitle, 'អ្នកលក់ / Seller');
+
+  // Attach global sheet delegating input listener once
+  initSheetDelegatedInput();
+}
 function formatDate(dateStr) {
   if (!dateStr) return '';
   // If native datepicker format YYYY-MM-DD
