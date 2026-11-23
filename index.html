@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&family=Dangrek&family=Fasthand&family=Hanuman:wght@400;700&family=Inter:wght@400;500;600;700;800&family=Kantumruy+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Koh+Santepheap:wght@400;700;800&family=Moul&family=Nokora:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Preahvihear&family=Siemreap&display=swap" rel="stylesheet">
   
   <!-- App Stylesheet -->
-  <link rel="stylesheet" href="styles.css?v=3.2">
+  <link rel="stylesheet" href="styles.css?v=3.3">
 </head>
 <body class="theme-royal font-kantumruy mobile-mode-preview sheet-direct-mode">
 
@@ -56,30 +56,8 @@
     </div>
 
     <div class="nav-actions">
-      <!-- Theme Mode Toggle: System / Light / Dark -->
-      <div class="theme-mode-toggle" title="ប្តូរផ្ទៃបង្ហាញ តាម System / ភ្លឺ / ងងឹត">
-        <button type="button" class="theme-toggle-btn active" data-mode="system" onclick="setThemeMode('system')">
-          <svg style="width: 13px; height: 13px; fill: currentColor;" viewBox="0 0 24 24"><path d="M20 18c1.1 0 1.99-.9 1.99-2L22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z"/></svg>
-          <span>System</span>
-        </button>
-        <button type="button" class="theme-toggle-btn" data-mode="light" onclick="setThemeMode('light')">
-          <svg style="width: 13px; height: 13px; fill: #d97706;" viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41s-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41s-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/></svg>
-          <span>ភ្លឺ</span>
-        </button>
-        <button type="button" class="theme-toggle-btn" data-mode="dark" onclick="setThemeMode('dark')">
-          <svg style="width: 13px; height: 13px; fill: #6366f1;" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg>
-          <span>ងងឹត</span>
-        </button>
-      </div>
-
-      <!-- Sound FX Toggle: 🔊 / 🔇 -->
-      <button type="button" class="theme-toggle-btn" id="btn-sound-toggle" onclick="toggleSoundEffects()" title="បើក/បិទ សម្លេងចុច (Sound Effects)" style="margin-right: 0.25rem;">
-        <span id="sound-toggle-icon" style="font-size: 13px;">🔊</span>
-        <span id="sound-toggle-label">សម្លេង</span>
-      </button>
-
       <!-- Owner Actions (Visible only when Master PIN unlocked) -->
-      <div id="owner-navbar-actions" style="display: flex; gap: 0.45rem; align-items: center;">
+      <div id="owner-navbar-actions" style="display: flex; gap: 0.45rem; align-items: center; flex-wrap: nowrap;">
         <!-- New Invoice -->
         <button type="button" class="btn btn-outline" onclick="createNewInvoice()" title="បង្កើតវិក្កយបត្រថ្មី">
           <svg style="width: 14px; height: 14px; fill: currentColor;" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
@@ -104,44 +82,78 @@
           <span>ចែករំលែក</span>
         </button>
 
-        <!-- Change PIN -->
-        <button type="button" class="btn btn-outline" onclick="openChangePinModal()" title="ប្តូរលេខកូដ PIN សម្ងាត់">
-          <svg style="width: 14px; height: 14px; fill: #d97706;" viewBox="0 0 24 24"><path d="M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
-          <span>PIN</span>
+        <!-- Primary Print Button -->
+        <button type="button" class="btn btn-primary btn-nav-print" onclick="printInvoice()" title="បោះពុម្ព ឬរក្សាទុកជា PDF">
+          <svg style="width: 15px; height: 15px; fill: currentColor;" viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
+          <span>បោះពុម្ព</span>
         </button>
 
-        <!-- Change Admin Avatar (After login only) -->
-        <button type="button" class="btn btn-outline" onclick="triggerAdminAvatarUpload()" title="ប្តូររូបភាព Admin">
-          <img src="ratha_avatar.jpg" class="admin-avatar-img" style="width: 15px; height: 15px; border-radius: 50%; object-fit: cover; border: 1.5px solid var(--primary-color); vertical-align: middle;" alt="Admin">
-          <span>ប្តូររូប Admin</span>
-        </button>
-
-        <!-- Lock Access -->
-        <button type="button" class="btn btn-outline text-red-600" onclick="lockOwnerAccess()" title="ចាក់សោសុវត្ថិភាព">
-          <svg style="width: 14px; height: 14px; fill: currentColor;" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-          <span>ចាក់សោ</span>
-        </button>
+        <!-- Sleek Admin Profile & Tools Dropdown -->
+        <div class="admin-dropdown-wrap" id="admin-dropdown-wrap">
+          <button type="button" class="btn btn-outline admin-menu-btn" onclick="toggleAdminDropdown()" id="btn-admin-menu" title="ការកំណត់ និងគណនី Admin">
+            <img src="ratha_avatar.jpg" class="admin-avatar-img" style="width: 17px; height: 17px; border-radius: 50%; object-fit: cover; border: 1.5px solid var(--primary-color);" alt="Admin">
+            <span>Admin</span>
+            <svg style="width: 11px; height: 11px; fill: currentColor; margin-left: 1px;" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+          </button>
+          <div class="admin-dropdown-menu" id="admin-dropdown-menu">
+            <div class="admin-dropdown-header">
+              <img src="ratha_avatar.jpg" class="admin-avatar-img" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;" alt="Admin">
+              <div>
+                <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">ហ៊ុន រដ្ឋា (HUN RATHA)</div>
+                <div style="font-size: 0.70rem; color: var(--text-muted);">Admin • ម្ចាស់ហាង</div>
+              </div>
+            </div>
+            <div class="admin-dropdown-divider"></div>
+            <button type="button" class="admin-dropdown-item" onclick="triggerAdminAvatarUpload(); closeAdminDropdown();">
+              <span class="dropdown-item-icon">🖼️</span> <span>ប្តូររូបភាព Admin</span>
+            </button>
+            <button type="button" class="admin-dropdown-item" onclick="openChangePinModal(); closeAdminDropdown();">
+              <span class="dropdown-item-icon">🔑</span> <span>ប្តូរលេខកូដ PIN សម្ងាត់</span>
+            </button>
+            <button type="button" class="admin-dropdown-item" onclick="openModal('print-help-modal'); closeAdminDropdown();">
+              <span class="dropdown-item-icon">❓</span> <span>ជំនួយបោះពុម្ព A4 & PDF</span>
+            </button>
+            <button type="button" class="admin-dropdown-item" onclick="toggleSoundEffects();">
+              <span class="dropdown-item-icon" id="sound-dropdown-icon">🔊</span> <span id="sound-dropdown-label">សម្លេងចុច: បើក</span>
+            </button>
+            <div class="admin-dropdown-divider"></div>
+            <!-- Theme Mode Switcher within menu -->
+            <div class="admin-dropdown-theme-row">
+              <span style="font-size: 0.78rem; font-weight: 600; color: var(--text-muted);">ផ្ទៃបង្ហាញ:</span>
+              <div class="theme-mode-toggle" style="margin: 0;">
+                <button type="button" class="theme-toggle-btn active" data-mode="system" onclick="setThemeMode('system')" title="System">
+                  <svg style="width: 11px; height: 11px; fill: currentColor;" viewBox="0 0 24 24"><path d="M20 18c1.1 0 1.99-.9 1.99-2L22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z"/></svg>
+                  <span>System</span>
+                </button>
+                <button type="button" class="theme-toggle-btn" data-mode="light" onclick="setThemeMode('light')" title="ភ្លឺ">
+                  <svg style="width: 11px; height: 11px; fill: #d97706;" viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1z"/></svg>
+                  <span>ភ្លឺ</span>
+                </button>
+                <button type="button" class="theme-toggle-btn" data-mode="dark" onclick="setThemeMode('dark')" title="ងងឹត">
+                  <svg style="width: 11px; height: 11px; fill: #6366f1;" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg>
+                  <span>ងងឹត</span>
+                </button>
+              </div>
+            </div>
+            <div class="admin-dropdown-divider"></div>
+            <button type="button" class="admin-dropdown-item text-red-600" onclick="lockOwnerAccess(); closeAdminDropdown();">
+              <span class="dropdown-item-icon">🔒</span> <span>ចាក់សោសុវត្ថិភាព</span>
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- Customer / Locked Actions (Visible when locked or viewing shared link) -->
-      <div id="customer-navbar-actions" style="display: none; gap: 0.45rem; align-items: center;">
+      <div id="customer-navbar-actions" style="display: none; gap: 0.45rem; align-items: center; flex-wrap: nowrap;">
         <button type="button" class="btn btn-outline" onclick="openOwnerLoginModal()" title="ចូលគ្រប់គ្រង (Admin Login)">
           <svg style="width: 14px; height: 14px; fill: #2563eb;" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
           <span>🔐 ចូលគ្រប់គ្រង</span>
         </button>
+        <button type="button" class="btn btn-primary" onclick="printInvoice()">
+          <svg style="width: 15px; height: 15px; fill: currentColor;" viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
+          <span>បោះពុម្ព</span>
+        </button>
       </div>
-
-      <!-- Print / PDF Guide -->
-      <button type="button" class="btn btn-outline" onclick="openModal('print-help-modal')" title="ជំនួយបោះពុម្ព A4 & PDF">
-        <svg style="width: 14px; height: 14px; fill: #0d9488;" viewBox="0 0 24 24"><path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"/></svg>
-        <span>ជំនួយ</span>
-      </button>
-
-      <!-- Big Print / Save PDF Button -->
-      <button type="button" class="btn btn-primary" onclick="printInvoice()">
-        <svg style="width: 15px; height: 15px; fill: currentColor;" viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
-        <span>បោះពុម្ព / សន្សំ PDF (A4)</span>
-      </button>
     </div>
   </header>
 
@@ -183,39 +195,39 @@
 
       <!-- Preview Master Toolbar (Direct Invoice Mode - Hidden in Print) -->
       <div class="preview-toolbar no-print">
-        <!-- Currency & Exchange Rate Group -->
-        <div style="display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap;">
+        <!-- Left: Currency & Exchange Rate Group -->
+        <div class="toolbar-group">
           <div style="display: flex; align-items: center; gap: 0.3rem;">
             <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-main);">💵 រូបិយប័ណ្ណ:</span>
-            <select id="preview-currency-select" class="form-control" style="width: auto; padding: 0.25rem 0.5rem; font-size: 0.8rem; font-weight: 700; border-radius: 6px;" onchange="changeGlobalCurrency(this.value)">
-              <option value="USD">💵 ដុល្លារ (USD $)</option>
-              <option value="KHR">៛ ប្រាក់រៀល (KHR ៛)</option>
+            <select id="preview-currency-select" class="form-control" style="width: auto; padding: 0.25rem 0.45rem; font-size: 0.8rem; font-weight: 700; border-radius: 6px;" onchange="changeGlobalCurrency(this.value)">
+              <option value="USD">USD ($)</option>
+              <option value="KHR">KHR (៛)</option>
             </select>
           </div>
-          <div style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.78rem; font-weight: 600; color: var(--text-muted);">
-            <span>1$ =</span>
-            <input type="number" id="preview-rate-input" class="form-control font-bold" style="width: 72px; padding: 0.25rem 0.4rem; font-size: 0.8rem; text-align: center;" value="4100" oninput="changeExchangeRate(this.value)">
+          <div style="display: flex; align-items: center; gap: 0.2rem; font-size: 0.78rem; font-weight: 600; color: var(--text-muted);">
+            <span>1$=</span>
+            <input type="number" id="preview-rate-input" class="form-control font-bold" style="width: 65px; padding: 0.25rem 0.35rem; font-size: 0.8rem; text-align: center;" value="4100" oninput="changeExchangeRate(this.value)">
             <span>៛</span>
           </div>
-          <label style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.78rem; cursor: pointer; color: var(--text-main); font-weight: 600;">
-            <input type="checkbox" id="preview-dual-check" checked onchange="toggleDualCurrencyDirect(this.checked)" style="width: 15px; height: 15px;">
+          <label style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.76rem; cursor: pointer; color: var(--text-main); font-weight: 600; white-space: nowrap;">
+            <input type="checkbox" id="preview-dual-check" checked onchange="toggleDualCurrencyDirect(this.checked)" style="width: 14px; height: 14px;">
             <span>បង្ហាញពីរ ($ & ៛)</span>
           </label>
         </div>
 
-        <!-- Paper Size, Zoom & Actions -->
-        <div style="display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap;">
-          <div class="paper-size-controls" style="display: flex; align-items: center; gap: 0.3rem; font-size: 0.8rem; font-weight: 600; color: var(--text-main);">
+        <!-- Right: Paper Size, Zoom & Fit Indicator -->
+        <div class="toolbar-group">
+          <div class="paper-size-controls" style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.78rem; font-weight: 600; color: var(--text-main); white-space: nowrap;">
             <span>ក្រដាស:</span>
-            <select id="preview-paper-size-select" class="form-control" style="width: auto; padding: 0.25rem 0.6rem; font-size: 0.8rem; font-weight: 700; border-radius: 6px;" onchange="setPaperSize(this.value)">
-              <option value="a4" selected>📄 ស្តង់ដា A4</option>
-              <option value="a5">📑 ស្តង់ដា A5</option>
+            <select id="preview-paper-size-select" class="form-control" style="width: auto; padding: 0.25rem 0.5rem; font-size: 0.8rem; font-weight: 700; border-radius: 6px;" onchange="setPaperSize(this.value)">
+              <option value="a4" selected>📄 A4</option>
+              <option value="a5">📑 A5</option>
             </select>
           </div>
 
-          <div class="zoom-controls">
+          <div class="zoom-controls" style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.78rem; color: var(--text-muted); white-space: nowrap;">
             <span>មើល:</span>
-            <select id="preview-zoom-select" class="form-control" style="width: auto; padding: 0.2rem 0.45rem; font-size: 0.8rem;">
+            <select id="preview-zoom-select" class="form-control" style="width: auto; padding: 0.2rem 0.4rem; font-size: 0.78rem;">
               <option value="1">100%</option>
               <option value="0.9">90%</option>
               <option value="0.8">80%</option>
@@ -223,19 +235,12 @@
             </select>
           </div>
 
-          <div id="preview-page-indicator-wrap" class="no-print" style="display: flex; align-items: center;">
-            <span id="preview-page-indicator" class="page-fit-indicator fit-single" style="font-size: 0.72rem; padding: 0.2rem 0.55rem;">
+          <div id="preview-page-indicator-wrap" class="no-print" style="display: flex; align-items: center; white-space: nowrap;">
+            <span id="preview-page-indicator" class="page-fit-indicator fit-single" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;">
               <svg style="width: 12px; height: 12px; fill: currentColor;" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
               <span id="preview-page-indicator-text">១ ទំព័រ A4</span>
             </span>
           </div>
-
-          <button type="button" class="btn btn-sm btn-outline" onclick="shareInvoice()" title="ចែករំលែកវិក្កយបត្រ">
-            <svg style="width: 13px; height: 13px; fill: currentColor;" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg>
-            <span>ចែករំលែក</span>
-          </button>
-
-
         </div>
       </div>
 
@@ -792,6 +797,6 @@
   <script src="qrcode.min.js"></script>
 
   <!-- App Script -->
-  <script src="script.js?v=3.2"></script>
+  <script src="script.js?v=3.3"></script>
 </body>
 </html>

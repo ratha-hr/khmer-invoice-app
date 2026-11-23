@@ -260,10 +260,34 @@ function updateSoundUi() {
   const icon = document.getElementById('sound-toggle-icon');
   const label = document.getElementById('sound-toggle-label');
   const custIcons = document.querySelectorAll('.sound-icon-cust');
+  const dropIcon = document.getElementById('sound-dropdown-icon');
+  const dropLabel = document.getElementById('sound-dropdown-label');
+
   if (icon) icon.textContent = isSoundEnabled ? '🔊' : '🔇';
   if (label) label.textContent = isSoundEnabled ? 'សម្លេង' : 'បិទសម្លេង';
+  if (dropIcon) dropIcon.textContent = isSoundEnabled ? '🔊' : '🔇';
+  if (dropLabel) dropLabel.textContent = isSoundEnabled ? 'សម្លេងចុច: បើក' : 'សម្លេងចុច: បិទ';
   custIcons.forEach(el => el.textContent = isSoundEnabled ? '🔊' : '🔇');
 }
+
+// Admin Dropdown Handlers
+function toggleAdminDropdown() {
+  playUiSound('click');
+  const menu = document.getElementById('admin-dropdown-menu');
+  if (menu) menu.classList.toggle('show');
+}
+
+function closeAdminDropdown() {
+  const menu = document.getElementById('admin-dropdown-menu');
+  if (menu) menu.classList.remove('show');
+}
+
+document.addEventListener('click', (e) => {
+  const wrap = document.getElementById('admin-dropdown-wrap');
+  if (wrap && !wrap.contains(e.target)) {
+    closeAdminDropdown();
+  }
+});
 
 // Global delegated click listener for micro-audio feedback
 function initGlobalClickSound() {
