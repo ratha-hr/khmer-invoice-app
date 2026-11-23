@@ -1644,13 +1644,28 @@ function setCheck(id, val) {
 // Update Page Fit Indicator & Print Constraints (Rule: <=10 items = 1 Page, >10 items = Margin Multi-Page)
 function updatePageFitIndicator() {
   const count = state.items ? state.items.length : 0;
-  const isSingleFit = count <= 10;
+  const isA5 = (state.paperSize === 'a5');
+  const paperLabel = isA5 ? 'A5' : 'A4';
 
-  const sheet = document.getElementById('printable-invoice-sheet');
+  // High Capacity single-page limits: up to 18 on A4, up to 12 on A5!
+  const maxSingle = isA5 ? 12 : 18;
+  const isSingleFit = count <= maxSingle;
+
+  const sheet = document.getElementById('printable-invoice-sheet') || document.getElementById('invoice-preview-sheet');
   if (sheet) {
+    sheet.classList.remove('density-compact', 'density-max');
     if (isSingleFit) {
       sheet.classList.add('fit-single-page');
       sheet.classList.remove('multi-page-mode');
+
+      // Apply dynamic density tiers based on count & paper size
+      const compactThreshold = isA5 ? 5 : 8;
+      const maxThreshold = isA5 ? 9 : 13;
+      if (count >= maxThreshold) {
+        sheet.classList.add('density-max');
+      } else if (count >= compactThreshold) {
+        sheet.classList.add('density-compact');
+      }
     } else {
       sheet.classList.remove('fit-single-page');
       sheet.classList.add('multi-page-mode');
@@ -1665,18 +1680,18 @@ function updatePageFitIndicator() {
     document.body.classList.add('multi-page-print');
   }
 
-  // Update badge in Tab 4
-  const tabFitEl = document.getElementById('items-page-fit-indicator');
-  const tabFitText = document.getElementById('items-page-fit-text');
-  if (tabFitEl && tabFitText) {
+  // Update badge in sheet table action toolbar
+  const sheetFitEl = document.getElementById('sheet-page-fit-indicator');
+  const sheetFitText = document.getElementById('sheet-page-fit-text');
+  if (sheetFitEl && sheetFitText) {
     if (isSingleFit) {
-      tabFitEl.className = 'page-fit-indicator fit-single';
-      tabFitText.textContent = `សមល្មមត្រឹម ១ ទំព័រ A4 (${count}/10 មុខ)`;
-      tabFitEl.title = 'ទំនិញត្រឹម ១០ មុខ ត្រូវបានតម្រឹមសមល្មមត្រឹម ១ ទំព័រ A4 គត់';
+      sheetFitEl.className = 'page-fit-indicator fit-single';
+      sheetFitText.textContent = `សមល្មមត្រឹម ១ ទំព័រ ${paperLabel} (${count}/${maxSingle} មុខ)`;
+      sheetFitEl.title = `ទំនិញត្រឹម ${maxSingle} មុខ ត្រូវបានតម្រឹមសមល្មមត្រឹម ១ ទំព័រ ${paperLabel} គត់`;
     } else {
-      tabFitEl.className = 'page-fit-indicator fit-multi';
-      tabFitText.textContent = `លើសពី ១០ មុខ (${count} មុខ) • គិតតាម Margin ទំព័របន្តបន្ទាប់`;
-      tabFitEl.title = 'ទំនិញលើសពី ១០ មុខ គិតតាម Margin ជាក់ស្តែងសម្រាប់ទំព័របន្តបន្ទាប់';
+      sheetFitEl.className = 'page-fit-indicator fit-multi';
+      sheetFitText.textContent = `លើសពី ${maxSingle} មុខ (${count} មុខ) • គិតតាម Margin ទំព័របន្តបន្ទាប់`;
+      sheetFitEl.title = `ទំនិញលើសពី ${maxSingle} មុខ គិតតាម Margin ជាក់ស្តែងសម្រាប់ទំព័របន្តបន្ទាប់`;
     }
   }
 
@@ -1686,25 +1701,10 @@ function updatePageFitIndicator() {
   if (prevFitEl && prevFitText) {
     if (isSingleFit) {
       prevFitEl.className = 'page-fit-indicator fit-single';
-      prevFitText.textContent = `១ ទំព័រ A4 (${count}/10)`;
+      prevFitText.textContent = `១ ទំព័រ ${paperLabel} (${count}/${maxSingle})`;
     } else {
       prevFitEl.className = 'page-fit-indicator fit-multi';
       prevFitText.textContent = `${count} មុខ (Multi-page)`;
-    }
-  }
-
-  // Update badge in sheet table action toolbar
-  const sheetFitEl = document.getElementById('sheet-page-fit-indicator');
-  const sheetFitText = document.getElementById('sheet-page-fit-text');
-  if (sheetFitEl && sheetFitText) {
-    if (isSingleFit) {
-      sheetFitEl.className = 'page-fit-indicator fit-single';
-      sheetFitText.textContent = `សមល្មមត្រឹម ១ ទំព័រ A4 (${count}/10 មុខ)`;
-      sheetFitEl.title = 'ទំនិញត្រឹម ១០ មុខ ត្រូវបានតម្រឹមសមល្មមត្រឹម ១ ទំព័រ A4 គត់';
-    } else {
-      sheetFitEl.className = 'page-fit-indicator fit-multi';
-      sheetFitText.textContent = `លើសពី ១០ មុខ (${count} មុខ) • គិតតាម Margin ទំព័របន្តបន្ទាប់`;
-      sheetFitEl.title = 'ទំនិញលើសពី ១០ មុខ គិតតាម Margin ជាក់ស្តែងសម្រាប់ទំព័របន្តបន្ទាប់';
     }
   }
 }
@@ -2125,7 +2125,7 @@ function setPaperSize(size) {
   if (custSelect) custSelect.value = targetSize;
   if (prevSelect) prevSelect.value = targetSize;
 
-  const sheet = document.getElementById('invoice-preview-sheet');
+  const sheet = document.getElementById('printable-invoice-sheet') || document.getElementById('invoice-preview-sheet');
 
   let dynamicStyle = document.getElementById('dynamic-paper-style');
   if (!dynamicStyle) {
@@ -2140,15 +2140,17 @@ function setPaperSize(size) {
       sheet.classList.add('sheet-a5');
       sheet.classList.remove('sheet-a4');
     }
-    dynamicStyle.textContent = `@page { size: A5 portrait !important; margin: 1.5cm !important; }`;
+    dynamicStyle.textContent = `@page { size: A5 portrait !important; margin: 0.5cm 0.65cm !important; }`;
   } else {
     document.body.classList.remove('paper-mode-a5');
     if (sheet) {
       sheet.classList.remove('sheet-a5');
       sheet.classList.add('sheet-a4');
     }
-    dynamicStyle.textContent = `@page { size: A4 portrait !important; margin: 1.5cm !important; }`;
+    dynamicStyle.textContent = `@page { size: A4 portrait !important; margin: 0.7cm 0.9cm !important; }`;
   }
+
+  updatePageFitIndicator();
 
   if (typeof autoScaleInvoiceOnMobile === 'function') {
     autoScaleInvoiceOnMobile();

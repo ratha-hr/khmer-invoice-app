@@ -463,23 +463,9 @@ body {
   min-height: calc(100vh - 70px) !important;
 }
 
-/* Hide Sidebar Editor Panel by Default (User works directly on the invoice) */
+/* Permanently Disable Sidebar Editor Panel */
 .editor-panel {
   display: none !important;
-}
-
-/* Optional Drawer Mode if user opens settings */
-body.show-editor-drawer .editor-panel {
-  display: flex !important;
-  position: fixed !important;
-  top: 60px !important;
-  left: 0 !important;
-  width: 440px !important;
-  max-width: 90vw !important;
-  height: calc(100vh - 60px) !important;
-  z-index: 1000 !important;
-  box-shadow: 4px 0 25px rgba(0, 0, 0, 0.25) !important;
-  background: var(--card-bg) !important;
 }
 
 /* Hide Mobile Segment Switcher by Default */
@@ -2073,29 +2059,39 @@ body.paper-mode-a5 @page,
   opacity: 0.85;
 }
 
-/* A5 Paper Mode Preview Styles */
+/* A5 Paper Mode Styles (Optimized for High Capacity on Single A5 Sheet) */
 .invoice-sheet.sheet-a5 {
   width: 148mm;
   min-height: 210mm;
   max-width: 148mm;
-  padding: 1.27cm;
-  font-size: 0.8rem;
+  padding: 0.65cm 0.75cm;
+  font-size: 0.76rem;
 }
 .invoice-sheet.sheet-a5 .shop-name-kh {
-  font-size: 1.15rem;
+  font-size: 1.05rem;
 }
 .invoice-sheet.sheet-a5 .inv-doc-title-kh {
-  font-size: 1.25rem;
+  font-size: 1.15rem;
 }
 .invoice-sheet.sheet-a5 .inv-table th,
 .invoice-sheet.sheet-a5 .inv-table td {
-  padding: 0.28rem 0.35rem;
-  font-size: 0.76rem;
+  padding: 0.2rem 0.3rem;
+  font-size: 0.72rem;
 }
 .invoice-sheet.sheet-a5 .qr-code-img,
 .invoice-sheet.sheet-a5 .qr-code-canvas-wrap canvas {
-  max-width: 80px !important;
-  max-height: 80px !important;
+  max-width: 60px !important;
+  max-height: 60px !important;
+}
+.invoice-sheet.sheet-a5 .inv-header {
+  margin-bottom: 0.35rem;
+  padding-bottom: 0.25rem;
+}
+.invoice-sheet.sheet-a5 .inv-addresses-row {
+  margin-bottom: 0.35rem;
+}
+.invoice-sheet.sheet-a5 .signature-line-space {
+  height: 22px;
 }
 
 
@@ -3481,3 +3477,146 @@ body.dark-mode .btn-clear-all-items:hover {
 }
 
 
+
+
+/* =========================================================
+   HIGH-CAPACITY DENSITY TIERS (MAX PRODUCT CAPACITY PER PAGE)
+   ========================================================= */
+/* Tier 1: Compact Density (7-12 items on A4, 5-8 on A5) */
+.invoice-sheet.density-compact {
+  padding: 0.75cm 0.95cm !important;
+}
+.invoice-sheet.sheet-a5.density-compact {
+  padding: 0.5cm 0.65cm !important;
+}
+.invoice-sheet.density-compact .inv-header {
+  margin-bottom: 0.35rem;
+  padding-bottom: 0.25rem;
+}
+.invoice-sheet.density-compact .khmer-kbach-divider {
+  margin: 0.15rem 0 0.25rem 0;
+}
+.invoice-sheet.density-compact .inv-addresses-row {
+  margin-bottom: 0.35rem;
+}
+.invoice-sheet.density-compact .inv-table th {
+  padding: 0.25rem 0.35rem;
+  font-size: 0.70rem;
+}
+.invoice-sheet.density-compact .inv-table td {
+  padding: 0.16rem 0.28rem;
+  font-size: 0.71rem;
+}
+.invoice-sheet.density-compact .item-desc-cell .item-title-text {
+  font-size: 0.72rem;
+  line-height: 1.18;
+}
+.invoice-sheet.density-compact .item-desc-cell .item-desc-sub {
+  font-size: 0.62rem;
+}
+.invoice-sheet.density-compact .inv-summary-section {
+  margin-bottom: 0.35rem;
+  gap: 0.45rem;
+}
+.invoice-sheet.density-compact .qr-code-img,
+.invoice-sheet.density-compact .qr-code-canvas-wrap canvas {
+  max-width: 55px !important;
+  max-height: 55px !important;
+}
+.invoice-sheet.density-compact .totals-table td {
+  padding: 0.14rem 0.28rem;
+  font-size: 0.71rem;
+}
+.invoice-sheet.density-compact .inv-notes-box {
+  margin-bottom: 0.25rem;
+  padding: 0.25rem 0.38rem;
+  font-size: 0.65rem;
+}
+.invoice-sheet.density-compact .signature-line-space {
+  height: 24px;
+}
+
+/* Tier 2: Ultra-Compact Density (13-18 items on A4, 9-12 on A5) */
+.invoice-sheet.density-max {
+  padding: 0.6cm 0.85cm !important;
+}
+.invoice-sheet.sheet-a5.density-max {
+  padding: 0.4cm 0.55cm !important;
+}
+.invoice-sheet.density-max .inv-header {
+  margin-bottom: 0.25rem;
+  padding-bottom: 0.15rem;
+}
+.invoice-sheet.density-max .shop-name-kh {
+  font-size: 1.05rem;
+}
+.invoice-sheet.density-max .inv-company-info {
+  gap: 0.1rem;
+}
+.invoice-sheet.density-max .khmer-kbach-divider {
+  display: none; /* Hide ornamental divider to save critical vertical space */
+}
+.invoice-sheet.density-max .inv-addresses-row {
+  margin-bottom: 0.25rem;
+  gap: 0.45rem;
+}
+.invoice-sheet.density-max .inv-client-box,
+.invoice-sheet.density-max .inv-pay-summary-box {
+  padding: 0.22rem 0.38rem;
+  font-size: 0.68rem;
+}
+.invoice-sheet.density-max .inv-table th {
+  padding: 0.18rem 0.28rem;
+  font-size: 0.67rem;
+}
+.invoice-sheet.density-max .inv-table td {
+  padding: 0.1rem 0.22rem;
+  font-size: 0.68rem;
+}
+.invoice-sheet.density-max .item-desc-cell .item-title-text {
+  font-size: 0.69rem;
+  line-height: 1.14;
+}
+.invoice-sheet.density-max .item-desc-cell .item-desc-sub {
+  font-size: 0.58rem;
+}
+.invoice-sheet.density-max .inv-summary-section {
+  margin-bottom: 0.25rem;
+  gap: 0.4rem;
+}
+.invoice-sheet.density-max .inv-payment-method-box {
+  padding: 0.3rem 0.45rem;
+  gap: 0.4rem;
+}
+.invoice-sheet.density-max .qr-code-img,
+.invoice-sheet.density-max .qr-code-canvas-wrap canvas {
+  max-width: 48px !important;
+  max-height: 48px !important;
+}
+.invoice-sheet.density-max .bank-details {
+  font-size: 0.68rem;
+  gap: 0.15rem;
+}
+.invoice-sheet.density-max .totals-table td {
+  padding: 0.1rem 0.22rem;
+  font-size: 0.68rem;
+}
+.invoice-sheet.density-max .inv-notes-box {
+  margin-bottom: 0.2rem;
+  padding: 0.18rem 0.3rem;
+  font-size: 0.62rem;
+  line-height: 1.35;
+}
+.invoice-sheet.density-max .signature-line-space {
+  height: 16px;
+}
+.invoice-sheet.density-max .inv-signatures-row {
+  margin-top: 0.15rem;
+  padding-top: 0.15rem;
+}
+.invoice-sheet.density-max .signature-title {
+  font-size: 0.70rem;
+}
+.invoice-sheet.density-max .signature-line {
+  font-size: 0.65rem;
+}
