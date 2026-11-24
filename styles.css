@@ -917,19 +917,22 @@ body.dark-mode .date-picker-trigger-btn {
 .preview-toolbar {
   width: 100%;
   max-width: 210mm;
-  background: var(--card-bg, #ffffff);
-  border: 1px solid var(--border-color, #e2e8f0);
-  border-radius: 12px;
-  padding: 0.5rem 0.85rem;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  border-radius: 14px;
+  padding: 0.55rem 0.95rem;
   margin-bottom: 0.85rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 4px 15px -3px rgba(15, 23, 42, 0.05), 0 2px 6px -2px rgba(15, 23, 42, 0.03);
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
   flex-wrap: nowrap;
   gap: 0.75rem;
   overflow-x: auto;
   scrollbar-width: none;
+  transition: all 0.2s ease;
 }
 .preview-toolbar::-webkit-scrollbar {
   display: none;
@@ -1027,27 +1030,34 @@ body.dark-mode .date-picker-trigger-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.65rem;
-  margin: 0.42rem 0 0.65rem 0;
+  gap: 0.75rem;
+  margin: 0.55rem 0 0.65rem 0;
   position: relative;
   z-index: 1;
+  color: #b45309;
 }
 
 .kbach-line {
   flex: 1;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--primary-color) 40%, var(--primary-color) 60%, transparent);
-  opacity: 0.35;
+  background: linear-gradient(90deg, transparent 0%, rgba(180, 83, 9, 0.35) 50%, rgba(180, 83, 9, 0.7) 100%);
+}
+.khmer-kbach-divider .kbach-line:last-child {
+  background: linear-gradient(90deg, rgba(180, 83, 9, 0.7) 0%, rgba(180, 83, 9, 0.35) 50%, transparent 100%);
 }
 
-.kbach-gem {
-  font-size: 0.74rem;
-  color: var(--primary-color);
-  letter-spacing: 0.25em;
-  font-weight: 700;
-  line-height: 1;
-  opacity: 0.85;
-  text-shadow: none;
+.kbach-ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 18px;
+}
+
+.kbach-svg {
+  width: 100%;
+  height: 100%;
+  fill: #b45309;
 }
 
 /* Clean Streamlined Header */
@@ -1068,21 +1078,22 @@ body.dark-mode .date-picker-trigger-btn {
 }
 
 .shop-brand-mark {
-  width: 44px;
-  height: 44px;
-  min-width: 44px;
-  min-height: 44px;
+  width: 52px;
+  height: 52px;
+  min-width: 52px;
+  min-height: 52px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px -2px rgba(11, 57, 84, 0.22);
+  border-radius: 14px;
+  box-shadow: 0 6px 16px -3px rgba(11, 57, 84, 0.25);
   flex-shrink: 0;
+  transition: transform 0.2s ease;
 }
 
 .shop-mark-svg {
-  width: 44px;
-  height: 44px;
+  width: 52px;
+  height: 52px;
   display: block;
 }
 
@@ -1093,14 +1104,24 @@ body.dark-mode .date-picker-trigger-btn {
 }
 
 /* Shop Name (Prominent & Modern) */
+.shop-title-row {
+  margin-bottom: 0.22rem;
+}
 .shop-name-kh {
   font-family: var(--khmer-title-font);
-  font-size: 1.18rem;
+  font-size: 1.30rem;
   font-weight: 800;
   color: var(--primary-color);
-  margin-bottom: 0.15rem;
-  line-height: 1.25;
-  letter-spacing: -0.015em;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+.shop-tagline {
+  font-size: 0.63rem;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: 1px;
 }
 
 /* Owner Name & English Tagline */
@@ -1108,14 +1129,15 @@ body.dark-mode .date-picker-trigger-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  font-size: 0.74rem;
+  font-size: 0.72rem;
   color: #475569;
-  background: linear-gradient(135deg, rgba(11, 57, 84, 0.05) 0%, rgba(11, 57, 84, 0.02) 100%);
-  border: 1px solid rgba(11, 57, 84, 0.12);
-  padding: 0.15rem 0.5rem;
-  border-radius: 6px;
-  margin-bottom: 0.22rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 0.16rem 0.55rem;
+  border-radius: 20px;
+  margin-bottom: 0.28rem;
   width: fit-content;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
 }
 .owner-badge-icon {
   color: #059669;
@@ -1138,23 +1160,34 @@ body.dark-mode .date-picker-trigger-btn {
 }
 
 .company-contact {
-  font-size: 0.70rem;
-  color: #475569;
+  font-size: 0.71rem;
+  color: #334155;
   line-height: 1.45;
   display: flex;
   flex-direction: column;
-  gap: 0.1rem;
+  gap: 0.18rem;
 }
 .company-contact .contact-item {
   display: flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.35rem;
 }
-.contact-icon {
+.contact-icon-bubble {
+  width: 17px;
+  height: 17px;
+  min-width: 17px;
+  border-radius: 50%;
+  background: var(--primary-light);
+  color: var(--primary-color);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.68rem;
+  flex-shrink: 0;
+}
+.contact-icon-bubble .contact-svg {
+  width: 10px;
+  height: 10px;
+  fill: currentColor;
 }
 
 .company-tin {
@@ -1180,7 +1213,7 @@ body.dark-mode .date-picker-trigger-btn {
 
 .inv-doc-title-kh {
   font-family: var(--khmer-title-font);
-  font-size: 1.35rem;
+  font-size: 1.45rem;
   font-weight: 800;
   color: var(--primary-color);
   line-height: 1.15;
@@ -1201,14 +1234,14 @@ body.dark-mode .date-picker-trigger-btn {
 .inv-meta-grid {
   display: inline-grid;
   grid-template-columns: auto auto;
-  gap: 0.22rem 0.65rem;
+  gap: 0.25rem 0.75rem;
   font-size: 0.70rem;
   text-align: left;
   background: linear-gradient(145deg, #ffffff 0%, var(--primary-light) 100%);
-  padding: 0.38rem 0.65rem;
-  border-radius: 8px;
+  padding: 0.42rem 0.75rem;
+  border-radius: 10px;
   border: 1px solid var(--primary-border);
-  box-shadow: 0 2px 6px rgba(11, 57, 84, 0.04);
+  box-shadow: 0 2px 8px rgba(11, 57, 84, 0.04);
 }
 
 .inv-meta-grid .meta-lbl {
@@ -1223,39 +1256,85 @@ body.dark-mode .date-picker-trigger-btn {
 .invoice-num-badge {
   background: #ffffff;
   color: var(--primary-color) !important;
-  padding: 2px 7px;
-  border-radius: 5px;
+  padding: 2px 8px;
+  border-radius: 6px;
   border: 1.5px solid var(--primary-border);
   font-weight: 800;
   display: inline-block;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
-  letter-spacing: 0.03em;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  letter-spacing: 0.04em;
+}
+
+.inv-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+.status-dot {
+  width: 6.5px;
+  height: 6.5px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.status-unpaid {
+  background: #fff1f2;
+  color: #e11d48;
+  border: 1px solid #fecdd3;
+}
+.status-unpaid .status-dot {
+  background: #e11d48;
+  box-shadow: 0 0 0 2px rgba(225, 29, 72, 0.25);
+}
+.status-paid {
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
+}
+.status-paid .status-dot {
+  background: #059669;
+  box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.25);
+}
+.status-partial {
+  background: #fffbeb;
+  color: #d97706;
+  border: 1px solid #fde68a;
+}
+.status-partial .status-dot {
+  background: #d97706;
+  box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.25);
 }
 
 /* Bill To & Notice Row with Colorful Highlights */
 .inv-addresses-row {
   display: grid;
   grid-template-columns: 1.35fr 1fr;
-  gap: 0.75rem;
-  margin-bottom: 0.6rem;
+  gap: 0.85rem;
+  margin-bottom: 0.65rem;
 }
 
 .inv-client-box {
   background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
-  border-radius: 8px;
-  padding: 0.45rem 0.75rem;
+  border-radius: 10px;
+  padding: 0.55rem 0.85rem;
   border: 1px solid #e2e8f0;
-  border-left: 4px solid var(--primary-color);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  border-left: 4.5px solid var(--primary-color);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
 }
 
 .inv-pay-summary-box {
   background: linear-gradient(135deg, #f0fdfa 0%, #ffffff 100%);
-  border-radius: 8px;
-  padding: 0.45rem 0.75rem;
+  border-radius: 10px;
+  padding: 0.55rem 0.85rem;
   border: 1px solid #ccfbf1;
-  border-left: 4px solid #0d9488;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  border-left: 4.5px solid #0d9488;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -1266,59 +1345,98 @@ body.dark-mode .date-picker-trigger-btn {
   font-weight: 700;
   color: var(--primary-color);
   text-transform: uppercase;
-  margin-bottom: 0.22rem;
-  padding-bottom: 0.18rem;
+  margin-bottom: 0.3rem;
+  padding-bottom: 0.22rem;
   border-bottom: 1px solid rgba(226, 232, 240, 0.8);
   display: flex;
   align-items: center;
-  gap: 0.35rem;
-  letter-spacing: 0.02em;
+  gap: 0.4rem;
+  letter-spacing: 0.03em;
 }
 .inv-pay-summary-box .box-title-bar {
   color: #0f766e;
   border-bottom-color: rgba(204, 251, 241, 0.8);
 }
-.box-title-icon {
-  font-size: 0.75rem;
+.box-title-icon-bubble {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--primary-light);
+  color: var(--primary-color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.box-title-icon-bubble.green {
+  background: #ccfbf1;
+  color: #0d9488;
+}
+.box-title-icon-bubble .card-icon-svg {
+  width: 11px;
+  height: 11px;
+  fill: currentColor;
 }
 
 .client-name-kh {
-  font-size: 0.88rem;
+  font-size: 0.95rem;
   font-weight: 800;
   color: #0f172a;
   line-height: 1.25;
 }
 .client-info-item {
-  font-size: 0.70rem;
+  font-size: 0.71rem;
   color: #475569;
-  margin-top: 0.1rem;
+  margin-top: 0.12rem;
   line-height: 1.35;
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.35rem;
+}
+.client-info-item.client-company-text {
+  color: #334155;
+  font-weight: 600;
+  margin-bottom: 0.15rem;
 }
 .client-detail-icon {
-  font-size: 0.65rem;
-  opacity: 0.7;
+  width: 14px;
+  height: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  flex-shrink: 0;
+}
+.client-detail-icon .micro-icon {
+  width: 11px;
+  height: 11px;
+  fill: currentColor;
 }
 
 .pay-notice-desc {
-  font-size: 0.68rem;
-  color: #475569;
-  line-height: 1.38;
+  font-size: 0.69rem;
+  color: #334155;
+  line-height: 1.42;
 }
 .pay-notice-badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
-  margin-top: 0.3rem;
-  padding: 2px 7px;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+  padding: 3px 9px;
   background: #ccfbf1;
   color: #0f766e;
-  border-radius: 5px;
-  font-size: 0.64rem;
+  border: 1px solid #99f6e4;
+  border-radius: 20px;
+  font-size: 0.66rem;
   font-weight: 700;
   width: fit-content;
+  box-shadow: 0 1px 3px rgba(13, 148, 136, 0.1);
+}
+.pay-notice-badge .badge-bolt-svg {
+  width: 12px;
+  height: 12px;
+  fill: #0d9488;
 }
 
 /* Items Table */
@@ -1333,15 +1451,17 @@ body.dark-mode .date-picker-trigger-btn {
   font-size: 0.77rem;
   border-radius: 8px;
   overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
 .inv-table thead th {
-  background: var(--primary-color);
+  background: linear-gradient(180deg, var(--primary-color) 0%, #0d3b66 100%);
   color: #ffffff;
   font-weight: 700;
-  padding: 0.48rem 0.45rem;
+  padding: 0.5rem 0.45rem;
   text-align: left;
   border: 1px solid var(--primary-color);
+  border-right: 1px solid rgba(255, 255, 255, 0.15);
   letter-spacing: 0.02em;
   vertical-align: middle;
 }
@@ -1350,6 +1470,7 @@ body.dark-mode .date-picker-trigger-btn {
 }
 .inv-table thead th:last-child {
   border-top-right-radius: 8px;
+  border-right: 1px solid var(--primary-color);
 }
 .inv-table thead th.text-center {
   text-align: center;
@@ -1359,9 +1480,9 @@ body.dark-mode .date-picker-trigger-btn {
 }
 .inv-table thead th .th-sub {
   font-family: var(--num-font);
-  font-size: 8.5px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.78);
+  font-size: 9px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.88);
   display: block;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -1369,8 +1490,8 @@ body.dark-mode .date-picker-trigger-btn {
 }
 
 .inv-table tbody td {
-  padding: 0.45rem 0.5rem;
-  border: 1px solid #e2e8f0;
+  padding: 0.48rem 0.55rem;
+  border: 1px solid #e9eef4;
   color: #1e293b;
   vertical-align: top;
   transition: background-color 0.15s ease;
@@ -1388,42 +1509,43 @@ body.dark-mode .date-picker-trigger-btn {
   text-align: center;
   font-weight: 700;
   color: #64748b;
-  width: 36px;
+  width: 38px;
   font-size: 0.76rem;
 }
 
 .item-desc-cell {
-  width: 46%;
+  width: 44%;
 }
 .item-title-text {
   font-weight: 700;
   color: #0f172a;
-  font-size: 0.80rem;
-  line-height: 1.3;
+  font-size: 0.82rem;
+  line-height: 1.35;
 }
 .item-desc-sub {
   font-size: 0.70rem;
   color: #64748b;
   margin-top: 2px;
   white-space: pre-line;
-  line-height: 1.3;
+  line-height: 1.35;
 }
 
 .item-qty-cell, .item-price-cell, .item-disc-cell, .item-total-cell {
   font-family: var(--num-font);
+  font-variant-numeric: tabular-nums;
 }
 
 .item-qty-cell {
   text-align: center;
-  width: 55px;
+  width: 60px;
 }
 .item-price-cell {
   text-align: right;
-  width: 88px;
+  width: 95px;
 }
 .item-disc-cell {
   text-align: center;
-  width: 65px;
+  width: 68px;
   color: #dc2626;
   font-weight: 600;
 }
@@ -1431,7 +1553,7 @@ body.dark-mode .date-picker-trigger-btn {
   text-align: right;
   font-weight: 700;
   color: #0f172a;
-  width: 100px;
+  width: 105px;
 }
 
 /* Bottom Summary Grid */
@@ -1447,7 +1569,7 @@ body.dark-mode .date-picker-trigger-btn {
   background: #ffffff;
   border: 1.5px solid #e2e8f0;
   border-radius: 10px;
-  padding: 0.6rem 0.85rem;
+  padding: 0.65rem 0.9rem;
   display: flex;
   align-items: center;
   gap: 0.85rem;
@@ -1461,15 +1583,15 @@ body.dark-mode .date-picker-trigger-btn {
   background: linear-gradient(145deg, #ffffff 0%, #f0f9ff 100%);
   border: 1.5px solid #7dd3fc;
   border-left: 4.5px solid #0284c7;
-  box-shadow: 0 2px 8px -2px rgba(2, 132, 199, 0.08);
+  box-shadow: 0 4px 14px -3px rgba(2, 132, 199, 0.08);
 }
 
 /* Square QR Container - Perfectly fits square QR code edge to edge */
 .qr-container-box {
-  width: 108px;
-  height: 108px;
-  min-width: 108px;
-  min-height: 108px;
+  width: 110px;
+  height: 110px;
+  min-width: 110px;
+  min-height: 110px;
   background: #ffffff;
   padding: 5px;
   border-radius: 8px;
@@ -1543,22 +1665,37 @@ body.dark-mode .date-picker-trigger-btn {
 .bank-name {
   font-weight: 800;
   color: #0369a1;
-  font-size: 0.90rem;
+  font-size: 0.92rem;
   line-height: 1.25;
 }
 
-.account-name-highlight {
-  font-weight: 700;
-  color: #0f172a;
-  font-size: 0.825rem;
-  background: #ffffff;
+.account-name-pill {
+  background: rgba(2, 132, 199, 0.08);
+  border: 1px solid #bae6fd;
+  border-radius: 6px;
   padding: 2px 8px;
-  border-radius: 5px;
-  border: 1px solid #cbd5e1;
+  font-size: 0.74rem;
   display: inline-block;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  width: fit-content;
+  margin-top: 1px;
+}
+.account-name-pill .acc-lbl {
+  color: #0284c7;
+  font-weight: 600;
+}
+.account-name-highlight {
+  font-weight: 800;
+  color: #0c4a6e;
 }
 
+.account-sub-detail {
+  font-size: 0.73rem;
+  color: #475569;
+}
+.account-sub-detail .acc-lbl {
+  color: #64748b;
+  font-weight: 600;
+}
 .account-num-text {
   font-family: var(--num-font);
   font-weight: 700;
@@ -1571,27 +1708,28 @@ body.dark-mode .date-picker-trigger-btn {
   color: #0284c7;
   display: flex;
   align-items: center;
-  gap: 0.3rem;
-  margin-top: 2px;
+  gap: 0.35rem;
+  margin-top: 3px;
   font-weight: 600;
 }
 
 /* Totals Card & Table */
 .inv-totals-card {
-  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+  background: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 10px;
-  padding: 0.5rem 0.65rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+  padding: 0.55rem 0.75rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
 }
 
 .totals-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0 3px;
   font-size: 0.78rem;
 }
 .totals-table td {
-  padding: 0.32rem 0.45rem;
+  padding: 0.32rem 0.5rem;
 }
 .totals-table td.lbl {
   color: #64748b;
@@ -1603,32 +1741,32 @@ body.dark-mode .date-picker-trigger-btn {
   font-family: var(--num-font);
   font-weight: 700;
   color: #1e293b;
-  width: 108px;
+  width: 112px;
 }
 
 /* Grand Total - Vibrant Highlight */
 .totals-table tr.grand-total-row td {
-  border-top: 2px solid var(--primary-color);
-  border-bottom: 2px solid var(--primary-color);
-  background: var(--primary-light);
-  font-size: 0.95rem;
+  background: linear-gradient(135deg, var(--primary-light) 0%, #e0f2fe 100%);
+  font-size: 0.92rem;
   font-weight: 700;
   color: var(--primary-color);
-  padding: 0.5rem 0.6rem;
+  padding: 0.5rem 0.65rem;
+  border-top: 1.5px solid var(--primary-color);
+  border-bottom: 1.5px solid var(--primary-color);
 }
 .totals-table tr.grand-total-row td:first-child {
   border-top-left-radius: 8px;
   border-bottom-left-radius: 8px;
-  border-left: 2px solid var(--primary-color);
+  border-left: 1.5px solid var(--primary-color);
 }
 .totals-table tr.grand-total-row td:last-child {
   border-top-right-radius: 8px;
   border-bottom-right-radius: 8px;
-  border-right: 2px solid var(--primary-color);
+  border-right: 1.5px solid var(--primary-color);
 }
 .totals-table tr.grand-total-row td.val {
   color: var(--primary-color);
-  font-size: 1.30rem;
+  font-size: 1.35rem;
   font-weight: 800;
 }
 
@@ -1638,24 +1776,42 @@ body.dark-mode .date-picker-trigger-btn {
   font-weight: 700;
   color: #be123c;
   background: #fff1f2;
-  border-top: 1.5px solid #fecdd3;
-  border-bottom: 1.5px solid #fecdd3;
-  padding: 0.5rem 0.6rem;
+  border-top: 1px solid #fecdd3;
+  border-bottom: 1px solid #fecdd3;
+  padding: 0.45rem 0.65rem;
 }
 .totals-table tr.balance-due-row td:first-child {
   border-top-left-radius: 8px;
   border-bottom-left-radius: 8px;
-  border-left: 1.5px solid #fecdd3;
+  border-left: 1px solid #fecdd3;
 }
 .totals-table tr.balance-due-row td:last-child {
   border-top-right-radius: 8px;
   border-bottom-right-radius: 8px;
-  border-right: 1.5px solid #fecdd3;
+  border-right: 1px solid #fecdd3;
 }
 .totals-table tr.balance-due-row td.val {
   color: #e11d48;
   font-size: 1.25rem;
   font-weight: 800;
+}
+
+.dual-riel-text {
+  display: inline-block;
+  font-size: 0.74rem;
+  color: #059669;
+  font-weight: 700;
+  font-family: var(--khmer-font);
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 12px;
+  padding: 1px 7px;
+  margin-top: 2px;
+}
+.dual-riel-text.text-red-700 {
+  color: #be123c !important;
+  background: #ffe4e6;
+  border-color: #fecdd3;
 }
 
 .dual-riel-text {
@@ -2663,45 +2819,46 @@ body.dark-mode .cloud-sync-btn {
 /* Official Vintage Rubber Stamp */
 .official-paid-stamp {
   position: absolute;
-  top: 125px;
-  right: 45px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-8deg);
   z-index: 5;
   pointer-events: none;
-  transform: rotate(-13deg);
-  opacity: 0.92;
+  opacity: 0.94;
   transition: all 0.2s ease;
+  width: max-content;
 }
 
 .stamp-border {
   border: 3px dashed #059669;
   border-radius: 10px;
-  padding: 6px 16px;
+  padding: 5px 14px;
   text-align: center;
   color: #059669;
-  background: rgba(240, 253, 244, 0.85);
-  box-shadow: inset 0 0 0 2px rgba(5, 150, 105, 0.2), 0 0 0 3px rgba(5, 150, 105, 0.1);
-  letter-spacing: 0.05em;
+  background: rgba(240, 253, 244, 0.92);
+  box-shadow: inset 0 0 0 2px rgba(5, 150, 105, 0.25), 0 0 0 3px rgba(5, 150, 105, 0.1);
+  letter-spacing: 0.04em;
   font-family: var(--khmer-title-font);
   backdrop-filter: blur(1px);
 }
 
 .stamp-stars {
-  font-size: 0.70rem;
+  font-size: 0.65rem;
   letter-spacing: 0.3em;
   line-height: 1;
   color: #059669;
 }
 
 .stamp-kh {
-  font-size: 1.10rem;
+  font-size: 1.05rem;
   font-weight: 800;
-  line-height: 1.25;
+  line-height: 1.2;
   color: #047857;
 }
 
 .stamp-en {
   font-family: var(--num-font);
-  font-size: 0.78rem;
+  font-size: 0.74rem;
   font-weight: 800;
   letter-spacing: 0.16em;
   line-height: 1;
@@ -2711,16 +2868,16 @@ body.dark-mode .cloud-sync-btn {
 
 .stamp-date {
   font-family: var(--num-font);
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   font-weight: 700;
-  margin-top: 3px;
+  margin-top: 2px;
   border-top: 1px dashed #059669;
   padding-top: 2px;
   color: #059669;
 }
 
 .stamp-sub {
-  font-size: 0.60rem;
+  font-size: 0.58rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   margin-top: 1px;
@@ -3155,8 +3312,35 @@ body.dark-mode .page-fit-indicator.fit-multi {
     print-color-adjust: exact !important;
   }
 
+  .khmer-kbach-divider {
+    color: #b45309 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .inv-client-box,
+  .inv-pay-summary-box {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .inv-payment-method-box.bank-acleda {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .totals-table tr.grand-total-row td,
+  .totals-table tr.balance-due-row td {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .official-paid-stamp[style*="display: none"],
+  #prev-official-stamp[style*="display: none"] {
+    display: none !important;
+  }
+
   .official-paid-stamp {
-    display: flex !important;
     opacity: 0.95 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
@@ -3186,6 +3370,19 @@ body.dark-mode .page-fit-indicator.fit-multi {
   }
   body.paper-mode-a5 .shop-name-kh {
     font-size: 0.95rem !important;
+  }
+  body.paper-mode-a5 .shop-brand-mark {
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    min-height: 38px !important;
+  }
+  body.paper-mode-a5 .shop-mark-svg {
+    width: 38px !important;
+    height: 38px !important;
+  }
+  body.paper-mode-a5 .shop-tagline {
+    font-size: 0.52rem !important;
   }
   body.paper-mode-a5 .inv-doc-title-kh {
     font-size: 1.05rem !important;
@@ -3558,6 +3755,23 @@ body.is-customer-view .a4-viewport-wrapper {
   width: 100% !important;
 }
 body.is-customer-view #correction-mode-banner {
+  display: none !important;
+}
+
+body.is-customer-view .owner-only,
+body.is-customer-view .sheet-table-action-bar,
+body.is-customer-view .sheet-shortcut-hint,
+body.is-customer-view .sheet-totals-addons,
+body.is-customer-view .th-action-col,
+body.is-customer-view .item-action-cell,
+body.is-customer-view .signature-stamp-placeholder,
+body.admin-locked .owner-only,
+body.admin-locked .sheet-table-action-bar,
+body.admin-locked .sheet-shortcut-hint,
+body.admin-locked .sheet-totals-addons,
+body.admin-locked .th-action-col,
+body.admin-locked .item-action-cell,
+body.admin-locked .signature-stamp-placeholder {
   display: none !important;
 }
 

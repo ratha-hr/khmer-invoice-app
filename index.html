@@ -17,7 +17,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   
   <!-- App Stylesheet -->
-  <link rel="stylesheet" href="styles.css?v=4.0">
+  <link rel="stylesheet" href="styles.css?v=4.5">
 </head>
 <body class="theme-royal font-kantumruy mobile-mode-preview sheet-direct-mode">
 
@@ -290,17 +290,6 @@
 
           <div class="invoice-top-accent"></div>
 
-          <!-- Official Vintage Rubber Stamp (Shown when Paid) -->
-          <div id="prev-official-stamp" class="official-paid-stamp" style="display: none;">
-            <div class="stamp-border">
-              <div class="stamp-stars">★ ★ ★</div>
-              <div class="stamp-kh">បានទូទាត់រួច</div>
-              <div class="stamp-en">PAID IN FULL</div>
-              <div class="stamp-date" id="stamp-paid-date">06/10/2026</div>
-              <div class="stamp-sub">RATHA STATIONERY</div>
-            </div>
-          </div>
-          
           <!-- TOP SECTION: HEADER & ITEMS -->
           <div class="invoice-top-section">
             <!-- INVOICE HEADER -->
@@ -309,17 +298,35 @@
               <div class="inv-company-logo-wrap">
                 <img id="prev-seller-logo" class="inv-logo-img" alt="Logo" style="display: none;">
                 <div class="shop-brand-mark" id="prev-shop-brand-mark" aria-hidden="true">
-                  <svg viewBox="0 0 44 44" class="shop-mark-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="44" height="44" rx="10" fill="var(--primary-color)" />
-                    <!-- Stylized Fountain Pen / Stationery Geometric Symbol -->
-                    <path d="M22 8L29 18L26 31L22 35L18 31L15 18L22 8Z" fill="#ffffff" fill-opacity="0.95" />
-                    <path d="M22 8L22 26" stroke="var(--primary-color)" stroke-width="2" stroke-linecap="round"/>
-                    <circle cx="22" cy="26" r="2" fill="var(--primary-color)"/>
-                    <path d="M16 33L28 33" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+                  <svg viewBox="0 0 52 52" class="shop-mark-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                      <linearGradient id="markBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="var(--primary-color)"/>
+                        <stop offset="100%" stop-color="#0b2545"/>
+                      </linearGradient>
+                      <linearGradient id="markGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#fef08a"/>
+                        <stop offset="50%" stop-color="#eab308"/>
+                        <stop offset="100%" stop-color="#ca8a04"/>
+                      </linearGradient>
+                    </defs>
+                    <rect width="52" height="52" rx="14" fill="url(#markBgGrad)"/>
+                    <rect x="2" y="2" width="48" height="48" rx="12" stroke="url(#markGoldGrad)" stroke-width="1.2" stroke-opacity="0.6"/>
+                    <path d="M14 36C18 33 22 34 26 36.5C30 34 34 33 38 36V22C34 19 30 20 26 22.5C22 20 18 19 14 22V36Z" fill="#ffffff" fill-opacity="0.18"/>
+                    <path d="M26 22.5V36.5" stroke="url(#markGoldGrad)" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M26 9L32.5 19.5L29.5 28L26 31.5L22.5 28L19.5 19.5L26 9Z" fill="url(#markGoldGrad)"/>
+                    <path d="M26 12V24" stroke="#0b2545" stroke-width="1.5" stroke-linecap="round"/>
+                    <circle cx="26" cy="24" r="1.3" fill="#0b2545"/>
+                    <circle cx="26" cy="7.5" r="1.5" fill="#fef08a"/>
+                    <circle cx="16" cy="14" r="1" fill="#fef08a" fill-opacity="0.8"/>
+                    <circle cx="36" cy="14" r="1" fill="#fef08a" fill-opacity="0.8"/>
                   </svg>
                 </div>
                 <div class="inv-company-info">
-                  <h2 class="shop-name-kh" id="prev-shop-name">RATHA Stationery</h2>
+                  <div class="shop-title-row">
+                    <h2 class="shop-name-kh" id="prev-shop-name">RATHA Stationery</h2>
+                    <div class="shop-tagline">សម្ភារៈការិយាល័យ & សិក្សា • OFFICE & SCHOOL SUPPLIES</div>
+                  </div>
                   
                   <div class="owner-name-row" id="prev-owner-wrap">
                     <span class="owner-badge-icon" aria-hidden="true">
@@ -334,8 +341,18 @@
                     លេខអត្តសញ្ញាណកម្ម អតប (VATTIN): <span id="prev-seller-vat">K001-902345678</span>
                   </div>
                   <div class="company-contact">
-                    <div class="contact-item"><span class="contact-icon">📍</span> <span>ទីតាំង៖ <span id="prev-seller-address">សាលាលេខប្រាំ អូរឫស្សី កំពង់ត្រឡាច កំពង់ឆ្នាំង</span></span></div>
-                    <div class="contact-item"><span class="contact-icon">📞</span> <span>ទូរស័ព្ទ៖ <span id="prev-seller-phone">089 20 998 / 093 486 987</span> <span id="prev-seller-email"></span></span></div>
+                    <div class="contact-item">
+                      <span class="contact-icon-bubble">
+                        <svg viewBox="0 0 24 24" class="contact-svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                      </span>
+                      <span>ទីតាំង៖ <span id="prev-seller-address">សាលាលេខប្រាំ អូរឫស្សី កំពង់ត្រឡាច កំពង់ឆ្នាំង</span></span>
+                    </div>
+                    <div class="contact-item">
+                      <span class="contact-icon-bubble">
+                        <svg viewBox="0 0 24 24" class="contact-svg"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                      </span>
+                      <span>ទូរស័ព្ទ៖ <span id="prev-seller-phone">089 20 998 / 093 486 987</span> <span id="prev-seller-email"></span></span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -355,7 +372,7 @@
                   <span class="meta-val" id="prev-due-wrap-val"><span id="prev-due-date">13/10/2026</span></span>
 
                   <span class="meta-lbl">ស្ថានភាព (Status):</span>
-                  <span class="meta-val"><span id="prev-inv-status-badge" class="inv-status-badge status-unpaid" onclick="cycleInvoiceStatusDirect()" title="ចុចដើម្បីប្តូរស្ថានភាព">🔴 មិនទាន់ទូទាត់</span></span>
+                  <span class="meta-val"><span id="prev-inv-status-badge" class="inv-status-badge status-unpaid" onclick="cycleInvoiceStatusDirect()" title="ចុចដើម្បីប្តូរស្ថានភាព"><span class="status-dot"></span> មិនទាន់ទូទាត់</span></span>
 
                   <span id="prev-po-wrap" style="display: none;">
                     <span class="meta-lbl">លេខបញ្ជាទិញ (P.O):</span>
@@ -368,7 +385,19 @@
             <!-- Contemporary Khmer Ornamental Divider -->
             <div class="khmer-kbach-divider" aria-hidden="true">
               <span class="kbach-line"></span>
-              <span class="kbach-gem">❖ ⚜ ❖</span>
+              <div class="kbach-ornament">
+                <svg viewBox="0 0 120 20" class="kbach-svg" fill="currentColor">
+                  <path d="M60 2 C58 6 54 10 50 11 C54 12 57 15 57 18 C58 15 60 14 60 14 C60 14 62 15 63 18 C63 15 66 12 70 11 C66 10 62 6 60 2 Z"/>
+                  <path d="M60 6 C59 9 56 12 53 12.5 C56 13 58 15 58 16.5 C59 15 60 14.5 60 14.5 C60 14.5 61 15 62 16.5 C62 15 64 13 67 12.5 C64 12 61 9 60 6 Z" fill-opacity="0.5"/>
+                  <circle cx="60" cy="12" r="1.5"/>
+                  <path d="M48 11 C42 10.5 35 12 28 10 C34 9 40 8 46 9.5" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                  <circle cx="26" cy="10" r="1.2"/>
+                  <circle cx="16" cy="10" r="0.9"/>
+                  <path d="M72 11 C78 10.5 85 12 92 10 C86 9 80 8 74 9.5" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                  <circle cx="94" cy="10" r="1.2"/>
+                  <circle cx="104" cy="10" r="0.9"/>
+                </svg>
+              </div>
               <span class="kbach-line"></span>
             </div>
 
@@ -376,23 +405,40 @@
             <div class="inv-addresses-row">
               <div class="inv-client-box">
                 <div class="box-title-bar">
-                  <span class="box-title-icon">👤</span> <span>ចេញជូនចំពោះ / BILL TO:</span>
+                  <span class="box-title-icon-bubble">
+                    <svg viewBox="0 0 24 24" class="card-icon-svg"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                  </span>
+                  <span>ចេញជូនចំពោះ / BILL TO:</span>
                 </div>
                 <div class="client-name-kh" id="prev-client-name">លោក នី ម៉ៅ</div>
                 <div class="client-info-item font-semibold" id="prev-client-company">វិទ្យាល័យហ៊ុនសែនកំពង់ត្រឡាច</div>
-                <div class="client-info-item"><span class="client-detail-icon">📞</span> <span>ទូរស័ព្ទ៖ <span id="prev-client-phone">092 111 222</span></span></div>
-                <div class="client-info-item"><span class="client-detail-icon">📍</span> <span>អាសយដ្ឋាន៖ <span id="prev-client-address">សាលាលេខប្រាំ អូរឫស្សី កំពង់ត្រឡាច កំពង់ឆ្នាំង</span></span></div>
+                <div class="client-info-item">
+                  <span class="client-detail-icon">
+                    <svg viewBox="0 0 24 24" class="micro-icon"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                  </span>
+                  <span>ទូរស័ព្ទ៖ <span id="prev-client-phone">092 111 222</span></span>
+                </div>
+                <div class="client-info-item">
+                  <span class="client-detail-icon">
+                    <svg viewBox="0 0 24 24" class="micro-icon"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                  </span>
+                  <span>អាសយដ្ឋាន៖ <span id="prev-client-address">សាលាលេខប្រាំ អូរឫស្សី កំពង់ត្រឡាច កំពង់ឆ្នាំង</span></span>
+                </div>
               </div>
 
               <div class="inv-pay-summary-box">
                 <div class="box-title-bar">
-                  <span class="box-title-icon">🛡️</span> <span>សេចក្តីបញ្ជាក់ / PAYMENT NOTICE:</span>
+                  <span class="box-title-icon-bubble green">
+                    <svg viewBox="0 0 24 24" class="card-icon-svg"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+                  </span>
+                  <span>សេចក្តីបញ្ជាក់ / PAYMENT NOTICE:</span>
                 </div>
                 <div class="pay-notice-desc">
                   សូមពិនិត្យមើលមុខទំនិញ និងបរិមាណឱ្យបានត្រឹមត្រូវ។ រាល់ការទូទាត់ប្រាក់ សូមយោងតាមលេខវិក្កយបត្រខាងលើ ឬស្កេន KHQR ខាងក្រោម។
                 </div>
                 <div class="pay-notice-badge">
-                  <span>⚡</span> <span>ទូទាត់រហ័ស តាមរយៈ Bakong / KHQR</span>
+                  <svg viewBox="0 0 24 24" class="badge-bolt-svg"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
+                  <span>ទូទាត់រហ័ស តាមរយៈ Bakong / KHQR</span>
                 </div>
               </div>
             </div>
@@ -408,7 +454,7 @@
                     <th class="text-right" style="width: 95px;">តម្លៃឯកតា<br><span class="th-sub">Unit Price</span></th>
                     <th class="text-center" style="width: 68px;">បញ្ចុះតម្លៃ<br><span class="th-sub">Disc %</span></th>
                     <th class="text-right" style="width: 105px;">សរុប<br><span class="th-sub">Amount</span></th>
-                    <th class="text-center no-print" style="width: 44px;">សកម្មភាព<br><span class="th-sub">Action</span></th>
+                    <th class="text-center th-action-col no-print" style="width: 44px;">សកម្មភាព<br><span class="th-sub">Action</span></th>
                   </tr>
                 </thead>
                 <tbody id="prev-items-tbody">
@@ -416,17 +462,19 @@
                 </tbody>
               </table>
 
-              <!-- In-Sheet Table Action Toolbar (Hidden in Print) -->
-              <div class="sheet-table-action-bar no-print">
+              <!-- In-Sheet Table Action Toolbar (Hidden in Print & Customer View) -->
+              <div class="sheet-table-action-bar no-print owner-only">
                 <div style="display: flex; gap: 0.45rem; align-items: center; flex-wrap: wrap;">
                   <button type="button" class="btn-sheet-action btn-sheet-add" onclick="addNewItemRowDirect()" title="បន្ថែមជួរដេកថ្មី">
-                    <svg style="width: 14px; height: 14px; fill: currentColor;" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                    <svg viewBox="0 0 24 24" class="btn-icon" style="width: 14px; height: 14px; fill: currentColor;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
                     <span>បន្ថែមទំនិញថ្មី</span>
                   </button>
-                  <button type="button" class="btn-sheet-action" onclick="addThreeItemsDirect()" title="បន្ថែម ៣ ជួរដេក">
+                  <button type="button" class="btn-sheet-action btn-sheet-batch" onclick="addThreeItemsDirect()" title="បន្ថែម ៣ ជួរដេក">
+                    <svg viewBox="0 0 24 24" class="btn-icon" style="width: 14px; height: 14px; fill: currentColor;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
                     <span>+ បន្ថែម ៣ ជួរ</span>
                   </button>
                   <button type="button" class="btn-sheet-action btn-sheet-clear" onclick="clearAllItemsDirect()" title="ជម្រះទំនិញទាំងអស់">
+                    <svg viewBox="0 0 24 24" class="btn-icon" style="width: 14px; height: 14px; fill: currentColor;"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
                     <span>🗑️ ជម្រះទាំងអស់</span>
                   </button>
                 </div>
@@ -437,7 +485,7 @@
                   </span>
                 </div>
               </div>
-              <div class="sheet-shortcut-hint no-print">
+              <div class="sheet-shortcut-hint no-print owner-only">
                 💡 វាយចូលតារាងដោយផ្ទាល់ • ចុច <kbd>Enter</kbd> ឬ <kbd>Tab</kbd> លើជួរដេកចុងក្រោយដើម្បីបង្កើតជួរថ្មីដោយស្វ័យប្រវត្តិ
               </div>
             </div>
@@ -458,14 +506,22 @@
                 <div class="bank-details">
                   <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.25rem;">
                     <div class="bank-badge-tag" id="prev-bank-tag">
-                      <span>🏦</span> <span id="prev-bank-tag-text">ACLEDA KHQR</span>
+                      <svg viewBox="0 0 24 24" style="width: 12px; height: 12px; fill: currentColor;"><path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-5-7L2 7v2h19V7l-9-4z"/></svg>
+                      <span id="prev-bank-tag-text">ACLEDA KHQR</span>
                     </div>
                   </div>
                   <div class="bank-name" id="prev-bank-name">ធនាគារ អេស៊ីលីដា (ACLEDA BANK)</div>
-                  <div>ឈ្មោះគណនី: <span class="account-name-highlight" id="prev-account-name">ហ៊ុន រដ្ឋា (HUN RATHA)</span></div>
-                  <div>ការទូទាត់: <span class="account-num-text" id="prev-account-num">KHQR (Scan. Pay Done.)</span></div>
+                  <div class="account-name-pill">
+                    <span class="acc-lbl">ឈ្មោះគណនី:</span>
+                    <strong class="account-name-highlight" id="prev-account-name">ហ៊ុន រដ្ឋា (HUN RATHA)</strong>
+                  </div>
+                  <div class="account-sub-detail">
+                    <span class="acc-lbl">ការទូទាត់:</span>
+                    <span class="account-num-text" id="prev-account-num">KHQR (Scan. Pay. Done.)</span>
+                  </div>
                   <div class="scan-pay-hint" id="prev-scan-hint">
-                    <span>📲</span> ស្កេនទូទាត់រហ័សតាម KHQR / Bakong / Mobile Banking
+                    <svg viewBox="0 0 24 24" style="width: 13px; height: 13px; fill: currentColor; flex-shrink: 0;"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg>
+                    <span>ស្កេនទូទាត់រហ័សតាម KHQR / Bakong / Mobile Banking</span>
                   </div>
                 </div>
               </div>
@@ -508,11 +564,23 @@
                     </td>
                   </tr>
                 </table>
-                <div class="sheet-totals-addons no-print">
-                  <button type="button" class="sheet-totals-addon-link" onclick="toggleDiscountRowDirect()">🏷️ + បញ្ចុះតម្លៃ</button>
-                  <button type="button" class="sheet-totals-addon-link" onclick="toggleTaxRowDirect()">🧾 + អាករ VAT</button>
-                  <button type="button" class="sheet-totals-addon-link" onclick="toggleShippingRowDirect()">🚚 + ថ្លៃដឹក</button>
-                  <button type="button" class="sheet-totals-addon-link" onclick="togglePaidRowDirect()">💳 + បានបង់ប្រាក់</button>
+                <div class="sheet-totals-addons no-print owner-only">
+                  <button type="button" class="sheet-totals-addon-link" onclick="toggleDiscountRowDirect()">
+                    <svg viewBox="0 0 24 24" style="width: 12px; height: 12px; fill: currentColor;"><path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/></svg>
+                    <span>+ បញ្ចុះតម្លៃ</span>
+                  </button>
+                  <button type="button" class="sheet-totals-addon-link" onclick="toggleTaxRowDirect()">
+                    <svg viewBox="0 0 24 24" style="width: 12px; height: 12px; fill: currentColor;"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14H6v-2h6v2zm4-4H6v-2h10v2zm0-4H6V7h10v2z"/></svg>
+                    <span>+ អាករ VAT</span>
+                  </button>
+                  <button type="button" class="sheet-totals-addon-link" onclick="toggleShippingRowDirect()">
+                    <svg viewBox="0 0 24 24" style="width: 12px; height: 12px; fill: currentColor;"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+                    <span>+ ថ្លៃដឹក</span>
+                  </button>
+                  <button type="button" class="sheet-totals-addon-link" onclick="togglePaidRowDirect()">
+                    <svg viewBox="0 0 24 24" style="width: 12px; height: 12px; fill: currentColor;"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+                    <span>+ បានបង់ប្រាក់</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -542,6 +610,16 @@
                 <div class="signature-sub">ហត្ថលេខា និងត្រា</div>
                 <div class="signature-line-space">
                   <div class="signature-stamp-placeholder no-print">ត្រា & ហត្ថលេខា</div>
+                  <!-- Official Vintage Rubber Stamp (Shown when Paid) -->
+                  <div id="prev-official-stamp" class="official-paid-stamp" style="display: none;">
+                    <div class="stamp-border">
+                      <div class="stamp-stars">★ ★ ★</div>
+                      <div class="stamp-kh">បានទូទាត់រួច</div>
+                      <div class="stamp-en">PAID IN FULL</div>
+                      <div class="stamp-date" id="stamp-paid-date">06/10/2026</div>
+                      <div class="stamp-sub">RATHA STATIONERY</div>
+                    </div>
+                  </div>
                 </div>
                 <div class="signature-line">កាលបរិច្ឆេទ: ..... / ..... / 202...</div>
               </div>
@@ -867,6 +945,6 @@
   <script src="html2canvas.min.js"></script>
 
   <!-- App Script -->
-  <script src="script.js?v=4.0"></script>
+  <script src="script.js?v=4.5"></script>
 </body>
 </html>

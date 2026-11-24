@@ -2635,12 +2635,13 @@ function renderInvoicePreview() {
         <td class="item-total-cell font-num text-right">
           ${(price > 0 || lineConvertedTotal > 0) ? formatMoney(lineConvertedTotal, state.currency) : (hasContent ? formatMoney(0, state.currency) : '-')}
         </td>
+        ${isEditable ? `
         <td class="item-action-cell text-center no-print">
           <div class="sheet-row-tools">
             <button type="button" class="btn-sheet-row-btn btn-dup" onclick="duplicateItemDirect(${item.id})" title="ថតចម្លងជួរនេះ (Duplicate)">📋</button>
             <button type="button" class="btn-sheet-row-btn btn-del" onclick="deleteItemDirect(${item.id})" title="លុបមុខទំនិញនេះ (Delete)">✕</button>
           </div>
-        </td>
+        </td>` : ''}
       `;
       tableBody.appendChild(tr);
     });
@@ -2758,11 +2759,11 @@ function renderInvoicePreview() {
   if (statusBadge) {
     statusBadge.className = `inv-status-badge status-${state.invoiceStatus || 'unpaid'}`;
     const statusMap = {
-      unpaid: '🔴 មិនទាន់ទូទាត់',
-      paid: '🟢 បានទូទាត់រួច',
-      partial: '🟡 កក់ប្រាក់ខ្លះ'
+      unpaid: '<span class="status-dot"></span> មិនទាន់ទូទាត់',
+      paid: '<span class="status-dot"></span> បានទូទាត់រួច',
+      partial: '<span class="status-dot"></span> កក់ប្រាក់ខ្លះ'
     };
-    statusBadge.textContent = statusMap[state.invoiceStatus] || '🔴 មិនទាន់ទូទាត់';
+    statusBadge.innerHTML = statusMap[state.invoiceStatus] || '<span class="status-dot"></span> មិនទាន់ទូទាត់';
   }
 
   const stampEl = document.getElementById('prev-official-stamp');
