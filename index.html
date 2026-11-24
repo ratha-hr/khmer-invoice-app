@@ -17,7 +17,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   
   <!-- App Stylesheet -->
-  <link rel="stylesheet" href="styles.css?v=3.8">
+  <link rel="stylesheet" href="styles.css?v=4.0">
 </head>
 <body class="theme-royal font-kantumruy mobile-mode-preview sheet-direct-mode">
 
@@ -308,10 +308,23 @@
               <!-- Left: Shop Name & Contact -->
               <div class="inv-company-logo-wrap">
                 <img id="prev-seller-logo" class="inv-logo-img" alt="Logo" style="display: none;">
+                <div class="shop-brand-mark" id="prev-shop-brand-mark" aria-hidden="true">
+                  <svg viewBox="0 0 44 44" class="shop-mark-svg" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="44" height="44" rx="10" fill="var(--primary-color)" />
+                    <!-- Stylized Fountain Pen / Stationery Geometric Symbol -->
+                    <path d="M22 8L29 18L26 31L22 35L18 31L15 18L22 8Z" fill="#ffffff" fill-opacity="0.95" />
+                    <path d="M22 8L22 26" stroke="var(--primary-color)" stroke-width="2" stroke-linecap="round"/>
+                    <circle cx="22" cy="26" r="2" fill="var(--primary-color)"/>
+                    <path d="M16 33L28 33" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                </div>
                 <div class="inv-company-info">
                   <h2 class="shop-name-kh" id="prev-shop-name">RATHA Stationery</h2>
                   
                   <div class="owner-name-row" id="prev-owner-wrap">
+                    <span class="owner-badge-icon" aria-hidden="true">
+                      <svg style="width: 12px; height: 12px; fill: currentColor;" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                    </span>
                     <span class="owner-lbl">ម្ចាស់ហាង៖</span>
                     <strong class="owner-name-kh" id="prev-seller-name-kh">ហ៊ុន រដ្ឋា</strong>
                     <span class="owner-name-en" id="prev-seller-name-en">(HUN RATHA)</span>
@@ -321,8 +334,8 @@
                     លេខអត្តសញ្ញាណកម្ម អតប (VATTIN): <span id="prev-seller-vat">K001-902345678</span>
                   </div>
                   <div class="company-contact">
-                    <div><span class="contact-icon">📍</span> ទីតាំង៖ <span id="prev-seller-address">សាលាលេខប្រាំ អូរឫស្សី កំពង់ត្រឡាច កំពង់ឆ្នាំង</span></div>
-                    <div><span class="contact-icon">📞</span> ទូរស័ព្ទ៖ <span id="prev-seller-phone">089 20 998 / 093 486 987</span> <span id="prev-seller-email"></span></div>
+                    <div class="contact-item"><span class="contact-icon">📍</span> <span>ទីតាំង៖ <span id="prev-seller-address">សាលាលេខប្រាំ អូរឫស្សី កំពង់ត្រឡាច កំពង់ឆ្នាំង</span></span></div>
+                    <div class="contact-item"><span class="contact-icon">📞</span> <span>ទូរស័ព្ទ៖ <span id="prev-seller-phone">089 20 998 / 093 486 987</span> <span id="prev-seller-email"></span></span></div>
                   </div>
                 </div>
               </div>
@@ -363,20 +376,23 @@
             <div class="inv-addresses-row">
               <div class="inv-client-box">
                 <div class="box-title-bar">
-                  ចេញជូនចំពោះ / BILL TO:
+                  <span class="box-title-icon">👤</span> <span>ចេញជូនចំពោះ / BILL TO:</span>
                 </div>
                 <div class="client-name-kh" id="prev-client-name">លោក នី ម៉ៅ</div>
                 <div class="client-info-item font-semibold" id="prev-client-company">វិទ្យាល័យហ៊ុនសែនកំពង់ត្រឡាច</div>
-                <div class="client-info-item">ទូរស័ព្ទ៖ <span id="prev-client-phone">092 111 222</span></div>
-                <div class="client-info-item">អាសយដ្ឋាន៖ <span id="prev-client-address">សាលាលេខប្រាំ អូរឫស្សី កំពង់ត្រឡាច កំពង់ឆ្នាំង</span></div>
+                <div class="client-info-item"><span class="client-detail-icon">📞</span> <span>ទូរស័ព្ទ៖ <span id="prev-client-phone">092 111 222</span></span></div>
+                <div class="client-info-item"><span class="client-detail-icon">📍</span> <span>អាសយដ្ឋាន៖ <span id="prev-client-address">សាលាលេខប្រាំ អូរឫស្សី កំពង់ត្រឡាច កំពង់ឆ្នាំង</span></span></div>
               </div>
 
               <div class="inv-pay-summary-box">
                 <div class="box-title-bar">
-                  សេចក្តីបញ្ជាក់ / PAYMENT NOTICE
+                  <span class="box-title-icon">🛡️</span> <span>សេចក្តីបញ្ជាក់ / PAYMENT NOTICE:</span>
                 </div>
                 <div class="pay-notice-desc">
                   សូមពិនិត្យមើលមុខទំនិញ និងបរិមាណឱ្យបានត្រឹមត្រូវ។ រាល់ការទូទាត់ប្រាក់ សូមយោងតាមលេខវិក្កយបត្រខាងលើ ឬស្កេន KHQR ខាងក្រោម។
+                </div>
+                <div class="pay-notice-badge">
+                  <span>⚡</span> <span>ទូទាត់រហ័ស តាមរយៈ Bakong / KHQR</span>
                 </div>
               </div>
             </div>
@@ -386,13 +402,13 @@
               <table class="inv-table">
                 <thead>
                   <tr>
-                    <th class="text-center" style="width: 38px;">ល.រ<br><span style="font-size: 9px; font-weight: normal;">No.</span></th>
-                    <th>បរិយាយមុខទំនិញ ឬសេវាកម្ម<br><span style="font-size: 9px; font-weight: normal;">Item Description</span></th>
-                    <th class="text-center" style="width: 60px;">ចំនួន<br><span style="font-size: 9px; font-weight: normal;">Qty</span></th>
-                    <th class="text-right" style="width: 95px;">តម្លៃឯកតា<br><span style="font-size: 9px; font-weight: normal;">Unit Price</span></th>
-                    <th class="text-center" style="width: 68px;">បញ្ចុះតម្លៃ<br><span style="font-size: 9px; font-weight: normal;">Disc %</span></th>
-                    <th class="text-right" style="width: 105px;">សរុប<br><span style="font-size: 9px; font-weight: normal;">Amount</span></th>
-                    <th class="text-center no-print" style="width: 32px;">លុប</th>
+                    <th class="text-center" style="width: 38px;">ល.រ<br><span class="th-sub">No.</span></th>
+                    <th>បរិយាយមុខទំនិញ ឬសេវាកម្ម<br><span class="th-sub">Item Description</span></th>
+                    <th class="text-center" style="width: 60px;">ចំនួន<br><span class="th-sub">Qty</span></th>
+                    <th class="text-right" style="width: 95px;">តម្លៃឯកតា<br><span class="th-sub">Unit Price</span></th>
+                    <th class="text-center" style="width: 68px;">បញ្ចុះតម្លៃ<br><span class="th-sub">Disc %</span></th>
+                    <th class="text-right" style="width: 105px;">សរុប<br><span class="th-sub">Amount</span></th>
+                    <th class="text-center no-print" style="width: 44px;">សកម្មភាព<br><span class="th-sub">Action</span></th>
                   </tr>
                 </thead>
                 <tbody id="prev-items-tbody">
@@ -455,7 +471,7 @@
               </div>
 
               <!-- Right: Calculations Table -->
-              <div>
+              <div class="inv-totals-card">
                 <table class="totals-table">
                   <tr>
                     <td class="lbl">សរុបរង (Subtotal):</td>
@@ -492,18 +508,20 @@
                     </td>
                   </tr>
                 </table>
-                <div class="no-print" style="margin-top: 0.35rem; display: flex; gap: 0.45rem; flex-wrap: wrap; justify-content: flex-end;">
-                  <button type="button" class="sheet-totals-addon-link" onclick="toggleDiscountRowDirect()">+ បញ្ចុះតម្លៃ</button>
-                  <button type="button" class="sheet-totals-addon-link" onclick="toggleTaxRowDirect()">+ អាករ VAT</button>
-                  <button type="button" class="sheet-totals-addon-link" onclick="toggleShippingRowDirect()">+ ថ្លៃដឹក</button>
-                  <button type="button" class="sheet-totals-addon-link" onclick="togglePaidRowDirect()">+ បានបង់ប្រាក់</button>
+                <div class="sheet-totals-addons no-print">
+                  <button type="button" class="sheet-totals-addon-link" onclick="toggleDiscountRowDirect()">🏷️ + បញ្ចុះតម្លៃ</button>
+                  <button type="button" class="sheet-totals-addon-link" onclick="toggleTaxRowDirect()">🧾 + អាករ VAT</button>
+                  <button type="button" class="sheet-totals-addon-link" onclick="toggleShippingRowDirect()">🚚 + ថ្លៃដឹក</button>
+                  <button type="button" class="sheet-totals-addon-link" onclick="togglePaidRowDirect()">💳 + បានបង់ប្រាក់</button>
                 </div>
               </div>
             </div>
 
             <!-- Notes & Terms -->
             <div class="inv-notes-box" id="prev-notes-box">
-              <strong>កំណត់សម្គាល់ និងលក្ខខណ្ឌ៖</strong>
+              <div class="notes-header-row">
+                <span class="notes-icon">📝</span> <strong>កំណត់សម្គាល់ និងលក្ខខណ្ឌ៖</strong>
+              </div>
               <div id="prev-notes-content" style="white-space: pre-line; margin-top: 2px;"></div>
             </div>
 
@@ -512,7 +530,7 @@
 
             <!-- Signatures Row -->
             <div class="inv-signatures-row">
-              <div class="signature-box">
+              <div class="signature-box buyer-sign-box">
                 <div class="signature-title" id="prev-buyer-title">អ្នកទិញ / Customer</div>
                 <div class="signature-sub">ហត្ថលេខា និងឈ្មោះ</div>
                 <div class="signature-line-space"></div>
@@ -522,14 +540,16 @@
               <div class="signature-box seller-sign-box">
                 <div class="signature-title" id="prev-seller-title">អ្នកលក់ / Seller</div>
                 <div class="signature-sub">ហត្ថលេខា និងត្រា</div>
-                <div class="signature-line-space"></div>
+                <div class="signature-line-space">
+                  <div class="signature-stamp-placeholder no-print">ត្រា & ហត្ថលេខា</div>
+                </div>
                 <div class="signature-line">កាលបរិច្ឆេទ: ..... / ..... / 202...</div>
               </div>
             </div>
 
             <!-- Bottom Tagline -->
             <div class="inv-bottom-tagline">
-              សូមអរគុណចំពោះការគាំទ្រ! Thank you for your business! • វិក្កយបត្រនេះត្រូវបានបង្កើតឡើងដោយស្វ័យប្រវត្តិតាមស្តង់ដា A4 / A5
+              <span>🙏 សូមអរគុណចំពោះការគាំទ្រ! Thank you for your business!</span> • <span>វិក្កយបត្រស្តង់ដា A4 / A5</span>
             </div>
           </div>
 
@@ -847,6 +867,6 @@
   <script src="html2canvas.min.js"></script>
 
   <!-- App Script -->
-  <script src="script.js?v=3.8"></script>
+  <script src="script.js?v=4.0"></script>
 </body>
 </html>

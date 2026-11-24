@@ -1,10 +1,10 @@
 // Service Worker for Khmer Invoice App (RATHA Stationery) - 100% Offline Capability
-const CACHE_NAME = 'khmer-invoice-v3.8';
+const CACHE_NAME = 'khmer-invoice-v4.0';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
-  '/styles.css?v=3.8',
-  '/script.js?v=3.8',
+  '/styles.css?v=4.0',
+  '/script.js?v=4.0',
   '/qrcode.min.js',
   '/html2canvas.min.js',
   '/acleda_qr_square.png',

@@ -2525,12 +2525,15 @@ function renderInvoicePreview() {
   setSheetFieldText('prev-seller-address', state.seller.address, 'សាលាលេខប្រាំ អូរឫស្សី កំពង់ត្រឡាច កំពង់ឆ្នាំង');
 
   const logoImg = document.getElementById('prev-seller-logo');
+  const brandMark = document.getElementById('prev-shop-brand-mark');
   if (logoImg) {
     if (state.seller.logo) {
       logoImg.src = state.seller.logo;
       logoImg.style.display = 'block';
+      if (brandMark) brandMark.style.display = 'none';
     } else {
       logoImg.style.display = 'none';
+      if (brandMark) brandMark.style.display = 'flex';
     }
   }
 

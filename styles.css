@@ -917,15 +917,15 @@ body.dark-mode .date-picker-trigger-btn {
 .preview-toolbar {
   width: 100%;
   max-width: 210mm;
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 0.45rem 0.75rem;
+  background: var(--card-bg, #ffffff);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 12px;
+  padding: 0.5rem 0.85rem;
   margin-bottom: 0.85rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 4px 15px -3px rgba(15, 23, 42, 0.05), 0 2px 6px -2px rgba(15, 23, 42, 0.03);
   flex-wrap: nowrap;
   gap: 0.75rem;
   overflow-x: auto;
@@ -938,7 +938,7 @@ body.dark-mode .date-picker-trigger-btn {
 .preview-toolbar .toolbar-group {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.55rem;
   flex-wrap: nowrap;
   flex-shrink: 0;
 }
@@ -967,9 +967,9 @@ body.dark-mode .date-picker-trigger-btn {
   min-height: 297mm;
   background: #ffffff !important; /* Always clean white for paper */
   padding: 0.85cm 1.05cm; /* Streamlined compact margins for maximized content fit */
-  box-shadow: 0 10px 30px -4px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.03);
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.09), 0 0 0 1px rgba(226, 232, 240, 0.85);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 12px;
   position: relative;
   color: #1e293b !important;
   display: flex;
@@ -977,19 +977,19 @@ body.dark-mode .date-picker-trigger-btn {
   justify-content: space-between;
   font-size: 13px;
   box-sizing: border-box;
-  transition: transform 0.15s ease;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
 }
 
-/* Top Accent Line (Solid Single Color) */
+/* Top Accent Line (Solid Single Color / Elegant Bar) */
 .invoice-top-accent {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 5px;
+  height: 6px;
   background: var(--primary-color);
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
 }
 
 .invoice-top-section {
@@ -1019,7 +1019,7 @@ body.dark-mode .date-picker-trigger-btn {
   width: 72%;
   max-width: 440px;
   color: var(--primary-color);
-  opacity: 0.04;
+  opacity: 0.035;
 }
 
 /* Contemporary Khmer Ornamental Divider (Kbach Divider - Solid Accent) */
@@ -1027,8 +1027,8 @@ body.dark-mode .date-picker-trigger-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  margin: 0.35rem 0 0.55rem 0;
+  gap: 0.65rem;
+  margin: 0.42rem 0 0.65rem 0;
   position: relative;
   z-index: 1;
 }
@@ -1036,20 +1036,17 @@ body.dark-mode .date-picker-trigger-btn {
 .kbach-line {
   flex: 1;
   height: 1px;
-  background: var(--primary-color);
-  opacity: 0.25;
-}
-.kbach-line:first-child {
-  background: var(--primary-color);
-  opacity: 0.25;
+  background: linear-gradient(90deg, transparent, var(--primary-color) 40%, var(--primary-color) 60%, transparent);
+  opacity: 0.35;
 }
 
 .kbach-gem {
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   color: var(--primary-color);
-  letter-spacing: 0.2em;
+  letter-spacing: 0.25em;
   font-weight: 700;
   line-height: 1;
+  opacity: 0.85;
   text-shadow: none;
 }
 
@@ -1059,15 +1056,34 @@ body.dark-mode .date-picker-trigger-btn {
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 0.45rem;
-  padding-bottom: 0.35rem;
+  padding-bottom: 0.38rem;
   border-bottom: 1px solid #e2e8f0;
 }
 
 .inv-company-logo-wrap {
   display: flex;
   align-items: flex-start;
-  gap: 0.75rem;
+  gap: 0.85rem;
   max-width: 56%;
+}
+
+.shop-brand-mark {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px -2px rgba(11, 57, 84, 0.22);
+  flex-shrink: 0;
+}
+
+.shop-mark-svg {
+  width: 44px;
+  height: 44px;
+  display: block;
 }
 
 .inv-logo-img {
@@ -1079,22 +1095,32 @@ body.dark-mode .date-picker-trigger-btn {
 /* Shop Name (Prominent & Modern) */
 .shop-name-kh {
   font-family: var(--khmer-title-font);
-  font-size: 1.08rem;
+  font-size: 1.18rem;
   font-weight: 800;
   color: var(--primary-color);
-  margin-bottom: 0.1rem;
-  line-height: 1.3;
-  letter-spacing: -0.01em;
+  margin-bottom: 0.15rem;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
 }
 
 /* Owner Name & English Tagline */
 .owner-name-row {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.35rem;
   font-size: 0.74rem;
   color: #475569;
-  margin-bottom: 0.18rem;
+  background: linear-gradient(135deg, rgba(11, 57, 84, 0.05) 0%, rgba(11, 57, 84, 0.02) 100%);
+  border: 1px solid rgba(11, 57, 84, 0.12);
+  padding: 0.15rem 0.5rem;
+  border-radius: 6px;
+  margin-bottom: 0.22rem;
+  width: fit-content;
+}
+.owner-badge-icon {
+  color: #059669;
+  display: inline-flex;
+  align-items: center;
 }
 .owner-lbl {
   color: #64748b;
@@ -1114,29 +1140,47 @@ body.dark-mode .date-picker-trigger-btn {
 .company-contact {
   font-size: 0.70rem;
   color: #475569;
-  line-height: 1.35;
+  line-height: 1.45;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+.company-contact .contact-item {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
 }
 .contact-icon {
-  display: inline-block;
-  margin-right: 2px;
-  font-size: 0.70rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.68rem;
 }
 
 .company-tin {
   font-size: 0.68rem;
   font-weight: 600;
-  color: #475569;
-  margin-top: 0.1rem;
+  color: #0f766e;
+  background: #f0fdfa;
+  border: 1px solid #ccfbf1;
+  padding: 1px 6px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-bottom: 0.15rem;
+  width: fit-content;
 }
 
 .inv-title-box {
   text-align: right;
   max-width: 44%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
 .inv-doc-title-kh {
   font-family: var(--khmer-title-font);
-  font-size: 1.22rem;
+  font-size: 1.35rem;
   font-weight: 800;
   color: var(--primary-color);
   line-height: 1.15;
@@ -1145,24 +1189,26 @@ body.dark-mode .date-picker-trigger-btn {
 
 .inv-doc-title-en {
   font-family: var(--num-font);
-  font-size: 0.76rem;
+  font-size: 0.78rem;
   font-weight: 800;
   color: var(--accent-color);
-  letter-spacing: 0.12em;
+  opacity: 0.85;
+  letter-spacing: 0.16em;
   margin-top: -1px;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.35rem;
 }
 
 .inv-meta-grid {
   display: inline-grid;
   grid-template-columns: auto auto;
-  gap: 0.16rem 0.5rem;
-  font-size: 0.69rem;
+  gap: 0.22rem 0.65rem;
+  font-size: 0.70rem;
   text-align: left;
-  background: var(--primary-light);
-  padding: 0.28rem 0.55rem;
-  border-radius: 6px;
+  background: linear-gradient(145deg, #ffffff 0%, var(--primary-light) 100%);
+  padding: 0.38rem 0.65rem;
+  border-radius: 8px;
   border: 1px solid var(--primary-border);
+  box-shadow: 0 2px 6px rgba(11, 57, 84, 0.04);
 }
 
 .inv-meta-grid .meta-lbl {
@@ -1177,11 +1223,13 @@ body.dark-mode .date-picker-trigger-btn {
 .invoice-num-badge {
   background: #ffffff;
   color: var(--primary-color) !important;
-  padding: 1px 5px;
-  border-radius: 4px;
-  border: 1px solid var(--primary-border);
+  padding: 2px 7px;
+  border-radius: 5px;
+  border: 1.5px solid var(--primary-border);
   font-weight: 800;
   display: inline-block;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  letter-spacing: 0.03em;
 }
 
 /* Bill To & Notice Row with Colorful Highlights */
@@ -1189,56 +1237,88 @@ body.dark-mode .date-picker-trigger-btn {
   display: grid;
   grid-template-columns: 1.35fr 1fr;
   gap: 0.75rem;
-  margin-bottom: 0.55rem;
+  margin-bottom: 0.6rem;
 }
 
 .inv-client-box {
-  background: linear-gradient(to right, #f8fafc, #ffffff);
-  border-radius: 6px;
-  padding: 0.38rem 0.65rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+  border-radius: 8px;
+  padding: 0.45rem 0.75rem;
   border: 1px solid #e2e8f0;
-  border-left: 3.5px solid var(--accent-color);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  border-left: 4px solid var(--primary-color);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
 .inv-pay-summary-box {
-  background: linear-gradient(to right, #f0fdfa, #ffffff);
-  border-radius: 6px;
-  padding: 0.38rem 0.65rem;
+  background: linear-gradient(135deg, #f0fdfa 0%, #ffffff 100%);
+  border-radius: 8px;
+  padding: 0.45rem 0.75rem;
   border: 1px solid #ccfbf1;
-  border-left: 3.5px solid #0d9488;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  border-left: 4px solid #0d9488;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .box-title-bar {
-  font-size: 0.67rem;
+  font-size: 0.68rem;
   font-weight: 700;
   color: var(--primary-color);
   text-transform: uppercase;
-  margin-bottom: 0.18rem;
-  padding-bottom: 0.12rem;
-  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 0.22rem;
+  padding-bottom: 0.18rem;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
   display: flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.35rem;
+  letter-spacing: 0.02em;
+}
+.inv-pay-summary-box .box-title-bar {
+  color: #0f766e;
+  border-bottom-color: rgba(204, 251, 241, 0.8);
+}
+.box-title-icon {
+  font-size: 0.75rem;
 }
 
 .client-name-kh {
-  font-size: 0.85rem;
+  font-size: 0.88rem;
   font-weight: 800;
   color: #0f172a;
+  line-height: 1.25;
 }
 .client-info-item {
-  font-size: 0.69rem;
+  font-size: 0.70rem;
   color: #475569;
-  margin-top: 0.08rem;
-  line-height: 1.32;
+  margin-top: 0.1rem;
+  line-height: 1.35;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.client-detail-icon {
+  font-size: 0.65rem;
+  opacity: 0.7;
 }
 
 .pay-notice-desc {
-  font-size: 0.67rem;
+  font-size: 0.68rem;
   color: #475569;
-  line-height: 1.32;
+  line-height: 1.38;
+}
+.pay-notice-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.3rem;
+  padding: 2px 7px;
+  background: #ccfbf1;
+  color: #0f766e;
+  border-radius: 5px;
+  font-size: 0.64rem;
+  font-weight: 700;
+  width: fit-content;
 }
 
 /* Items Table */
@@ -1250,23 +1330,26 @@ body.dark-mode .date-picker-trigger-btn {
 .inv-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.76rem;
+  font-size: 0.77rem;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .inv-table thead th {
   background: var(--primary-color);
   color: #ffffff;
   font-weight: 700;
-  padding: 0.45rem 0.4rem;
+  padding: 0.48rem 0.45rem;
   text-align: left;
   border: 1px solid var(--primary-color);
   letter-spacing: 0.02em;
+  vertical-align: middle;
 }
 .inv-table thead th:first-child {
-  border-top-left-radius: 6px;
+  border-top-left-radius: 8px;
 }
 .inv-table thead th:last-child {
-  border-top-right-radius: 6px;
+  border-top-right-radius: 8px;
 }
 .inv-table thead th.text-center {
   text-align: center;
@@ -1274,38 +1357,56 @@ body.dark-mode .date-picker-trigger-btn {
 .inv-table thead th.text-right {
   text-align: right;
 }
+.inv-table thead th .th-sub {
+  font-family: var(--num-font);
+  font-size: 8.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.78);
+  display: block;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-top: 1px;
+}
 
 .inv-table tbody td {
-  padding: 0.42rem 0.45rem;
+  padding: 0.45rem 0.5rem;
   border: 1px solid #e2e8f0;
   color: #1e293b;
   vertical-align: top;
+  transition: background-color 0.15s ease;
 }
 
 .inv-table tbody tr:nth-child(even) {
   background-color: #f8fafc;
 }
+.inv-table tbody tr:hover td {
+  background-color: #f1f5f9;
+}
 
 .item-num {
   font-family: var(--num-font);
   text-align: center;
-  font-weight: 600;
+  font-weight: 700;
   color: #64748b;
   width: 36px;
+  font-size: 0.76rem;
 }
 
 .item-desc-cell {
   width: 46%;
 }
 .item-title-text {
-  font-weight: 600;
+  font-weight: 700;
   color: #0f172a;
+  font-size: 0.80rem;
+  line-height: 1.3;
 }
 .item-desc-sub {
-  font-size: 0.72rem;
+  font-size: 0.70rem;
   color: #64748b;
   margin-top: 2px;
   white-space: pre-line;
+  line-height: 1.3;
 }
 
 .item-qty-cell, .item-price-cell, .item-disc-cell, .item-total-cell {
@@ -1314,22 +1415,23 @@ body.dark-mode .date-picker-trigger-btn {
 
 .item-qty-cell {
   text-align: center;
-  width: 52px;
+  width: 55px;
 }
 .item-price-cell {
   text-align: right;
-  width: 85px;
+  width: 88px;
 }
 .item-disc-cell {
   text-align: center;
-  width: 60px;
+  width: 65px;
   color: #dc2626;
+  font-weight: 600;
 }
 .item-total-cell {
   text-align: right;
-  font-weight: 600;
+  font-weight: 700;
   color: #0f172a;
-  width: 95px;
+  width: 100px;
 }
 
 /* Bottom Summary Grid */
@@ -1345,10 +1447,10 @@ body.dark-mode .date-picker-trigger-btn {
   background: #ffffff;
   border: 1.5px solid #e2e8f0;
   border-radius: 10px;
-  padding: 0.55rem 0.8rem;
+  padding: 0.6rem 0.85rem;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.85rem;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
   transition: all 0.2s ease;
   position: relative;
@@ -1356,34 +1458,35 @@ body.dark-mode .date-picker-trigger-btn {
 }
 
 .inv-payment-method-box.bank-acleda {
-  background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 80%);
-  border-color: #38bdf8;
-  border-left: 4px solid #0284c7;
+  background: linear-gradient(145deg, #ffffff 0%, #f0f9ff 100%);
+  border: 1.5px solid #7dd3fc;
+  border-left: 4.5px solid #0284c7;
+  box-shadow: 0 2px 8px -2px rgba(2, 132, 199, 0.08);
 }
 
 /* Square QR Container - Perfectly fits square QR code edge to edge */
 .qr-container-box {
-  width: 104px;
-  height: 104px;
-  min-width: 104px;
-  min-height: 104px;
+  width: 108px;
+  height: 108px;
+  min-width: 108px;
+  min-height: 108px;
   background: #ffffff;
-  padding: 4px;
+  padding: 5px;
   border-radius: 8px;
-  border: 1.5px solid #cbd5e1;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+  border: 1.5px solid #bae6fd;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease;
 }
 
 .qr-container-box:hover {
-  transform: scale(1.02);
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
+  transform: scale(1.03);
+  box-shadow: 0 6px 16px rgba(2, 132, 199, 0.18);
 }
 
 .qr-code-img, .qr-code-canvas-wrap {
@@ -1413,17 +1516,17 @@ body.dark-mode .date-picker-trigger-btn {
   min-width: 0;
   font-size: 0.74rem;
   color: #334155;
-  line-height: 1.45;
+  line-height: 1.48;
   display: flex;
   flex-direction: column;
-  gap: 0.22rem;
+  gap: 0.25rem;
 }
 
 .bank-badge-tag {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  padding: 2px 7px;
+  padding: 2px 8px;
   border-radius: 5px;
   font-size: 0.68rem;
   font-weight: 700;
@@ -1431,15 +1534,16 @@ body.dark-mode .date-picker-trigger-btn {
   letter-spacing: 0.02em;
 }
 .bank-acleda .bank-badge-tag {
-  background: #e0f2fe;
-  color: #0284c7;
-  border: 1px solid #bae6fd;
+  background: #0284c7;
+  color: #ffffff;
+  border: 1px solid #0284c7;
+  box-shadow: 0 1px 3px rgba(2, 132, 199, 0.25);
 }
 
 .bank-name {
   font-weight: 800;
-  color: var(--primary-color);
-  font-size: 0.88rem;
+  color: #0369a1;
+  font-size: 0.90rem;
   line-height: 1.25;
 }
 
@@ -1448,30 +1552,39 @@ body.dark-mode .date-picker-trigger-btn {
   color: #0f172a;
   font-size: 0.825rem;
   background: #ffffff;
-  padding: 1px 7px;
-  border-radius: 4px;
+  padding: 2px 8px;
+  border-radius: 5px;
   border: 1px solid #cbd5e1;
   display: inline-block;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
 }
 
 .account-num-text {
   font-family: var(--num-font);
   font-weight: 700;
-  color: #0f172a;
-  font-size: 0.8rem;
+  color: #0284c7;
+  font-size: 0.80rem;
 }
 
 .scan-pay-hint {
   font-size: 0.68rem;
-  color: #64748b;
+  color: #0284c7;
   display: flex;
   align-items: center;
-  gap: 0.25rem;
-  margin-top: 1px;
+  gap: 0.3rem;
+  margin-top: 2px;
+  font-weight: 600;
 }
 
-/* Totals Table */
+/* Totals Card & Table */
+.inv-totals-card {
+  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0.5rem 0.65rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+}
+
 .totals-table {
   width: 100%;
   border-collapse: collapse;
@@ -1490,7 +1603,7 @@ body.dark-mode .date-picker-trigger-btn {
   font-family: var(--num-font);
   font-weight: 700;
   color: #1e293b;
-  width: 105px;
+  width: 108px;
 }
 
 /* Grand Total - Vibrant Highlight */
@@ -1515,7 +1628,7 @@ body.dark-mode .date-picker-trigger-btn {
 }
 .totals-table tr.grand-total-row td.val {
   color: var(--primary-color);
-  font-size: 1.25rem;
+  font-size: 1.30rem;
   font-weight: 800;
 }
 
@@ -1555,6 +1668,14 @@ body.dark-mode .date-picker-trigger-btn {
 }
 .dual-riel-text.text-red-700 {
   color: #be123c !important;
+}
+
+.sheet-totals-addons {
+  margin-top: 0.45rem;
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 /* Correction Mode Banner */
@@ -1627,24 +1748,41 @@ body.dark-mode .date-picker-trigger-btn {
 
 /* Notes & Terms */
 .inv-notes-box {
-  margin-bottom: 1rem;
-  padding: 0.55rem 0.75rem;
-  background: #fdfdfd;
-  border-left: 3px solid var(--primary-color);
+  margin-bottom: 0.85rem;
+  padding: 0.5rem 0.75rem;
+  background: #fafafa;
+  border-radius: 0 8px 8px 0;
+  border-left: 3.5px solid var(--primary-color);
   font-size: 0.73rem;
   color: #475569;
   line-height: 1.45;
 }
+.notes-header-row {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.15rem;
+}
+.notes-icon {
+  font-size: 0.80rem;
+}
 .inv-notes-box strong {
   color: #1e293b;
+}
+
+/* Dashed divider between notes and signatures */
+.inv-footer-dashed-divider {
+  border-bottom: 1.5px dashed #cbd5e1;
+  margin: 0.5rem 0 0.6rem;
+  width: 100%;
 }
 
 /* Signatures */
 .inv-signatures-row {
   display: flex;
   justify-content: space-between;
-  margin-top: 0.5rem;
-  padding-top: 0.4rem;
+  margin-top: 0.35rem;
+  padding-top: 0.2rem;
 }
 
 .signature-box {
@@ -1654,9 +1792,10 @@ body.dark-mode .date-picker-trigger-btn {
 }
 
 .signature-title {
-  font-weight: 600;
+  font-weight: 700;
   color: #1e293b;
   margin-bottom: 0.15rem;
+  font-size: 0.76rem;
 }
 .signature-sub {
   font-size: 0.68rem;
@@ -1664,13 +1803,22 @@ body.dark-mode .date-picker-trigger-btn {
 }
 
 .signature-line-space {
-  height: 52px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
 }
 
+.signature-stamp-placeholder {
+  font-size: 0.65rem;
+  color: #94a3b8;
+  border: 1px dashed #cbd5e1;
+  padding: 3px 10px;
+  border-radius: 5px;
+  user-select: none;
+  background: rgba(248, 250, 252, 0.6);
+}
 
 .signature-line {
   border-top: 1px dashed #94a3b8;
@@ -2477,95 +2625,106 @@ body.dark-mode .cloud-sync-btn {
 .inv-status-badge {
   display: inline-flex;
   align-items: center;
-  padding: 2px 7px;
-  border-radius: 4px;
+  gap: 0.25rem;
+  padding: 2px 8px;
+  border-radius: 6px;
   font-size: 0.68rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.15s ease;
   user-select: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
 }
 
 .inv-status-badge:hover {
-  transform: scale(1.04);
+  transform: translateY(-1px);
+  filter: brightness(0.96);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
 }
 
 .inv-status-badge.status-unpaid {
-  background: #fee2e2;
-  color: #b91c1c;
-  border: 1px solid #fca5a5;
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
 }
 
 .inv-status-badge.status-paid {
-  background: #dcfce7;
-  color: #15803d;
-  border: 1px solid #86efac;
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
 }
 
 .inv-status-badge.status-partial {
-  background: #fef3c7;
-  color: #b45309;
+  background: #fffbeb;
+  color: #d97706;
   border: 1px solid #fde68a;
 }
 
 /* Official Vintage Rubber Stamp */
 .official-paid-stamp {
   position: absolute;
-  top: 135px;
-  right: 50px;
+  top: 125px;
+  right: 45px;
   z-index: 5;
   pointer-events: none;
   transform: rotate(-13deg);
-  opacity: 0.88;
+  opacity: 0.92;
+  transition: all 0.2s ease;
 }
 
 .stamp-border {
   border: 3px dashed #059669;
   border-radius: 10px;
-  padding: 6px 14px;
+  padding: 6px 16px;
   text-align: center;
   color: #059669;
-  background: rgba(240, 253, 244, 0.45);
-  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+  background: rgba(240, 253, 244, 0.85);
+  box-shadow: inset 0 0 0 2px rgba(5, 150, 105, 0.2), 0 0 0 3px rgba(5, 150, 105, 0.1);
   letter-spacing: 0.05em;
   font-family: var(--khmer-title-font);
+  backdrop-filter: blur(1px);
 }
 
 .stamp-stars {
-  font-size: 0.65rem;
-  letter-spacing: 0.25em;
+  font-size: 0.70rem;
+  letter-spacing: 0.3em;
   line-height: 1;
+  color: #059669;
 }
 
 .stamp-kh {
-  font-size: 1.05rem;
+  font-size: 1.10rem;
   font-weight: 800;
-  line-height: 1.2;
+  line-height: 1.25;
+  color: #047857;
 }
 
 .stamp-en {
   font-family: var(--num-font);
-  font-size: 0.76rem;
+  font-size: 0.78rem;
   font-weight: 800;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.16em;
   line-height: 1;
   margin-top: 1px;
+  color: #047857;
 }
 
 .stamp-date {
   font-family: var(--num-font);
-  font-size: 0.65rem;
+  font-size: 0.68rem;
   font-weight: 700;
   margin-top: 3px;
   border-top: 1px dashed #059669;
   padding-top: 2px;
+  color: #059669;
 }
 
 .stamp-sub {
-  font-size: 0.58rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
+  font-size: 0.60rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   margin-top: 1px;
+  color: #059669;
 }
 
 /* Image export render mode */
@@ -2620,18 +2779,29 @@ body.dark-mode .cloud-sync-btn {
 
 .sheet-totals-addon-link {
   font-size: 0.72rem;
-  color: #2563eb;
+  font-weight: 600;
+  color: #334155;
   cursor: pointer;
-  text-decoration: underline;
-  margin-right: 0.35rem;
-  background: transparent;
-  border: none;
-  padding: 0;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 20px;
+  padding: 0.22rem 0.55rem;
   font-family: var(--khmer-font);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  user-select: none;
+  text-decoration: none;
 }
 
 .sheet-totals-addon-link:hover {
-  color: #1d4ed8;
+  background: #f1f5f9;
+  border-color: #94a3b8;
+  color: #0f172a;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
 }
 
 /* Fit Single Page Mode (When items <= 10) */
@@ -2959,7 +3129,45 @@ body.dark-mode .page-fit-indicator.fit-multi {
     position: absolute !important;
     inset: 0 !important;
     display: flex !important;
-    opacity: 0.05 !important;
+    opacity: 0.04 !important;
+  }
+
+  .shop-brand-mark {
+    display: flex !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .inv-totals-card {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  .signature-stamp-placeholder {
+    display: none !important;
+  }
+
+  .inv-table thead th .th-sub {
+    color: rgba(255, 255, 255, 0.85) !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .official-paid-stamp {
+    display: flex !important;
+    opacity: 0.95 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .official-paid-stamp .stamp-border {
+    background: #f0fdf4 !important;
+    border: 3px dashed #059669 !important;
+    box-shadow: none !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   /* =========================================================
