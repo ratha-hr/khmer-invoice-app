@@ -128,6 +128,30 @@ const cambodianBanks = {
 };
 
 // =========================================================
+// RATHA STATIONERY - PRODUCT CATALOG & AUTO-COMPLETE PRESETS
+// =========================================================
+const DEFAULT_STATIONERY_CATALOG = [
+  { name: 'ក្រដាស Double A A4 80gsm (៥ រុំ/កេស)', price: 23.50, details: 'ក្រដាសគុណភាពខ្ពស់ ៥០០សន្លឹក/រុំ (៥រុំ)' },
+  { name: 'ក្រដាស Copy Paper A4 70gsm', price: 18.00, details: 'ក្រដាសសម្រាប់ព្រីន និងថតចម្លង (៥រុំ/កេស)' },
+  { name: 'សៀវភៅសរសេរ A4 កម្រាស់ 200 ទំព័រ', price: 1.20, details: 'ក្រដាសសរសេររលោង បន្ទាត់ច្បាស់' },
+  { name: 'សៀវភៅសរសេរតូច កម្រាស់ 100 ទំព័រ', price: 0.50, details: 'សម្រាប់សិស្សានុសិស្ស' },
+  { name: 'ប៊ិចសរសេរ Faber-Castell 0.5mm (ប្រអប់)', price: 6.50, details: 'ទឹកប៊ិចពណ៌ខៀវ & ខ្មៅ ២៥ដើម/ប្រអប់' },
+  { name: 'ប៊ិចសរសេរ Schneider Topwriter', price: 0.50, details: 'ទឹកប៊ិចរលោង គុណភាពអាល្លឺម៉ង់' },
+  { name: 'ហ្វឺតសរសេរក្តារខៀន Whiteboard Marker', price: 0.75, details: 'ងាយលុប ពណ៌ច្បាស់ មិនធុំក្លិន' },
+  { name: 'ទឹកហ្វឺតក្តារខៀន Whiteboard Ink (ដប)', price: 1.80, details: 'ទឹកថ្នាំគុណភាពខ្ពស់ សម្រាប់បំពេញហ្វឺត' },
+  { name: 'ជ័រលុប Pentel Hi-Polymer (ដុំ)', price: 0.35, details: 'លុបស្អាត មិនដាច់ក្រដាស' },
+  { name: 'បន្ទាត់ដែក 30cm (Metal Ruler)', price: 0.80, details: 'បន្ទាត់ដែកអ៊ីណុក មានខ្នាតច្បាស់' },
+  { name: 'កន្ត្រៃកាត់ក្រដាស Deli 175mm', price: 1.50, details: 'ផ្លែកាំបិតមុតស្រួច ដែកអ៊ីណុក' },
+  { name: 'កាសែតបិទថ្លា Deli Clear Tape (កេស)', price: 8.00, details: 'ស្អិតជាប់ល្អ ទទឹង ២៤មីលីម៉ែត្រ' },
+  { name: 'ឧបករណ៍កៀបក្រដាស Stapler No.10', price: 2.20, details: 'ម៉ាក Deli រួមជាមួយគ្រាប់កៀប' },
+  { name: 'គ្រាប់កៀបក្រដាស No.10 (ប្រអប់)', price: 0.30, details: 'ដែកថែបមាំ មិនងាយរមួល' },
+  { name: 'កាវទឹកបិទក្រដាស Glue (ដប)', price: 0.40, details: 'កាវបិទក្រដាសស្ងួតលឿន មិនប្រឡាក់' }
+];
+
+let activeAutocompleteEl = null;
+let activeAutocompleteIndex = -1;
+let currentAutocompleteMatches = [];
+
 // =========================================================
 // UI SOUND EFFECTS SYSTEM (Web Audio API Synthesizer)
 // Zero Latency, Crisp & Pleasant Audio Feedback on Click
@@ -1001,6 +1025,17 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   }, 25000);
+
+  // 8. Register Offline Service Worker (PWA)
+  if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').then((reg) => {
+        console.log('Khmer Invoice PWA Service Worker Registered:', reg.scope);
+      }).catch((err) => {
+        console.warn('Service worker registration failed:', err);
+      });
+    });
+  }
 });
 
 // =========================================================
@@ -2293,6 +2328,169 @@ function deleteItemDirect(id) {
   autoSaveCurrentState();
 }
 
+function duplicateItemDirect(id) {
+  playUiSound('click');
+  const index = state.items.findIndex(i => i.id === id);
+  if (index === -1) return;
+  const itemToDup = state.items[index];
+  const duplicated = {
+    ...itemToDup,
+    id: Date.now()
+  };
+  state.items.splice(index + 1, 0, duplicated);
+  renderInvoicePreview();
+  autoSaveCurrentState();
+  showToast('បានថតចម្លងជួរទំនិញរួចរាល់', 'info');
+}
+
+function moveItemRowDirect(id, direction) {
+  playUiSound('click');
+  const index = state.items.findIndex(i => i.id === id);
+  if (index === -1) return;
+  const targetIndex = index + direction;
+  if (targetIndex < 0 || targetIndex >= state.items.length) return;
+
+  const [movedItem] = state.items.splice(index, 1);
+  state.items.splice(targetIndex, 0, movedItem);
+  renderInvoicePreview();
+  autoSaveCurrentState();
+}
+
+function cycleInvoiceStatusDirect() {
+  playUiSound('switch');
+  const statuses = ['unpaid', 'paid', 'partial'];
+  const currentIdx = statuses.indexOf(state.invoiceStatus || 'unpaid');
+  const nextStatus = statuses[(currentIdx + 1) % statuses.length];
+  setInvoiceStatus(nextStatus);
+}
+
+// ---------------------------------------------------------
+// AUTOCOMPLETE ENGINE FOR STATIONERY PRODUCTS
+// ---------------------------------------------------------
+function getAutocompletePopover() {
+  let popover = document.getElementById('sheet-item-autocomplete-popover');
+  if (!popover) {
+    popover = document.createElement('div');
+    popover.id = 'sheet-item-autocomplete-popover';
+    popover.className = 'sheet-autocomplete-dropdown no-print';
+    document.body.appendChild(popover);
+  }
+  return popover;
+}
+
+function hideStationeryAutocomplete() {
+  const popover = document.getElementById('sheet-item-autocomplete-popover');
+  if (popover) {
+    popover.style.display = 'none';
+  }
+  activeAutocompleteEl = null;
+  activeAutocompleteIndex = -1;
+  currentAutocompleteMatches = [];
+}
+
+function showStationeryAutocomplete(targetEl, query = '') {
+  if (!targetEl || isCustomerViewLink) return;
+  const q = String(query).trim().toLowerCase();
+  
+  let matches = [];
+  if (!q) {
+    matches = DEFAULT_STATIONERY_CATALOG.slice(0, 6);
+  } else {
+    matches = DEFAULT_STATIONERY_CATALOG.filter(item => {
+      return item.name.toLowerCase().includes(q) || (item.details && item.details.toLowerCase().includes(q));
+    }).slice(0, 8);
+  }
+
+  if (matches.length === 0) {
+    hideStationeryAutocomplete();
+    return;
+  }
+
+  currentAutocompleteMatches = matches;
+  activeAutocompleteEl = targetEl;
+  activeAutocompleteIndex = -1;
+
+  const popover = getAutocompletePopover();
+  const rect = targetEl.getBoundingClientRect();
+  const scrollY = window.scrollY || window.pageYOffset;
+  const scrollX = window.scrollX || window.pageXOffset;
+
+  popover.style.top = `${rect.bottom + scrollY + 4}px`;
+  popover.style.left = `${rect.left + scrollX}px`;
+  popover.style.width = `${Math.max(rect.width, 320)}px`;
+  popover.style.display = 'block';
+
+  let html = `<div class="autocomplete-header"><span>📦 ជ្រើសរើសទំនិញរហ័ស (${matches.length})</span><span style="font-size: 10px; color: #64748b;">ចុច ឬប្រើ ↑ ↓ Enter</span></div>`;
+  matches.forEach((item, idx) => {
+    html += `
+      <div class="autocomplete-item" data-index="${idx}" onmousedown="selectAutocompleteItem(${idx})">
+        <div class="autocomplete-item-main">
+          <strong class="autocomplete-item-name">${escapeHtml(item.name)}</strong>
+          <span class="autocomplete-item-price">$${Number(item.price).toFixed(2)}</span>
+        </div>
+        ${item.details ? `<div class="autocomplete-item-sub">${escapeHtml(item.details)}</div>` : ''}
+      </div>
+    `;
+  });
+  popover.innerHTML = html;
+}
+
+function selectAutocompleteItem(idx) {
+  if (idx < 0 || idx >= currentAutocompleteMatches.length || !activeAutocompleteEl) return;
+  const selected = currentAutocompleteMatches[idx];
+  const itemId = Number(activeAutocompleteEl.dataset.id);
+  const item = state.items.find(i => i.id === itemId);
+  if (!item) return;
+
+  playUiSound('click');
+  item.description = selected.name;
+  item.price = selected.price;
+  if (selected.details) {
+    item.details = selected.details;
+  }
+
+  activeAutocompleteEl.innerText = selected.name;
+  const tr = activeAutocompleteEl.closest('tr');
+  if (tr) {
+    const detailsEl = tr.querySelector('[data-field="details"]');
+    if (detailsEl) {
+      detailsEl.innerText = selected.details || '';
+      detailsEl.style.display = selected.details ? 'block' : '';
+    }
+    const priceEl = tr.querySelector('[data-field="price"]');
+    if (priceEl) {
+      priceEl.innerText = selected.price;
+    }
+  }
+
+  hideStationeryAutocomplete();
+  calculateTotals();
+  renderInvoicePreview();
+  autoSaveCurrentState();
+  showToast(`✅ បានជ្រើសរើស "${selected.name}"`, 'success');
+}
+
+function highlightAutocompleteItem() {
+  const popover = document.getElementById('sheet-item-autocomplete-popover');
+  if (!popover) return;
+  const items = popover.querySelectorAll('.autocomplete-item');
+  items.forEach((item, idx) => {
+    if (idx === activeAutocompleteIndex) {
+      item.classList.add('active');
+      item.scrollIntoView({ block: 'nearest' });
+    } else {
+      item.classList.remove('active');
+    }
+  });
+}
+
+// Global click outside to hide autocomplete
+document.addEventListener('click', (e) => {
+  if (activeAutocompleteEl && !e.target.closest('#sheet-item-autocomplete-popover') && e.target !== activeAutocompleteEl) {
+    hideStationeryAutocomplete();
+  }
+});
+
 function switchBankDirect(bankKey) {
   state.payment.bankKey = bankKey;
   if (bankKey === 'aba') {
@@ -2524,7 +2722,10 @@ function renderInvoicePreview() {
           ${(price > 0 || lineConvertedTotal > 0) ? formatMoney(lineConvertedTotal, state.currency) : (hasContent ? formatMoney(0, state.currency) : '-')}
         </td>
         <td class="item-action-cell text-center no-print">
-          <button type="button" class="btn-sheet-row-del" onclick="deleteItemDirect(${item.id})" title="លុបមុខទំនិញនេះ">✕</button>
+          <div class="sheet-row-tools">
+            <button type="button" class="btn-sheet-row-btn btn-dup" onclick="duplicateItemDirect(${item.id})" title="ថតចម្លងជួរនេះ (Duplicate)">📋</button>
+            <button type="button" class="btn-sheet-row-btn btn-del" onclick="deleteItemDirect(${item.id})" title="លុបមុខទំនិញនេះ (Delete)">✕</button>
+          </div>
         </td>
       `;
       tableBody.appendChild(tr);
@@ -2549,6 +2750,11 @@ function renderInvoicePreview() {
           item[field] = val;
         }
 
+        // Live Stationery Autocomplete on description typing
+        if (field === 'description') {
+          showStationeryAutocomplete(target, val);
+        }
+
         // Live update row total
         const itemCur = item.currency || state.currency;
         const qty = Number(item.quantity) || 0;
@@ -2570,9 +2776,41 @@ function renderInvoicePreview() {
         autoSaveCurrentState();
       };
 
-      // Keyboard navigation: Enter on row appends new row; Tab on last cell appends row
+      // Show autocomplete when description cell is focused
+      tableBody.onfocusin = function(e) {
+        const target = e.target;
+        if (target.dataset.field === 'description') {
+          showStationeryAutocomplete(target, target.innerText.trim());
+        }
+      };
+
+      // Keyboard navigation: Enter, Tab, ArrowUp/Down for Autocomplete
       tableBody.onkeydown = function(e) {
+        // Autocomplete keyboard control
+        if (currentAutocompleteMatches.length > 0) {
+          if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            activeAutocompleteIndex = Math.min(activeAutocompleteIndex + 1, currentAutocompleteMatches.length - 1);
+            highlightAutocompleteItem();
+            return;
+          } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            activeAutocompleteIndex = Math.max(activeAutocompleteIndex - 1, 0);
+            highlightAutocompleteItem();
+            return;
+          } else if (e.key === 'Enter' && activeAutocompleteIndex >= 0) {
+            e.preventDefault();
+            selectAutocompleteItem(activeAutocompleteIndex);
+            return;
+          } else if (e.key === 'Escape') {
+            e.preventDefault();
+            hideStationeryAutocomplete();
+            return;
+          }
+        }
+
         if (e.key === 'Enter') {
+          hideStationeryAutocomplete();
           const target = e.target;
           const tr = target.closest('tr');
           if (!tr) return;
@@ -2593,6 +2831,36 @@ function renderInvoicePreview() {
           }
         }
       };
+    }
+  }
+
+  // Sync Status Selector, Status Badge & Official Stamp
+  const statusSel = document.getElementById('preview-status-select');
+  if (statusSel && statusSel !== document.activeElement) {
+    statusSel.value = state.invoiceStatus || 'unpaid';
+  }
+
+  const statusBadge = document.getElementById('prev-inv-status-badge');
+  if (statusBadge) {
+    statusBadge.className = `inv-status-badge status-${state.invoiceStatus || 'unpaid'}`;
+    const statusMap = {
+      unpaid: '🔴 មិនទាន់ទូទាត់',
+      paid: '🟢 បានទូទាត់រួច',
+      partial: '🟡 កក់ប្រាក់ខ្លះ'
+    };
+    statusBadge.textContent = statusMap[state.invoiceStatus] || '🔴 មិនទាន់ទូទាត់';
+  }
+
+  const stampEl = document.getElementById('prev-official-stamp');
+  if (stampEl) {
+    if (state.invoiceStatus === 'paid') {
+      stampEl.style.display = 'flex';
+      const stampDateEl = document.getElementById('stamp-paid-date');
+      if (stampDateEl) {
+        stampDateEl.textContent = formatDate(state.issueDate || new Date().toISOString().split('T')[0]);
+      }
+    } else {
+      stampEl.style.display = 'none';
     }
   }
 
@@ -3290,6 +3558,56 @@ window.addEventListener('afterprint', () => {
     autoScaleInvoiceOnMobile();
   }
 });
+
+// Export Invoice As Crystal-Clear PNG Image
+async function exportInvoiceAsImage() {
+  playUiSound('click');
+  const sheet = document.getElementById('printable-invoice-sheet');
+  if (!sheet) return;
+
+  if (typeof html2canvas === 'undefined') {
+    showToast('⚠️ កំពុងរៀបចំប្រព័ន្ធបង្កើតរូបភាព សូមព្យាយាមម្តងទៀត!', 'warning');
+    return;
+  }
+
+  showToast('⏳ កំពុងបង្កើតរូបភាពវិក្កយបត្រកម្រិតច្បាស់ (PNG 300 DPI)...', 'info');
+
+  try {
+    sheet.classList.add('rendering-image');
+    if (document.fonts && document.fonts.ready) {
+      await document.fonts.ready;
+    }
+
+    const canvas = await html2canvas(sheet, {
+      scale: 2.5,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#ffffff',
+      logging: false,
+      ignoreElements: (el) => {
+        return el.classList.contains('no-print') || el.classList.contains('item-action-cell');
+      }
+    });
+
+    sheet.classList.remove('rendering-image');
+
+    const invNum = state.invoiceNumber || 'INV';
+    const clientName = (state.client?.nameKh || 'Customer').replace(/[^a-zA-Z0-9_\u1780-\u17FF]/g, '_');
+    const filename = `Invoice_${invNum}_${clientName}.png`;
+
+    const link = document.createElement('a');
+    link.download = filename;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+
+    playUiSound('success');
+    showToast(`✅ បានទាញយករូបភាព "${filename}" ជោគជ័យ!`, 'success');
+  } catch (err) {
+    sheet.classList.remove('rendering-image');
+    console.error('Canvas export error:', err);
+    showToast('❌ មិនអាចបង្កើតរូបភាពបានទេ សូមសាកល្បងម្តងទៀត!', 'error');
+  }
+}
 
 
 // Modal handling

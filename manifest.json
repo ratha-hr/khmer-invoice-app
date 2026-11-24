@@ -1,0 +1,18 @@
+{
+  "name": "កម្មវិធីវិក្កយបត្រស្តង់ដា - RATHA Stationery",
+  "short_name": "RATHA Invoice",
+  "description": "កម្មវិធីបង្កើតវិក្កយបត្រស្តង់ដា A4 / A5 ជាមួយ KHQR សម្រាប់ RATHA Stationery",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0b3954",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "ratha_avatar.jpg",
+      "sizes": "192x192 512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}
