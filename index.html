@@ -17,7 +17,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   
   <!-- App Stylesheet -->
-  <link rel="stylesheet" href="styles.css?v=3.7">
+  <link rel="stylesheet" href="styles.css?v=3.8">
 </head>
 <body class="theme-royal font-kantumruy mobile-mode-preview sheet-direct-mode">
 
@@ -405,7 +405,7 @@
                 <div style="display: flex; gap: 0.45rem; align-items: center; flex-wrap: wrap;">
                   <button type="button" class="btn-sheet-action btn-sheet-add" onclick="addNewItemRowDirect()" title="បន្ថែមជួរដេកថ្មី">
                     <svg style="width: 14px; height: 14px; fill: currentColor;" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                    <span>+ បន្ថែមទំនិញថ្មី</span>
+                    <span>បន្ថែមទំនិញថ្មី</span>
                   </button>
                   <button type="button" class="btn-sheet-action" onclick="addThreeItemsDirect()" title="បន្ថែម ៣ ជួរដេក">
                     <span>+ បន្ថែម ៣ ជួរ</span>
@@ -431,38 +431,18 @@
           <div class="invoice-bottom-section">
             <!-- Summary Grid -->
             <div class="inv-summary-section">
-              <!-- Left: Bank & KHQR Information -->
+              <!-- Left: Bank & KHQR Information (ACLEDA KHQR) -->
               <div class="inv-payment-method-box bank-acleda">
-                <!-- Single QR Box (ACLEDA or ABA Single) -->
+                <!-- Single Square QR Box (ACLEDA KHQR) -->
                 <div class="qr-container-box" id="prev-single-qr-box" onclick="openQrEnlargeModal()" title="ចុចដើម្បីពង្រីកស្កេន KHQR (Click to Enlarge)">
-                  <img id="prev-qr-code-img" class="qr-code-img" alt="Payment QR" style="display: none;">
-                  <div id="prev-qr-code-gen" class="qr-code-canvas-wrap"></div>
-                </div>
-
-                <!-- Dual QR Box (for ABA Dual: USD & KHR side-by-side) -->
-                <div class="dual-qr-container-box" id="prev-dual-qr-box" style="display: none;">
-                  <div class="mini-qr-card">
-                    <div class="mini-qr-img-frame">
-                      <img id="prev-dual-qr-usd" class="qr-code-img" src="aba_usd_square.png" alt="ABA USD QR">
-                    </div>
-                    <span class="mini-qr-tag usd">💵 USD ($)</span>
-                  </div>
-                  <div class="mini-qr-card">
-                    <div class="mini-qr-img-frame">
-                      <img id="prev-dual-qr-khr" class="qr-code-img" src="aba_khr_square.png" alt="ABA KHR QR">
-                    </div>
-                    <span class="mini-qr-tag khr">៛ KHR (៛)</span>
-                  </div>
+                  <img id="prev-qr-code-img" class="qr-code-img" src="acleda_qr_square.png" alt="Payment QR" style="display: block;">
+                  <div id="prev-qr-code-gen" class="qr-code-canvas-wrap" style="display: none;"></div>
                 </div>
 
                 <div class="bank-details">
                   <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.25rem;">
                     <div class="bank-badge-tag" id="prev-bank-tag">
                       <span>🏦</span> <span id="prev-bank-tag-text">ACLEDA KHQR</span>
-                    </div>
-                    <div class="sheet-bank-switcher no-print">
-                      <button type="button" class="sheet-bank-pill" id="pill-bank-acleda" onclick="switchBankDirect('acleda')" title="ប្តូរមក ACLEDA KHQR">ACLEDA</button>
-                      <button type="button" class="sheet-bank-pill" id="pill-bank-aba" onclick="switchBankDirect('aba')" title="ប្តូរមក ABA Pay">ABA</button>
                     </div>
                   </div>
                   <div class="bank-name" id="prev-bank-name">ធនាគារ អេស៊ីលីដា (ACLEDA BANK)</div>
@@ -843,7 +823,7 @@
           <div id="qr-modal-amount" style="font-size: 1.25rem; font-weight: 800; color: #dc2626; margin-top: 0.4rem;">$0.00</div>
         </div>
         <p style="font-size: 0.78rem; color: var(--text-muted); margin: 0.2rem 0 0.5rem; line-height: 1.3;">
-          បើកកម្មវិធី <strong>Bakong, ACLEDA, ABA</strong> ឬ Mobile Banking ណាមួយ ដើម្បីស្កេនទូទាត់ប្រាក់ភ្លាមៗ
+          បើកកម្មវិធី <strong>ACLEDA, Bakong</strong> ឬ Mobile Banking ណាមួយ ដើម្បីស្កេនទូទាត់ប្រាក់ភ្លាមៗ
         </p>
       </div>
       <div class="modal-footer" style="margin-top: 1rem; display: flex; gap: 0.5rem; justify-content: center;">
@@ -867,6 +847,6 @@
   <script src="html2canvas.min.js"></script>
 
   <!-- App Script -->
-  <script src="script.js?v=3.7"></script>
+  <script src="script.js?v=3.8"></script>
 </body>
 </html>

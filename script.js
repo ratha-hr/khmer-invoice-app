@@ -79,10 +79,9 @@ const defaultInvoiceState = {
   shippingFee: 0,
   paidAmount: 200,
 
-  // Payment Information with ACLEDA KHQR & ABA' PAY (ហ៊ុន រដ្ឋា / HUN RATHA)
+  // Payment Information with ACLEDA KHQR (ហ៊ុន រដ្ឋា / HUN RATHA)
   payment: {
     bankKey: 'acleda',
-    abaMode: 'USD', // 'USD' (ដុល្លារ), 'KHR' (ប្រាក់រៀល), 'DUAL' (ទាំងពីរ)
     bankName: 'ធនាគារ អេស៊ីលីដា (ACLEDA BANK)',
     accountName: 'ហ៊ុន រដ្ឋា (HUN RATHA)',
     accountNumber: 'KHQR (Scan. Pay Done.)',
@@ -110,20 +109,12 @@ let currentColorTheme = 'khmer-modern';
 let currentEditingInvoiceId = null;
 let lastReviewedInvoiceId = null;
 
-// Cambodian Banks Definition (Strictly ACLEDA & ABA with USD & KHR for ហ៊ុន រដ្ឋា)
+// Cambodian Banks Definition (Strictly ACLEDA KHQR for ហ៊ុន រដ្ឋា)
 const cambodianBanks = {
   acleda: {
     name: 'ធនាគារ អេស៊ីលីដា (ACLEDA BANK)',
     defaultNum: 'KHQR (Scan. Pay Done.)',
     defaultQr: 'acleda_qr_square.png'
-  },
-  aba: {
-    name: 'ធនាគារ អេប៊ីអេ (ABA BANK)',
-    usdNum: "ABA' PAY USD (Scan. Pay. Done.)",
-    khrNum: "ABA' PAY KHR (Scan. Pay. Done.)",
-    dualNum: "ABA' PAY (USD $ & KHR ៛)",
-    usdQr: 'aba_usd_square.png',
-    khrQr: 'aba_khr_square.png'
   }
 };
 
@@ -1240,64 +1231,21 @@ function applySystemTheme(isDark) {
 }
 
 // =========================================================
-// CAMBODIAN BANKS SWITCHER (ACLEDA & ABA FOR ហ៊ុន រដ្ឋា)
+// PAYMENT BANK SELECTION (ACLEDA KHQR FOR ហ៊ុន រដ្ឋា)
 // =========================================================
-function selectBank(bankKey) {
-  if (bankKey !== 'acleda' && bankKey !== 'aba') {
-    bankKey = 'acleda';
-  }
-
-  state.selectedBank = bankKey;
-  state.payment.bankKey = bankKey;
+// PAYMENT BANK SELECTION (STRICTLY ACLEDA KHQR FOR ហ៊ុន រដ្ឋា)
+// =========================================================
+function selectBank(bankKey = 'acleda') {
+  state.selectedBank = 'acleda';
+  state.payment.bankKey = 'acleda';
   state.payment.accountName = 'ហ៊ុន រដ្ឋា (HUN RATHA)';
-
-  if (bankKey === 'acleda') {
-    state.payment.bankName = cambodianBanks.acleda.name;
-    state.payment.accountNumber = cambodianBanks.acleda.defaultNum;
-    state.payment.qrCode = cambodianBanks.acleda.defaultQr;
-  } else if (bankKey === 'aba') {
-    if (!state.payment.abaMode) {
-      state.payment.abaMode = state.currency === 'KHR' ? 'KHR' : 'USD';
-    }
-    applyAbaMode(state.payment.abaMode);
-  }
+  state.payment.bankName = cambodianBanks.acleda.name;
+  state.payment.accountNumber = cambodianBanks.acleda.defaultNum;
+  state.payment.qrCode = cambodianBanks.acleda.defaultQr;
 
   renderFormInputs();
   renderInvoicePreview();
   autoSaveCurrentState();
-  showToast(bankKey === 'acleda' ? 'បានជ្រើស ធនាគារ អេស៊ីលីដា (KHQR)' : 'បានជ្រើស ធនាគារ អេប៊ីអេ (ABA BANK)', 'success');
-}
-
-// Apply ABA Mode (USD, KHR, DUAL)
-function applyAbaMode(mode) {
-  state.payment.bankKey = 'aba';
-  state.selectedBank = 'aba';
-  state.payment.bankName = cambodianBanks.aba.name;
-  state.payment.accountName = 'ហ៊ុន រដ្ឋា (HUN RATHA)';
-  state.payment.abaMode = mode || 'USD';
-
-  if (mode === 'KHR') {
-    state.payment.accountNumber = cambodianBanks.aba.khrNum;
-    state.payment.qrCode = cambodianBanks.aba.khrQr;
-  } else if (mode === 'DUAL') {
-    state.payment.accountNumber = cambodianBanks.aba.dualNum;
-    state.payment.qrCode = 'dual';
-  } else {
-    state.payment.abaMode = 'USD';
-    state.payment.accountNumber = cambodianBanks.aba.usdNum;
-    state.payment.qrCode = cambodianBanks.aba.usdQr;
-  }
-}
-
-// User explicitly switches ABA Currency (USD, KHR, DUAL)
-function setAbaCurrency(mode) {
-  applyAbaMode(mode);
-  renderFormInputs();
-  renderInvoicePreview();
-  autoSaveCurrentState();
-
-  const label = mode === 'KHR' ? 'ABA ប្រាក់រៀល (៛ KHR)' : (mode === 'DUAL' ? 'ABA ទាំងពីរ (USD & KHR)' : 'ABA ដុល្លារ ($ USD)');
-  showToast(`បានប្តូរទៅ ${label}`, 'success');
 }
 
 // Mobile View Management
@@ -1418,20 +1366,13 @@ function loadSavedState() {
         nextItemId = Math.max(...state.items.map(i => i.id || 0)) + 1;
       }
       ensureMinimumItems(3);
-      // Migrate old badge/full images to pure square QR codes and initialize abaMode
+      // Ensure pure square QR codes for ACLEDA KHQR
       if (state.payment) {
-        if (state.payment.bankKey === 'aba' && !state.payment.abaMode) {
-          state.payment.abaMode = (state.payment.qrCode && state.payment.qrCode.includes('khr')) ? 'KHR' : 'USD';
-        }
-        if (state.payment.qrCode) {
-          if (state.payment.qrCode.includes('badge') || state.payment.qrCode.includes('full')) {
-            if (state.payment.bankKey === 'aba') {
-              state.payment.qrCode = (state.payment.abaMode === 'KHR' || state.currency === 'KHR') ? 'aba_khr_square.png' : 'aba_usd_square.png';
-            } else {
-              state.payment.qrCode = 'acleda_qr_square.png';
-            }
-          }
-        }
+        state.payment.bankKey = 'acleda';
+        state.payment.bankName = 'ធនាគារ អេស៊ីលីដា (ACLEDA BANK)';
+        state.payment.accountName = 'ហ៊ុន រដ្ឋា (HUN RATHA)';
+        state.payment.accountNumber = 'KHQR (Scan. Pay Done.)';
+        state.payment.qrCode = 'acleda_qr_square.png';
       }
     } catch (e) {
       console.warn('Could not parse saved invoice:', e);
@@ -1626,25 +1567,10 @@ function renderFormInputs() {
   setVal('input-client-email', state.client.email);
   setVal('input-client-address', state.client.address || 'សាលាលេខប្រាំ អូរឫស្សី កំពង់ត្រឡាច កំពង់ឆ្នាំង');
 
-  // Bank Active Button (Strictly ACLEDA & ABA)
-  const isAba = (state.payment.bankKey === 'aba' || state.selectedBank === 'aba');
+  // Bank Active Button (Strictly ACLEDA KHQR)
   document.querySelectorAll('.bank-card-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.getAttribute('data-bank') === (isAba ? 'aba' : 'acleda'));
+    btn.classList.toggle('active', btn.getAttribute('data-bank') === 'acleda');
   });
-
-  // ABA Currency Box Visibility & Active State
-  const abaCtrlBox = document.getElementById('aba-currency-control-box');
-  if (abaCtrlBox) {
-    abaCtrlBox.style.display = isAba ? 'block' : 'none';
-  }
-
-  const currentAbaMode = state.payment.abaMode || (state.currency === 'KHR' ? 'KHR' : 'USD');
-  const btnAbaUsd = document.getElementById('btn-aba-usd');
-  const btnAbaKhr = document.getElementById('btn-aba-khr');
-  const btnAbaDual = document.getElementById('btn-aba-dual');
-  if (btnAbaUsd) btnAbaUsd.classList.toggle('active', currentAbaMode === 'USD');
-  if (btnAbaKhr) btnAbaKhr.classList.toggle('active', currentAbaMode === 'KHR');
-  if (btnAbaDual) btnAbaDual.classList.toggle('active', currentAbaMode === 'DUAL');
 
   // Payment
   setVal('input-bank-name', state.payment.bankName);
@@ -1883,7 +1809,7 @@ function renderItemEditorTable() {
     <div class="items-table-bottom-bar">
       <button type="button" class="btn-add-row-quick" onclick="addItem()">
         <svg style="width: 15px; height: 15px; fill: currentColor;" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-        <span>+ បន្ថែមជួរដេកថ្មី (Add Row)</span>
+        <span>បន្ថែមជួរដេកថ្មី (Add Row)</span>
       </button>
       <div class="table-shortcut-tip">
         <span>💡 វាយចូលតារាងដោយផ្ទាល់</span>
@@ -2491,14 +2417,12 @@ document.addEventListener('click', (e) => {
   }
 });
 
-function switchBankDirect(bankKey) {
-  state.payment.bankKey = bankKey;
-  if (bankKey === 'aba') {
-    state.payment.bankName = 'ធនាគារ វឌ្ឍនៈ អាស៊ី ចំកាត់ (ABA BANK)';
-    state.payment.abaMode = 'USD';
-  } else {
-    state.payment.bankName = 'ធនាគារ អេស៊ីលីដា (ACLEDA BANK)';
-  }
+function switchBankDirect(bankKey = 'acleda') {
+  state.payment.bankKey = 'acleda';
+  state.payment.bankName = 'ធនាគារ អេស៊ីលីដា (ACLEDA BANK)';
+  state.payment.accountName = 'ហ៊ុន រដ្ឋា (HUN RATHA)';
+  state.payment.accountNumber = 'KHQR (Scan. Pay Done.)';
+  state.payment.qrCode = 'acleda_qr_square.png';
   renderInvoicePreview();
   autoSaveCurrentState();
 }
@@ -2664,19 +2588,6 @@ function renderInvoicePreview() {
 
   const tbDual = document.getElementById('preview-dual-check');
   if (tbDual) tbDual.checked = !!state.showDualCurrency;
-
-  // Sync Bank Pills in payment box
-  const pillAcleda = document.getElementById('pill-bank-acleda');
-  const pillAba = document.getElementById('pill-bank-aba');
-  if (pillAcleda && pillAba) {
-    if (state.payment.bankKey === 'aba') {
-      pillAba.classList.add('active');
-      pillAcleda.classList.remove('active');
-    } else {
-      pillAcleda.classList.add('active');
-      pillAba.classList.remove('active');
-    }
-  }
 
   // Table items rendering
   const tableBody = document.getElementById('prev-items-tbody');
@@ -2943,86 +2854,36 @@ function renderInvoicePreview() {
   makeSheetFieldEditable('prev-account-num', 'payment.accountNumber', 'លេខគណនី ឬ KHQR...');
   setSheetFieldText('prev-account-num', state.payment.accountNumber, 'KHQR (Scan. Pay Done.)');
 
-  // Payment QR Code handling (Single vs Dual Mode)
+  // Payment QR Code handling (Strictly ACLEDA KHQR)
   const singleQrBox = document.getElementById('prev-single-qr-box');
   const dualQrBox = document.getElementById('prev-dual-qr-box');
   const qrImg = document.getElementById('prev-qr-code-img');
   const qrGen = document.getElementById('prev-qr-code-gen');
-  const isDualAba = (state.payment.bankKey === 'aba' && state.payment.abaMode === 'DUAL');
 
-  if (isDualAba) {
-    if (singleQrBox) singleQrBox.style.display = 'none';
-    if (dualQrBox) dualQrBox.style.display = 'flex';
-  } else {
-    if (dualQrBox) dualQrBox.style.display = 'none';
-    if (singleQrBox) singleQrBox.style.display = 'flex';
+  if (dualQrBox) dualQrBox.style.display = 'none';
+  if (singleQrBox) singleQrBox.style.display = 'flex';
 
-    if (state.payment.qrCode && state.payment.qrCode !== 'dual') {
-      if (qrImg) {
-        qrImg.src = state.payment.qrCode;
-        qrImg.style.display = 'block';
-      }
-      if (qrGen) qrGen.style.display = 'none';
-    } else if (state.payment.accountNumber && typeof QRCode !== 'undefined') {
-      if (qrImg) qrImg.style.display = 'none';
-      if (qrGen) {
-        qrGen.style.display = 'flex';
-        qrGen.innerHTML = '';
-        try {
-          const qrContent = `PAYMENT:${state.payment.bankName}|ACC:${state.payment.accountNumber}|NAME:HUN RATHA|INV:${state.invoiceNumber}|DUE:${totals.balanceDue}`;
-          new QRCode(qrGen, {
-            text: qrContent,
-            width: 80,
-            height: 80,
-            colorDark: '#0f172a',
-            colorLight: '#ffffff',
-            correctLevel: QRCode.CorrectLevel.M
-          });
-        } catch (err) {
-          console.warn('QR Code generation error:', err);
-        }
-      }
-    } else {
-      if (qrImg) qrImg.style.display = 'none';
-      if (qrGen) qrGen.style.display = 'none';
-    }
+  if (qrImg) {
+    qrImg.src = state.payment.qrCode || 'acleda_qr_square.png';
+    qrImg.style.display = 'block';
   }
+  if (qrGen) qrGen.style.display = 'none';
 
   // Payment Box Bank Class
   const payBox = document.querySelector('.inv-payment-method-box');
   if (payBox) {
-    payBox.classList.remove('bank-acleda', 'bank-aba');
-    payBox.classList.add(state.payment.bankKey === 'aba' ? 'bank-aba' : 'bank-acleda');
+    payBox.classList.remove('bank-aba');
+    payBox.classList.add('bank-acleda');
   }
 
   const bankTagText = document.getElementById('prev-bank-tag-text');
   if (bankTagText) {
-    if (state.payment.bankKey === 'aba') {
-      if (state.payment.abaMode === 'KHR') {
-        bankTagText.textContent = "ABA' PAY (KHR ៛)";
-      } else if (state.payment.abaMode === 'DUAL') {
-        bankTagText.textContent = "ABA' PAY (USD & KHR)";
-      } else {
-        bankTagText.textContent = "ABA' PAY (USD $)";
-      }
-    } else {
-      bankTagText.textContent = 'ACLEDA KHQR';
-    }
+    bankTagText.textContent = 'ACLEDA KHQR';
   }
 
   const scanHintEl = document.getElementById('prev-scan-hint');
   if (scanHintEl) {
-    if (state.payment.bankKey === 'aba') {
-      if (state.payment.abaMode === 'KHR') {
-        scanHintEl.innerHTML = '<span>⚡</span> ស្កេនទូទាត់រហ័សតាម ABA Mobile (គណនីប្រាក់រៀល ៛)';
-      } else if (state.payment.abaMode === 'DUAL') {
-        scanHintEl.innerHTML = '<span>⚡</span> ស្កេនទូទាត់តាម ABA Mobile (មានទាំងដុល្លារ $ & ប្រាក់រៀល ៛)';
-      } else {
-        scanHintEl.innerHTML = '<span>⚡</span> ស្កេនទូទាត់រហ័សតាម ABA Mobile (គណនីដុល្លារ $) ';
-      }
-    } else {
-      scanHintEl.innerHTML = '<span>📲</span> ស្កេនទូទាត់រហ័សតាម KHQR / Bakong / Mobile Banking';
-    }
+    scanHintEl.innerHTML = '<span>📲</span> ស្កេនទូទាត់រហ័សតាម KHQR / Bakong / Mobile Banking';
   }
 
   // Notes & Terms (Directly editable)
@@ -3176,10 +3037,6 @@ function initEventListeners() {
   // Currency
   bindInput('input-currency', (val) => { 
     state.currency = val;
-    if (state.payment.bankKey === 'aba' && state.payment.abaMode !== 'DUAL') {
-      applyAbaMode(val === 'KHR' ? 'KHR' : 'USD');
-      renderFormInputs();
-    }
     renderItemEditorCards(); 
   });
   bindInput('input-exchange-rate', (val) => { state.exchangeRate = Number(val) || 4100; });
