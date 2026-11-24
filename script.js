@@ -1686,10 +1686,10 @@ function updatePageFitIndicator() {
   if (prevFitEl && prevFitText) {
     if (isSingleFit) {
       prevFitEl.className = 'page-fit-indicator fit-single';
-      prevFitText.textContent = `១ ទំព័រ ${paperLabel} (${count}/${maxSingle})`;
+      prevFitText.textContent = `១ ទំព័រ (${count}/${maxSingle})`;
     } else {
       prevFitEl.className = 'page-fit-indicator fit-multi';
-      prevFitText.textContent = `${count} មុខ (Multi-page)`;
+      prevFitText.textContent = `${count} មុខ (>1 ទំព័រ)`;
     }
   }
 }
