@@ -17,7 +17,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   
   <!-- App Stylesheet -->
-  <link rel="stylesheet" href="styles.css?v=4.6">
+  <link rel="stylesheet" href="styles.css?v=4.7">
 </head>
 <body class="theme-royal font-kantumruy mobile-mode-preview sheet-direct-mode">
 
@@ -207,29 +207,31 @@
 
       <!-- Preview Master Toolbar (Direct Invoice Mode - Hidden in Print) -->
       <div class="preview-toolbar no-print">
-        <!-- Left: Currency & Exchange Rate Group -->
+        <!-- Currency & Exchange Rate Group -->
         <div class="toolbar-group">
-          <div style="display: flex; align-items: center; gap: 0.3rem;">
-            <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-main);">💵 រូបិយប័ណ្ណ:</span>
-            <select id="preview-currency-select" class="form-control" style="width: auto; padding: 0.25rem 0.45rem; font-size: 0.8rem; font-weight: 700; border-radius: 6px;" onchange="changeGlobalCurrency(this.value)">
+          <div style="display: flex; align-items: center; gap: 0.25rem;">
+            <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-main); white-space: nowrap;">💵 រូបិយប័ណ្ណ:</span>
+            <select id="preview-currency-select" class="form-control" style="width: auto; padding: 0.22rem 0.4rem; font-size: 0.78rem; font-weight: 700; border-radius: 6px;" onchange="changeGlobalCurrency(this.value)">
               <option value="USD">USD ($)</option>
               <option value="KHR">KHR (៛)</option>
             </select>
           </div>
-          <div style="display: flex; align-items: center; gap: 0.2rem; font-size: 0.78rem; font-weight: 600; color: var(--text-muted);">
+          <div style="display: flex; align-items: center; gap: 0.2rem; font-size: 0.78rem; font-weight: 600; color: var(--text-muted); white-space: nowrap;">
             <span>1$=</span>
-            <input type="number" id="preview-rate-input" class="form-control font-bold" style="width: 65px; padding: 0.25rem 0.35rem; font-size: 0.8rem; text-align: center;" value="4100" oninput="changeExchangeRate(this.value)">
+            <input type="number" id="preview-rate-input" class="form-control font-bold" style="width: 58px; padding: 0.22rem 0.3rem; font-size: 0.78rem; text-align: center;" value="4100" oninput="changeExchangeRate(this.value)">
             <span>៛</span>
           </div>
           <label style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.76rem; cursor: pointer; color: var(--text-main); font-weight: 600; white-space: nowrap;">
             <input type="checkbox" id="preview-dual-check" checked onchange="toggleDualCurrencyDirect(this.checked)" style="width: 14px; height: 14px;">
-            <span>បង្ហាញពីរ ($ & ៛)</span>
+            <span>ពីរ ($ & ៛)</span>
           </label>
+        </div>
 
-          <!-- Status Selector -->
-          <div style="display: flex; align-items: center; gap: 0.25rem; margin-left: 0.35rem;">
-            <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-main);">ស្ថានភាព:</span>
-            <select id="preview-status-select" class="form-control" style="width: auto; padding: 0.25rem 0.45rem; font-size: 0.8rem; font-weight: 700; border-radius: 6px;" onchange="setInvoiceStatus(this.value)">
+        <!-- Status Selector Group -->
+        <div class="toolbar-group">
+          <div style="display: flex; align-items: center; gap: 0.25rem;">
+            <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-main); white-space: nowrap;">ស្ថានភាព:</span>
+            <select id="preview-status-select" class="form-control" style="width: auto; padding: 0.22rem 0.45rem; font-size: 0.78rem; font-weight: 700; border-radius: 6px;" onchange="setInvoiceStatus(this.value)">
               <option value="unpaid">🔴 មិនទាន់ទូទាត់</option>
               <option value="paid">🟢 បានទូទាត់រួច</option>
               <option value="partial">🟡 កក់ប្រាក់ខ្លះ</option>
@@ -237,19 +239,19 @@
           </div>
         </div>
 
-        <!-- Right: Paper Size, Zoom & Fit Indicator -->
+        <!-- Paper Size, Zoom & Fit Indicator Group -->
         <div class="toolbar-group">
           <div class="paper-size-controls" style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.78rem; font-weight: 600; color: var(--text-main); white-space: nowrap;">
-            <span>ក្រដាសបោះពុម្ព:</span>
-            <select id="preview-paper-size-select" class="form-control" style="width: auto; padding: 0.25rem 0.5rem; font-size: 0.8rem; font-weight: 700; border-radius: 6px;" onchange="setPaperSize(this.value)">
-              <option value="a4" selected>📄 ស្តង់ដា A4</option>
-              <option value="a5">📑 ស្តង់ដា A5</option>
+            <span>ក្រដាស:</span>
+            <select id="preview-paper-size-select" class="form-control" style="width: auto; padding: 0.22rem 0.45rem; font-size: 0.78rem; font-weight: 700; border-radius: 6px;" onchange="setPaperSize(this.value)">
+              <option value="a4" selected>📄 A4</option>
+              <option value="a5">📑 A5</option>
             </select>
           </div>
 
           <div class="zoom-controls" style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.78rem; color: var(--text-muted); white-space: nowrap;">
             <span>មើល:</span>
-            <select id="preview-zoom-select" class="form-control" style="width: auto; padding: 0.2rem 0.4rem; font-size: 0.78rem;">
+            <select id="preview-zoom-select" class="form-control" style="width: auto; padding: 0.2rem 0.35rem; font-size: 0.78rem; border-radius: 6px;">
               <option value="1">100%</option>
               <option value="0.9">90%</option>
               <option value="0.8">80%</option>
@@ -945,6 +947,6 @@
   <script src="html2canvas.min.js"></script>
 
   <!-- App Script -->
-  <script src="script.js?v=4.6"></script>
+  <script src="script.js?v=4.7"></script>
 </body>
 </html>
